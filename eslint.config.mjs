@@ -77,9 +77,7 @@ const eslintConfig = defineConfig([
           prefer: "type-imports",
           disallowTypeAnnotations: false,
         },
-      ],
-
-      // General code quality
+      ], // General code quality
       "no-console": "warn",
       "no-debugger": "error",
       "prefer-const": "error",
