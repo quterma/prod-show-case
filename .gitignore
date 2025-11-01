@@ -13,6 +13,13 @@
 # testing
 /coverage
 
+# Testing artifacts
+test-results/
+playwright-report/
+
+# MSW
+public/mockServiceWorker.js
+
 # next.js
 /.next/
 /out/
