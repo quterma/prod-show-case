@@ -1,9 +1,38 @@
-// TODO: Implement API DTO to Domain mapping functions
-// Example: mapProductFromDto, mapProductToDto
+import type {
+  Product,
+  ProductDTO,
+  ProductsList,
+  ProductsListDTO,
+} from "./types"
 
-import type { Product } from "./types"
+/**
+ * Maps a single ProductDTO from API to domain Product model
+ * Currently 1:1 mapping, but allows for future transformations
+ *
+ * @param dto - Product data from FakeStore API
+ * @returns Domain Product model
+ */
+export function mapProductDTO(dto: ProductDTO): Product {
+  return {
+    id: dto.id,
+    title: dto.title,
+    price: dto.price,
+    description: dto.description,
+    category: dto.category as Product["category"],
+    image: dto.image,
+    rating: {
+      rate: dto.rating.rate,
+      count: dto.rating.count,
+    },
+  }
+}
 
-export function mapProductFromDto(dto: unknown): Product {
-  // TODO: Implement mapping
-  return dto as Product
+/**
+ * Maps an array of ProductDTOs to domain Product models
+ *
+ * @param dtos - Array of product data from FakeStore API
+ * @returns Array of domain Product models
+ */
+export function mapProductsDTO(dtos: ProductsListDTO): ProductsList {
+  return dtos.map(mapProductDTO)
 }

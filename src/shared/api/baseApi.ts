@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/", // Placeholder base URL - will be configured for real backend later
+    baseUrl: "https://fakestoreapi.com", // FakeStore API base URL
     prepareHeaders: (headers, { getState: _getState }) => {
       // Add auth token or other headers here when needed
       // const token = (getState() as RootState).auth.token;
