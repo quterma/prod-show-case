@@ -1,36 +1,191 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Product Showcase
 
-## Getting Started
+A modern product showcase application built with Next.js 16, React 19, and Feature-Sliced Design (FSD) architecture.
 
-First, run the development server:
+## 🚀 Project Overview
+
+This application demonstrates a production-ready approach to building scalable frontend applications using:
+
+- **Next.js 16** with App Router
+- **React 19** with modern features
+- **Feature-Sliced Design (FSD)** for maintainable architecture
+- **Redux Toolkit + RTK Query** for state management and API integration
+- **TypeScript** in strict mode
+- **Tailwind CSS v4** for styling
+- **Vitest + Playwright** for comprehensive testing
+
+## 📚 Documentation
+
+- **[Master Progress Log](docs/master-log.md)** - Overall project progress and stage completion
+- **[Stage 1 Report](docs/stage-1-report.md)** - Foundation & Entity Layer completion
+- **[Stage 2 Plan](docs/stage-2-plan.md)** - UI & Features roadmap
+- **[FSD Architecture](docs/fsd-architecture.md)** - Detailed architecture documentation
+- **[FSD Quick Reference](docs/fsd-readme.md)** - Layer rules and patterns
+- **[API Contracts](docs/api-contracts.md)** - FakeStore API specification
+- **[CLAUDE.md](CLAUDE.md)** - Development guidelines for Claude Code
+
+## 🏗️ Project Status
+
+**Current Stage:** Stage 1 Complete ✅
+**Version:** v0.2.0
+
+### Completed (Stage 1)
+
+- ✅ FakeStore API integration
+- ✅ Product entity with types, mappers, RTK Query endpoints
+- ✅ Type-safe localStorage persistence utilities
+- ✅ Smoke tests for API and persistence
+- ✅ FSD architecture setup with strict layer rules
+
+### Planned (Stage 2)
+
+- Mock fallback implementation
+- Product UI components (Card, Grid, Toolbar)
+- Features: search, pagination, favorites, remove
+- Redux state integration with persistence
+- Main product showcase page
+
+## 🛠️ Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended package manager)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Start development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Run unit tests (Vitest)
+pnpm test
 
-## Learn More
+# Run E2E tests (Playwright)
+pnpm test:e2e
 
-To learn more about Next.js, take a look at the following resources:
+# Run tests with UI
+pnpm test:ui
+pnpm test:e2e:ui
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Code Quality
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Lint and auto-fix
+pnpm lint
 
-## Deploy on Vercel
+# Format code
+pnpm format
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Type check
+pnpm type-check
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🏛️ Architecture
+
+This project follows **Feature-Sliced Design (FSD)** principles:
+
+```
+src/
+├── app/        # Application layer (routes, providers)
+├── widgets/    # Complete UI blocks
+├── features/   # User interactions and business features
+├── entities/   # Business domain models
+└── shared/     # Reusable infrastructure (UI, utils, API)
+```
+
+### Key Principles
+
+- **Layered imports:** Higher layers can import from lower layers only
+- **Public API pattern:** All slices export through `index.ts`
+- **Isolation:** `shared/` layer cannot import from other layers
+- **Single responsibility:** Each slice has a clear purpose
+
+See [docs/fsd-architecture.md](docs/fsd-architecture.md) for detailed guidelines.
+
+## 🔧 Tech Stack
+
+### Core
+
+- **Framework:** Next.js 16 (App Router)
+- **UI Library:** React 19
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS v4
+
+### State Management
+
+- **Store:** Redux Toolkit
+- **API Client:** RTK Query
+- **Persistence:** Custom localStorage utilities
+
+### Forms & Validation
+
+- **Forms:** React Hook Form
+- **Validation:** Zod
+
+### Testing
+
+- **Unit/Component:** Vitest + happy-dom
+- **E2E:** Playwright
+- **Coverage:** Vitest coverage tools
+
+### Code Quality
+
+- **Linter:** ESLint
+- **Formatter:** Prettier
+- **Pre-commit:** Husky + lint-staged
+- **Type Checking:** TypeScript compiler
+
+## 📦 Key Features
+
+### Stage 1 (Current)
+
+- FakeStore API integration with typed endpoints
+- Product entity with DTO mapping
+- Type-safe localStorage utilities with SSR safety
+- Comprehensive documentation
+
+### Stage 2 (Planned)
+
+- Product catalog with grid layout
+- Search with debounce (300ms)
+- Client-side pagination
+- Favorites and remove functionality
+- Mock fallback for API errors
+
+## 📝 Development Guidelines
+
+1. **Follow FSD layer rules** - Respect the import hierarchy
+2. **Use path aliases** - Import via `@/` prefix, not relative paths
+3. **Type everything** - Leverage TypeScript strict mode
+4. **Test your code** - Write unit and integration tests
+5. **Commit conventions** - Use conventional commit messages
+6. **Pre-commit hooks** - Let Husky handle linting and formatting
+
+See [CLAUDE.md](CLAUDE.md) for detailed development instructions.
+
+## 🔗 External Resources
+
+- [FakeStore API](https://fakestoreapi.com) - Data source
+- [Feature-Sliced Design](https://feature-sliced.design) - Architecture methodology
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+
+## 📄 License
+
+This is a test assignment project.
+
+---
+
+**Last Updated:** November 9, 2025
+**Stage:** 1 Complete (Foundation & Entity Layer)
