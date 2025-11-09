@@ -1,5 +1,5 @@
 // Export base API configuration
-export { baseApi } from "./baseApi";
+export { baseApi } from "./baseApi"
 
 // Feature APIs will be exported here as they are added
 // Example:

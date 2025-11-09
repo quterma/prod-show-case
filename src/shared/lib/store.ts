@@ -1,11 +1,11 @@
-import type { Action, ThunkAction } from "@reduxjs/toolkit";
-import { combineSlices, configureStore } from "@reduxjs/toolkit";
+import type { Action, ThunkAction } from "@reduxjs/toolkit"
+import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
-import { baseApi } from "../api/baseApi";
+import { baseApi } from "../api/baseApi"
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(baseApi);
+const rootReducer = combineSlices(baseApi)
 
 export const makeStore = () => {
   return configureStore({
@@ -24,16 +24,16 @@ export const makeStore = () => {
         },
       }).concat(baseApi.middleware), // ESSENTIAL: RTK Query middleware for cache management
     devTools: process.env.NODE_ENV !== "production",
-  });
-};
+  })
+}
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
+export type AppStore = ReturnType<typeof makeStore>
+export type RootState = ReturnType<AppStore["getState"]>
+export type AppDispatch = AppStore["dispatch"]
 // Keep AppThunk for future custom async logic that RTK Query doesn't handle
 export type AppThunk<ThunkReturnType = void> = ThunkAction<
   ThunkReturnType,
   RootState,
   unknown,
   Action
->;
+>
