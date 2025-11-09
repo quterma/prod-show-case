@@ -116,9 +116,14 @@ api/ baseApi.ts (только базовая RTK Query конфигурация)
 lib/ store.ts, hooks.ts, validations/, forms/
 ui/ базовые атомы, только если реально переиспользуются
 
-**RTK Query:** эндпоинты — только через `baseApi.injectEndpoints` в `entities/*/api`; `keepUnusedDataFor` — дефолт; ошибки/лоадинг → Skeleton + Retry.  
-**Fallback:** при фейле `GET /products` используем `mocks/products.json`.  
-**Persist:** только `favorites`, `deleted`, `createdLocal` → `localStorage` (middleware), без redux-persist в MVP.  
+**RTK Query:** эндпоинты — только через `baseApi.injectEndpoints` в `entities/*/api`; `keepUnusedDataFor` — дефолт; ошибки/лоадинг → Skeleton + Retry.
+
+**API Configuration:**
+
+- Base API URL: `https://fakestoreapi.com` (configured in [src/shared/api/baseApi.ts](src/shared/api/baseApi.ts))
+- Fallback to mocks: Activate `mocks/products.json` fallback starting from Stage 2 (UI & Features)
+
+**Persist:** только `favorites`, `deleted`, `createdLocal` → `localStorage` (через утилиты в `shared/lib/persist`), без redux-persist в MVP.  
 **Пагинация/Поиск:** фронт-пагинация (slice массива), поиск с debounce на клиенте.  
 **Тест-DoD:** на сущность — 1–2 unit (мэпперы), 1 компонентный (ProductCard); на фичу — 1 интеграционный (toggle-favorite / search); 1 E2E для списка (скелетоны→данные→фильтр/поиск/пагинация).
 
