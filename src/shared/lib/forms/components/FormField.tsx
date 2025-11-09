@@ -1,26 +1,26 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from "react"
 
 interface FormErrorProps {
-  error?: string;
-  className?: string;
+  error?: string
+  className?: string
 }
 
 export function FormError({ error, className = "" }: FormErrorProps) {
-  if (!error) return null;
+  if (!error) return null
 
   return (
     <div className={`text-sm text-red-600 mt-1 ${className}`} role="alert">
       {error}
     </div>
-  );
+  )
 }
 
 interface FormFieldProps {
-  label: string;
-  error?: string;
-  required?: boolean;
-  children: ReactNode;
-  className?: string;
+  label: string
+  error?: string
+  required?: boolean
+  children: ReactNode
+  className?: string
 }
 
 export function FormField({
@@ -39,5 +39,5 @@ export function FormField({
       {children}
       <FormError error={error} />
     </div>
-  );
+  )
 }

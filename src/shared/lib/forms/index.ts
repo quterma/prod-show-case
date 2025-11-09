@@ -1,2 +1,2 @@
-export * from "./hooks";
-export * from "./components/FormField";
+export * from "./hooks"
+export { FormField, FormError } from "./components/FormField"

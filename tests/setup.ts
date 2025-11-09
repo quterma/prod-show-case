@@ -1,12 +1,12 @@
-import "@testing-library/jest-dom";
-import { cleanup } from "@testing-library/react";
-import React from "react";
-import { afterEach, beforeAll, vi } from "vitest";
+import "@testing-library/jest-dom"
+import { cleanup } from "@testing-library/react"
+import React from "react"
+import { afterEach, beforeAll, vi } from "vitest"
 
 // Cleanup after each test case (React Testing Library)
 afterEach(() => {
-  cleanup();
-});
+  cleanup()
+})
 
 // Setup browser mocks for Next.js components
 beforeAll(() => {
@@ -26,7 +26,7 @@ beforeAll(() => {
       forEach: vi.fn(),
     }),
     usePathname: () => "/",
-  }));
+  }))
 
   // Mock Next.js Link component
   vi.mock("next/link", () => ({
@@ -36,18 +36,18 @@ beforeAll(() => {
       href,
       ...props
     }: {
-      children: React.ReactNode;
-      href: string;
-      [key: string]: unknown;
+      children: React.ReactNode
+      href: string
+      [key: string]: unknown
     }) => React.createElement("a", { href, ...props }, children),
-  }));
+  }))
 
   // Mock Next.js Image component
   vi.mock("next/image", () => ({
     __esModule: true,
     default: (props: { alt: string; [key: string]: unknown }) =>
       React.createElement("img", { ...props, alt: props.alt }),
-  }));
+  }))
 
   // Mock window.matchMedia (for responsive components)
   Object.defineProperty(window, "matchMedia", {
@@ -62,19 +62,19 @@ beforeAll(() => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     })),
-  });
+  })
 
   // Mock ResizeObserver
   global.ResizeObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
-  }));
+  }))
 
   // Mock IntersectionObserver
   global.IntersectionObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
-  }));
-});
+  }))
+})

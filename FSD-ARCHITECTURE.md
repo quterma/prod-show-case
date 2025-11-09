@@ -9,23 +9,37 @@ src/
 ├── app/                    # App layer - app configuration and providers
 │   ├── layout.tsx         # Root layout with providers
 │   ├── page.tsx           # Root page
-│   └── StoreProvider.tsx  # Redux store provider
-│
-├── pages/                 # Pages layer (empty - using App Router)
+│   ├── StoreProvider.tsx  # Redux store provider
+│   └── globals.css        # Global styles
 │
 ├── widgets/               # Widgets layer - complete UI blocks
-│   └── products/          # Product-related widgets
+│   └── products/          # Product catalog widgets
+│       ├── ui/            # ProductsGrid, ProductsToolbar, ProductsSkeleton (TODO)
+│       └── index.ts
 │
 ├── features/              # Features layer - business functionality
-│   └── product/           # Product features (create, edit, filter, etc.)
+│   ├── toggle-favorite/   # Favorite products feature (TODO)
+│   ├── remove-product/    # Remove products feature (TODO)
+│   ├── search/            # Search with debounce (TODO)
+│   └── pagination/        # Front-end pagination (TODO)
 │
 ├── entities/              # Entities layer - business entities
 │   └── product/           # Product entity
+│       ├── model/         # types.ts, mappers.ts (TODO)
+│       ├── api/           # productsApi.ts - RTK Query (TODO)
+│       ├── lib/           # Product helpers (TODO)
+│       ├── ui/            # ProductCard.tsx (TODO)
+│       └── index.ts
 │
 └── shared/                # Shared layer - reusable infrastructure
-    ├── api/              # API configuration and base client
-    ├── lib/              # Utilities, store, validations, etc.
-    └── ui/               # Reusable UI components
+    ├── api/               # baseApi.ts - RTK Query base config
+    ├── lib/               # Store, hooks, forms, validations
+    │   ├── store.ts
+    │   ├── hooks.ts
+    │   ├── forms/         # FormField, FormError, useFormSubmission
+    │   ├── validations/   # Zod schemas
+    │   └── persist/       # ls.ts - localStorage helpers (TODO)
+    └── ui/                # Skeleton.tsx - basic UI atoms
 ```
 
 ## Layer Rules

@@ -1,12 +1,12 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-import prettierConfig from "eslint-config-prettier";
-import prettierPlugin from "eslint-plugin-prettier";
-import importPlugin from "eslint-plugin-import";
-import unusedImports from "eslint-plugin-unused-imports";
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
+import { defineConfig, globalIgnores } from "eslint/config"
+import nextVitals from "eslint-config-next/core-web-vitals"
+import nextTs from "eslint-config-next/typescript"
+import prettierConfig from "eslint-config-prettier"
+import prettierPlugin from "eslint-plugin-prettier"
+import importPlugin from "eslint-plugin-import"
+import unusedImports from "eslint-plugin-unused-imports"
+import tsParser from "@typescript-eslint/parser"
+import tsPlugin from "@typescript-eslint/eslint-plugin"
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -34,6 +34,10 @@ const eslintConfig = defineConfig([
     rules: {
       // Prettier integration
       "prettier/prettier": "error",
+
+      // Semicolons
+      semi: ["error", "never"],
+      "@typescript-eslint/semi": ["error", "never"],
 
       // Import/export rules
       "import/order": [
@@ -99,6 +103,6 @@ const eslintConfig = defineConfig([
     "*.config.js",
     "*.config.mjs",
   ]),
-]);
+])
 
-export default eslintConfig;
+export default eslintConfig
