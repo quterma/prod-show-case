@@ -62,7 +62,7 @@ pnpm playwright test e2e/specific-test.spec.ts
 
 ## Architecture
 
-This project follows **Feature-Sliced Design (FSD)** - code is organized by features/entities rather than technical layers. See [FSD-ARCHITECTURE.md](FSD-ARCHITECTURE.md) for full details.
+This project follows **Feature-Sliced Design (FSD)** - code is organized by features/entities rather than technical layers. See [docs/fsd-architecture.md](docs/fsd-architecture.md) for full details and [docs/fsd-readme.md](docs/fsd-readme.md) for quick reference.
 
 ### Layer Hierarchy (top to bottom)
 
