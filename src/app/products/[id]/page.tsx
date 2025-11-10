@@ -3,7 +3,11 @@
 import { useParams } from "next/navigation"
 
 import { useGetProductByIdQuery } from "@/entities/product"
-import { Skeleton, ErrorMessage, EmptyState, ProductCard } from "@/shared/ui"
+import {
+  ProductDetailCard,
+  ProductDetailCardSkeleton,
+} from "@/entities/product/ui"
+import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>()
@@ -12,7 +16,7 @@ export default function ProductDetailPage() {
   )
 
   if (isLoading) {
-    return <Skeleton lines={3} />
+    return <ProductDetailCardSkeleton />
   }
 
   if (error) {
@@ -31,7 +35,7 @@ export default function ProductDetailPage() {
   return (
     <div>
       <h1>Product Detail</h1>
-      <ProductCard product={data} />
+      <ProductDetailCard product={data} />
     </div>
   )
 }

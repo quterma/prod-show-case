@@ -3,16 +3,12 @@
 import { useRouter } from "next/navigation"
 
 import { useGetProductsQuery } from "@/entities/product"
-import { Skeleton, ErrorMessage, EmptyState } from "@/shared/ui"
-import { ProductsGrid } from "@/widgets/products/ui"
+import { ErrorMessage, EmptyState } from "@/shared/ui"
+import { ProductsWidget } from "@/widgets/products/ui"
 
 export default function ProductsPage() {
   const router = useRouter()
   const { data, isLoading, error, refetch } = useGetProductsQuery()
-
-  if (isLoading) {
-    return <Skeleton lines={5} />
-  }
 
   if (error) {
     return (
@@ -23,15 +19,16 @@ export default function ProductsPage() {
     )
   }
 
-  if (!data || data.length === 0) {
+  if (!isLoading && (!data || data.length === 0)) {
     return <EmptyState title="No products found" />
   }
 
   return (
     <div>
       <h1>Products List</h1>
-      <ProductsGrid
-        products={data}
+      <ProductsWidget
+        products={data ?? []}
+        isLoading={isLoading}
         onItemClick={(id) => router.push(`/products/${id}`)}
       />
     </div>

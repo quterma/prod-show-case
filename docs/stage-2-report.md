@@ -1,0 +1,146 @@
+# Stage 2A+2B — UI Components & Architecture Refinement
+
+**Project:** Product Showcase (FakeStore API)
+**Architecture:** Feature-Sliced Design (FSD)
+**Date:** November 2025
+
+---
+
+## ✅ Stage 2A+2B Summary
+
+### Implemented Components
+
+**Shared UI (shared/ui/)**
+
+- `Skeleton` — базовый компонент загрузки (`lines?: number = 3`)
+- `ErrorMessage` — отображение ошибки с кнопкой Retry (`message`, `onRetry?`)
+- `EmptyState` — пустое состояние (`title?`, `note?`)
+
+**Entities → Product UI (entities/product/ui/)**
+
+- `ProductCard` — карточка продукта для списка (title, price, category)
+- `ProductCardSkeleton` — скелетон для ProductCard
+- `ProductDetailCard` — детальная карточка продукта (с description, image, rating)
+- `ProductDetailCardSkeleton` — скелетон для ProductDetailCard
+
+**Widgets → Products UI (widgets/products/ui/)**
+
+- `ProductsGrid` — компонует список ProductCard, поддерживает `isLoading` для рендера скелетонов
+- `ProductsToolbar` — композиция features (поиск/фильтры, заглушка)
+- `ProductsWidget` — главный виджет (Toolbar + Grid), передаёт `isLoading` в Grid
+
+**Pages Integration**
+
+- `/products/page.tsx`
+  - Использует `ProductsWidget` (с `isLoading` prop), `ErrorMessage`, `EmptyState`
+  - Widget всегда рендерится, Grid показывает скелетоны при загрузке
+  - Навигация к `/products/[id]` через `onItemClick`
+- `/products/[id]/page.tsx`
+  - Использует `ProductDetailCard`, `ProductDetailCardSkeleton`, `ErrorMessage`, `EmptyState`
+  - Скелетон показывается на уровне страницы (весь ProductDetailCard заменяется на скелетон)
+
+### Architecture Improvements
+
+**Component Structure Standardization:**
+
+- Все компоненты следуют паттерну: `ComponentName/ComponentName.tsx` + `index.ts` (реэкспорт)
+- Тесты колоцированы: `ComponentName.test.tsx` рядом с компонентом
+- Убраны `index.tsx` файлы — только именованные компоненты
+
+**Naming Consistency:**
+
+- Каждый компонент имеет соответствующий скелетон:
+  - `ProductCard` ↔ `ProductCardSkeleton`
+  - `ProductDetailCard` ↔ `ProductDetailCardSkeleton`
+
+**FSD Compliance:**
+
+- `ProductCard`, `ProductDetailCard` — в `entities/product/ui` (отображают entity)
+- `ProductsGrid`, `ProductsWidget` — в `widgets/products/ui` (композиция entities)
+- `Skeleton`, `ErrorMessage`, `EmptyState` — в `shared/ui` (переиспользуемые UI-примитивы)
+
+### Quality Gates
+
+- ✅ ESLint / Prettier / TypeScript — OK
+- ✅ Все тесты пройдены (10/10)
+- ✅ FSD Public API соблюдён (импорты через index.ts)
+- ⚠️ 1 warning: `<img>` → Next.js `<Image>` (отложено для оптимизации)
+
+---
+
+## 💡 Architectural Notes
+
+**Loading State Architecture:**
+
+- **Принцип:** показываем скелетоны только для данных, которые грузятся
+- **Статические элементы** (Toolbar, Widget) — всегда рендерятся
+- **Динамические элементы** (Grid с продуктами) — показывают скелетоны при `isLoading=true`
+- **Паттерн:** компоненты принимают `isLoading` prop и рендерят скелетоны внутри себя
+- **Удалён:** `ProductsGridSkeleton` — Grid теперь сам рендерит массив `ProductCardSkeleton` при загрузке
+
+**Скелетоны:**
+
+- Базовый `Skeleton` (shared/ui) — универсальный примитив для текста
+- Специфичные скелетоны (entities) — имитируют структуру реальных компонентов
+- **Два паттерна:**
+  - **List (ProductsGrid):** Grid рендерит массив `ProductCardSkeleton` когда `isLoading=true`
+  - **Detail (ProductDetailCard):** Страница рендерит `ProductDetailCardSkeleton` вместо карточки
+
+**Виджет vs Компонент:**
+
+- `ProductsGrid` — UI-компонент (отображение списка + loading state)
+- `ProductsWidget` — композиция (Grid + Toolbar + логика в будущем)
+- ProductsWidget станет полноценным виджетом в Stage 2C (+ search/pagination)
+
+**Error Handling:**
+
+- `loading.tsx` / `error.tsx` не используются — RTK Query возвращает состояния через объекты
+- Контроль состояний реализован вручную в компонентах (правильный подход для RTK Query)
+- **Изолированные ошибки:** каждая страница обрабатывает свои ошибки через `ErrorMessage`
+- **Не ломает приложение:** ошибка на одной странице не влияет на остальное приложение
+- **Retry механизм:** `ErrorMessage` принимает `onRetry={() => refetch()}` для повторных запросов
+
+---
+
+## 🚀 Next Steps
+
+### Stage 2C → Interactive Features
+
+1. **Search Feature**
+   - `features/search/ui/SearchInput.tsx` + `useSearch` (debounce 300ms)
+   - Фильтрация по title/description на клиенте
+2. **Pagination Feature**
+   - Client-side: 10 items/page
+   - `features/pagination/ui/Pagination.tsx` + `usePagination`
+3. **Favorites (toggle-favorite)**
+   - Redux slice + localStorage persist
+   - `FavoriteButton` интеграция в ProductCard
+4. **Remove Product (soft-delete)**
+   - Redux slice + persist
+   - `RemoveButton` + фильтрация удалённых
+5. **Not-Found & ErrorBoundary**
+   - `app/not-found.tsx`, `app/products/[id]/not-found.tsx`
+   - Global ErrorBoundary в layout
+
+**DoD 2C:**
+
+- Все features рабочие
+- FSD границы не нарушены
+- Тесты зелёные
+
+---
+
+### Stage 3 → Forms & Polish
+
+1. Create/Edit Forms (React Hook Form + Zod)
+2. Optimistic UI / UX refinement
+3. Main page polish (адаптив, грид, иконки)
+4. Fallback strategy (network → cache → mocks)
+5. E2E tests
+
+---
+
+### Stage 4 → Production (optional)
+
+- Deploy (Vercel/GitHub Pages)
+- Themes, SEO, Performance optimization
