@@ -256,8 +256,8 @@ dispatch(hydrateFavorites(savedFavorites))
 - Keep components minimal and focused
 - Follow FSD public API rules strictly
 - Test each feature independently before integration
-- Use smoke test pages for rapid validation
 - Document any deviations from plan
+- **Legacy smoke routes removed:** `/test-api` and `/test-persist` from Stage 1 were removed at Stage 2A start to reduce navigation noise. Automated tests will provide validation going forward.
 
 ---
 

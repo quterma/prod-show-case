@@ -20,11 +20,7 @@ src/
 │   ├── layout.tsx                # Root layout with providers
 │   ├── page.tsx                  # Root page
 │   ├── StoreProvider.tsx         # Redux store provider
-│   ├── globals.css               # Global styles
-│   ├── test-api/                 # API smoke tests ✅
-│   │   └── page.tsx
-│   └── test-persist/             # Persist smoke tests ✅
-│       └── page.tsx
+│   └── globals.css               # Global styles
 │
 ├── widgets/                       # Widgets layer - complete UI blocks
 │   └── products/                 # Product catalog widgets
@@ -182,8 +178,8 @@ import { Product } from "@/entities/product"
   - getFromLS, setToLS, removeFromLS
 - **shared/api/baseApi** - Configured
   - Base URL: https://fakestoreapi.com
-- **Smoke tests** - Created
-  - /test-api, /test-persist
+- **Smoke tests** - ~~Created~~ Removed at Stage 2A start
+  - `/test-api`, `/test-persist` (legacy routes removed)
 
 ### Stage 2: UI & Features 🚧 Planned
 

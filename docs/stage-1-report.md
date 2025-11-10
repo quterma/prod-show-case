@@ -37,8 +37,8 @@ Stage 1 focused on establishing the foundation for the product showcase applicat
 
 ### 4. Testing & Validation
 
-- ✅ API smoke test: [/test-api](../src/app/test-api/page.tsx)
-- ✅ Persist smoke test: [/test-persist](../src/app/test-persist/page.tsx)
+- ✅ API smoke test: `/test-api` _(removed at Stage 2A start)_
+- ✅ Persist smoke test: `/test-persist` _(removed at Stage 2A start)_
 - ✅ All linting checks passing
 - ✅ Pre-commit hooks validated
 
@@ -52,8 +52,6 @@ Stage 1 focused on establishing the foundation for the product showcase applicat
 | Product Types | [src/entities/product/model/types.ts](../src/entities/product/model/types.ts)         | Domain models and DTOs                        |
 | Product API   | [src/entities/product/api/productsApi.ts](../src/entities/product/api/productsApi.ts) | RTK Query endpoints                           |
 | Persist Utils | [src/shared/lib/persist/](../src/shared/lib/persist/)                                 | localStorage helpers                          |
-| API Test      | [src/app/test-api/](../src/app/test-api/)                                             | RTK Query hooks validation                    |
-| Persist Test  | [src/app/test-persist/](../src/app/test-persist/)                                     | Storage utilities validation                  |
 
 ---
 
@@ -112,3 +110,9 @@ See [docs/stage-2-plan.md](stage-2-plan.md) for detailed plan.
 ---
 
 **Stage 1 Status:** ✅ Production-ready foundation established!
+
+---
+
+## 📝 Post-Scriptum
+
+**Smoke test routes removed:** `/test-api` and `/test-persist` were legacy interactive smoke tests created during Stage 1 for manual validation of RTK Query endpoints and localStorage utilities. These routes were removed at the start of Stage 2A to reduce navigation noise and improve codebase clarity. The functionality they validated remains fully operational and will be covered by automated unit and integration tests in Stage 2.

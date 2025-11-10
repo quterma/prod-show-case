@@ -54,7 +54,7 @@
 
 - Files Added: 11
 - Lines Added: ~750
-- Test Pages: 2 (test-api, test-persist)
+- Test Pages: 2 (test-api, test-persist) — _Removed at Stage 2A kickoff_
 - Documentation: 2 (api-contracts.md, stage-1-report.md)
 
 ### Artifacts
@@ -62,8 +62,10 @@
 - [docs/api-contracts.md](api-contracts.md) - API specification
 - [src/entities/product/](../src/entities/product/) - Product entity
 - [src/shared/lib/persist/](../src/shared/lib/persist/) - Storage utilities
-- [src/app/test-api/](../src/app/test-api/) - API smoke test
-- [src/app/test-persist/](../src/app/test-persist/) - Persist smoke test
+
+**Historical (Stage 1 only):**
+
+- `/test-api` and `/test-persist` smoke test routes — Removed at Stage 2A kickoff
 
 ---
 
