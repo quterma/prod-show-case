@@ -1,26 +1,39 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 import { useGetProductsQuery } from "@/entities/product"
+import { Skeleton, ErrorMessage, EmptyState } from "@/shared/ui"
+import { ProductsGrid } from "@/widgets/products/ui"
 
 export default function ProductsPage() {
-  const { data, isLoading, error } = useGetProductsQuery()
+  const router = useRouter()
+  const { data, isLoading, error, refetch } = useGetProductsQuery()
 
   if (isLoading) {
-    return <div>Loading products...</div>
+    return <Skeleton lines={5} />
   }
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>
+    return (
+      <ErrorMessage
+        message="Failed to load products"
+        onRetry={() => refetch()}
+      />
+    )
   }
 
   if (!data || data.length === 0) {
-    return <div>No products found</div>
+    return <EmptyState title="No products found" />
   }
 
   return (
     <div>
       <h1>Products List</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <ProductsGrid
+        products={data}
+        onItemClick={(id) => router.push(`/products/${id}`)}
+      />
     </div>
   )
 }
