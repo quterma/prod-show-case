@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🔧 TODO Execution Policy (Global Rule)
+
+Каждое TODO, переданное Claude Code, должно выполняться по следующему шаблону:
+
+1. Прежде чем выполнять действия, **проверить соответствие TODO проекту и архитектуре**.
+2. Если есть сомнения, **уточнить у автора (Тенгу)** или предложить корректировки.
+3. После подтверждения — **выполнить все шаги полностью и последовательно**.
+4. Все отклонения, предложения и уточнения фиксировать в отчёте (до 10 строк).
+
 ## Project Overview
 
 This is a Next.js 16 application using React 19, built with Feature-Sliced Design (FSD) architecture. The project uses TypeScript, Redux Toolkit with RTK Query for state management, React Hook Form with Zod for forms, and Tailwind CSS v4 for styling.
