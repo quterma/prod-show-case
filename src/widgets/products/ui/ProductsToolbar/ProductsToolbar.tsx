@@ -1,25 +1,43 @@
+import type {
+  ProductFiltersState,
+  ProductFiltersSetters,
+} from "@/features/filters"
 import { SearchInput } from "@/features/search"
+import { Button } from "@/shared/ui"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products) */
   categories?: string[]
-  /** Search query value */
-  searchQuery: string
-  /** Search query change handler */
-  onSearchChange: (value: string) => void
+  /** Current filter state */
+  filters: ProductFiltersState
+  /** Filter setters */
+  setters: ProductFiltersSetters
+  /** Whether any filters are currently active */
+  hasActiveFilters: boolean
 }
 
 export function ProductsToolbar({
   categories,
-  searchQuery,
-  onSearchChange,
+  filters,
+  setters,
+  hasActiveFilters,
 }: ProductsToolbarProps) {
   return (
-    <div>
-      <SearchInput value={searchQuery} onChange={onSearchChange} />
-      {/* TODO: Implement filters */}
+    <div className="flex items-center gap-4 mb-6">
+      <SearchInput value={filters.search} onChange={setters.setSearch} />
+      <Button
+        variant="outline"
+        size="md"
+        onClick={setters.resetFilters}
+        disabled={!hasActiveFilters}
+      >
+        Reset filters
+      </Button>
+      {/* TODO: Implement category/price/favorites filters */}
       {categories && categories.length > 0 && (
-        <p>Available categories: {categories.join(", ")}</p>
+        <p className="text-sm text-gray-600">
+          Available categories: {categories.join(", ")}
+        </p>
       )}
     </div>
   )

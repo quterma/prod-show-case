@@ -1,11 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
-
-import { useGetProductsQuery } from "@/entities/product"
-import type { Product } from "@/entities/product/model"
-import { useSearch } from "@/features/search"
-import { useDynamicCategories } from "@/shared/lib/categories"
+import { useGetProductsQuery, useDynamicCategories } from "@/entities/product"
+import { useProductFilters } from "@/features/filters"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 import { ProductsGrid } from "../ProductsGrid"
@@ -15,35 +11,17 @@ type ProductsWidgetProps = {
   onItemClick?: (id: number) => void
 }
 
-/**
- * Filter products by search query (case-insensitive)
- */
-function filterProductsBySearch(products: Product[], query: string): Product[] {
-  if (!query.trim()) return products
-
-  const lowerQuery = query.toLowerCase()
-
-  return products.filter(
-    (product) =>
-      product.title.toLowerCase().includes(lowerQuery) ||
-      product.description.toLowerCase().includes(lowerQuery)
-  )
-}
-
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   const { data, isLoading, error, refetch } = useGetProductsQuery()
-  const { searchQuery, debouncedQuery, setSearchQuery } = useSearch()
 
-  // Filter products by search query
-  const filteredProducts = useMemo(
-    () => filterProductsBySearch(data ?? [], debouncedQuery),
-    [data, debouncedQuery]
-  )
+  // Filter products with composite hook
+  const { filteredProducts, filters, setters, hasActiveFilters } =
+    useProductFilters(data)
 
   // Extract dynamic categories from products for filters (memoized)
   const categories = useDynamicCategories(data)
 
-  // Error state
+  // Error state - show only error message without toolbar
   if (error) {
     return (
       <ErrorMessage
@@ -53,28 +31,49 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     )
   }
 
-  // Empty state (no products loaded)
+  // Empty state (no products loaded from API - server returned empty array)
   if (!isLoading && (!data || data.length === 0)) {
-    return <EmptyState title="No products found" />
+    return (
+      <EmptyState
+        title="No products available"
+        note="The server returned an empty product list. Please try again later or contact support."
+      />
+    )
   }
 
-  // No results after filtering
-  if (!isLoading && filteredProducts.length === 0 && debouncedQuery) {
-    return <EmptyState title={`No products found for "${debouncedQuery}"`} />
-  }
+  // Determine what to show in the grid area
+  const hasResults = filteredProducts.length > 0
 
   return (
     <div>
       <ProductsToolbar
         categories={categories}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        filters={filters}
+        setters={setters}
+        hasActiveFilters={hasActiveFilters}
       />
-      <ProductsGrid
-        products={filteredProducts}
-        isLoading={isLoading}
-        onItemClick={onItemClick}
-      />
+      {isLoading ? (
+        <ProductsGrid
+          products={[]}
+          isLoading={true}
+          onItemClick={onItemClick}
+        />
+      ) : hasResults ? (
+        <ProductsGrid
+          products={filteredProducts}
+          isLoading={false}
+          onItemClick={onItemClick}
+        />
+      ) : (
+        <EmptyState
+          title="No products match your filters"
+          note={
+            filters.search.trim()
+              ? `Try adjusting your search query or reset filters.`
+              : "Try adjusting your filters or reset them to see all products."
+          }
+        />
+      )}
     </div>
   )
 }

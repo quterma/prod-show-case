@@ -97,15 +97,15 @@
 
 ## Stage 2C: Interactive Features 🚧
 
-**Status:** In Progress
-**Plan:** [stage-2-plan.md](stage-2-plan.md)
-**Start Date:** TBD
+**Status:** In Progress (Step 2 Complete)
+**Report:** [stage-2-report.md](stage-2-report.md#stage-2c--interactive-features-in-progress)
+**Start Date:** November 11, 2025
 
 ### Roadmap (Steps 0–9)
 
 0. [x] Docs update (constants, architecture)
 1. [ ] Dynamic categories (derive from API data)
-2. [ ] Search (debounce 300ms)
+2. [x] **Search (debounce 300ms)** ✅
 3. [ ] Filters v1 (category, price, rating)
 4. [ ] Pagination (PAGE_SIZE=10, synced with filters)
 5. [ ] Favorites (Redux + localStorage + toggle view)
@@ -114,11 +114,19 @@
 8. [ ] not-found.tsx + ID validation
 9. [ ] ErrorBoundary + guards + tests
 
-### Target Artifacts
+### Completed Artifacts (Step 2)
 
-- `shared/lib/categories/getDynamicCategories.ts`
-- `features/search/` - Search with debounce (DEBOUNCE_MS=300)
-- `features/filters/` - Category, price, rating filters
+- ✅ `features/search/ui/SearchInput` - Debounced search input (300ms)
+- ✅ `features/filters/model/useProductFilters` - Composite filters hook
+- ✅ `features/filters/lib/filterProducts` - Filter helpers (moved from shared)
+- ✅ `entities/product/lib/` - Categories helpers (moved from shared)
+- ✅ `shared/lib/debounce/useDebounce` - Generic debounce hook
+- ✅ `shared/ui/Button` - Universal button component (4 variants)
+- ✅ Smart Widgets pattern - Data-fetching moved to widgets
+
+### Remaining Artifacts
+
+- `features/filters/` - Category, price, rating filters UI
 - `features/pagination/` - Client-side pagination (PAGE_SIZE=10)
 - `features/toggle-favorite/` - Favorites management + view toggle
 - `features/remove-product/` - Soft delete + reset local data
@@ -159,10 +167,10 @@
 - Stage 0: ✅ 100%
 - Stage 1: ✅ 100%
 - Stage 2A+2B: ✅ 100%
-- Stage 2C: 🚧 ~10% (Step 0 complete)
+- Stage 2C: 🚧 ~20% (Step 2 complete)
 - Stage 3: 🔮 0%
 
-**Total Progress:** ~50% (Stage 2A+2B complete, 2C in progress)
+**Total Progress:** ~55% (Stage 2A+2B complete, 2C step 2/9 done)
 
 ---
 
@@ -210,5 +218,5 @@
 
 ---
 
-**Last Updated:** November 9, 2025
-**Next Milestone:** Stage 2 kickoff
+**Last Updated:** November 11, 2025
+**Next Milestone:** Stage 2C Step 3 (Filters v1)

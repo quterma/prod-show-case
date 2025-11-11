@@ -102,9 +102,49 @@
 
 ---
 
+## ✅ Stage 2C — Interactive Features (In Progress)
+
+### Step 2: Search Feature ✅
+
+**Implemented:**
+
+- ✅ Debounced search with `useDebounce` hook (300ms delay)
+- ✅ `SearchInput` component in `features/search/ui`
+- ✅ `useProductFilters` composite hook in `features/filters/model`
+- ✅ Smart Widgets pattern: data-fetching moved from pages to widgets
+- ✅ Filter functions: `filterBySearch`, `filterByCategory`, `filterByPrice`, `filterByFavorites`
+- ✅ Reset filters button with `hasActiveFilters` flag
+- ✅ Button component in `shared/ui` (primary, secondary, outline, ghost variants)
+- ✅ EmptyState improvements: different messages for API empty vs filtered empty
+
+**Architecture:**
+
+- Widgets now handle RTK Query hooks (not pages)
+- Composite filters hook with memoization for performance
+- Filter helpers in `features/filters/lib` (moved from shared)
+- Categories helpers in `entities/product/lib` (moved from shared)
+
+**Files:**
+
+- [src/features/search/ui/SearchInput](src/features/search/ui/SearchInput)
+- [src/features/filters/model/useProductFilters.ts](src/features/filters/model/useProductFilters.ts)
+- [src/features/filters/lib/filterProducts.ts](src/features/filters/lib/filterProducts.ts)
+- [src/shared/lib/debounce/useDebounce.ts](src/shared/lib/debounce/useDebounce.ts)
+- [src/shared/ui/Button](src/shared/ui/Button)
+- [src/entities/product/lib](src/entities/product/lib)
+
+**FSD Refactoring:**
+
+- ✅ Moved `shared/lib/filters` → `features/filters/lib` (violated FSD: shared imported entities)
+- ✅ Moved `shared/lib/categories` → `entities/product/lib` (product-specific logic)
+- ✅ All imports updated, old directories removed
+- ✅ Tests: 45/45 passed
+
+---
+
 ## 🚀 Next Steps
 
-### Stage 2C → Interactive Features
+### Stage 2C → Interactive Features (Remaining)
 
 **Roadmap (Steps 0–9):**
 

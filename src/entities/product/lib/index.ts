@@ -1,1 +1,2 @@
-// TODO: Export product-specific helper functions
+export * from "./getDynamicCategories"
+export * from "./useDynamicCategories"
