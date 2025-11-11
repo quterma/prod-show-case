@@ -119,13 +119,21 @@ search/
 pagination/
 widgets/
 products/
-ui/ Grid, Toolbar(поиск/фильтры), Skeletons
+ui/ ProductsWidget (smart, data-fetching), Grid, Toolbar
+product-detail/
+ui/ ProductDetailWidget (smart, data-fetching)
 shared/
 api/ baseApi.ts (только базовая RTK Query конфигурация)
 lib/ store.ts, hooks.ts, validations/, forms/
 ui/ базовые атомы, только если реально переиспользуются
 
-**RTK Query:** эндпоинты — только через `baseApi.injectEndpoints` в `entities/*/api`; `keepUnusedDataFor` — дефолт; ошибки/лоадинг → Skeleton + Retry.
+**RTK Query:** эндпоинты — только через `baseApi.injectEndpoints` в `entities/*/api`; хуки вызываются в виджетах (widgets), не в page-компонентах; ошибки/лоадинг → Skeleton + Retry.
+
+**Widget Responsibilities (Smart Widgets Pattern):**
+
+- **Widgets:** Self-contained, call RTK Query hooks, handle loading/error/empty states, compose features
+- **Pages (app/):** Thin routing layer, only widget composition + navigation callbacks
+- **No prop drilling:** Pages don't pass `data`/`isLoading` to widgets
 
 **API Configuration:**
 

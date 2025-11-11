@@ -23,11 +23,16 @@ src/
 │   └── globals.css               # Global styles
 │
 ├── widgets/                       # Widgets layer - complete UI blocks
-│   └── products/                 # Product catalog widgets
-│       ├── ui/                   # Grid, Toolbar, Widget
-│       │   ├── ProductsGrid/          # ✅ Stage 2A+2B
-│       │   ├── ProductsToolbar/       # ✅ Stage 2A+2B (placeholder)
-│       │   ├── ProductsWidget/        # ✅ Stage 2A+2B
+│   ├── products/                 # Product catalog widgets
+│   │   ├── ui/                   # Grid, Toolbar, Widget
+│   │   │   ├── ProductsGrid/          # ✅ Presentational component
+│   │   │   ├── ProductsToolbar/       # ✅ Placeholder for filters/search
+│   │   │   ├── ProductsWidget/        # ✅ Smart widget (data-fetching)
+│   │   │   └── index.ts
+│   │   └── index.ts
+│   └── product-detail/           # Product detail widget
+│       ├── ui/
+│       │   ├── ProductDetailWidget/   # ✅ Smart widget (data-fetching)
 │       │   └── index.ts
 │       └── index.ts
 │
@@ -196,9 +201,13 @@ import { Product } from "@/entities/product"
 
 - **shared/ui** - Skeleton, ErrorMessage, EmptyState
 - **entities/product/ui** - ProductCard, ProductDetailCard + skeletons
-- **widgets/products** - ProductsGrid, ProductsToolbar, ProductsWidget
-- **Pages integration** - /products, /products/[id]
-- **Architecture** - Named files, colocated tests, FSD compliance
+- **widgets/products** - ProductsWidget (smart), ProductsGrid, ProductsToolbar
+- **widgets/product-detail** - ProductDetailWidget (smart)
+- **Pages integration** - /products, /products/[id] (thin routing layer)
+- **Architecture** - Smart widgets pattern, data-fetching in widgets
+- **Responsibilities:**
+  - **Widgets:** Self-contained, data-fetching, state handling (loading/error/empty)
+  - **Pages:** Thin routing layer, only composition + navigation callbacks
 
 ### Stage 2C: Interactive Features 🚧 In Progress
 

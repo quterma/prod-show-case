@@ -4,14 +4,14 @@ import { describe, it, expect } from "vitest"
 
 import { makeStore } from "@/shared/lib/store"
 
-import { ProductsWidget } from "./ProductsWidget"
+import { ProductDetailWidget } from "./ProductDetailWidget"
 
-describe("ProductsWidget", () => {
+describe("ProductDetailWidget", () => {
   it("renders without crashing", () => {
     const store = makeStore()
     const { container } = render(
       <Provider store={store}>
-        <ProductsWidget />
+        <ProductDetailWidget productId={1} />
       </Provider>
     )
 
