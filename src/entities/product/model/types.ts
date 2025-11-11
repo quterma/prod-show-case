@@ -9,16 +9,6 @@ export type ProductRating = {
 }
 
 /**
- * Product category enum
- * Matches FakeStore API categories
- */
-export type ProductCategory =
-  | "men's clothing"
-  | "women's clothing"
-  | "jewelery"
-  | "electronics"
-
-/**
  * Product entity (domain model)
  * Represents a product in the application
  */
@@ -31,8 +21,8 @@ export type Product = {
   price: number
   /** Product description */
   description: string
-  /** Product category */
-  category: ProductCategory
+  /** Product category (dynamic, derived from API data) */
+  category: string
   /** Product image URL */
   image: string
   /** Product rating information */
@@ -74,12 +64,14 @@ export type ProductsListDTO = ProductDTO[]
 export type ProductFilters = {
   /** Search query for title/description */
   search?: string
-  /** Filter by category */
-  category?: ProductCategory
+  /** Filter by categories (multi-select) */
+  categories?: string[]
   /** Minimum price */
   minPrice?: number
   /** Maximum price */
   maxPrice?: number
+  /** Minimum rating threshold */
+  minRating?: number
 }
 
 /**
