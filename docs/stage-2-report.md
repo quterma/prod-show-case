@@ -106,37 +106,96 @@
 
 ### Stage 2C → Interactive Features
 
-1. **Search Feature**
-   - `features/search/ui/SearchInput.tsx` + `useSearch` (debounce 300ms)
-   - Фильтрация по title/description на клиенте
-2. **Pagination Feature**
-   - Client-side: 10 items/page
+**Roadmap (Steps 0–9):**
+
+0. **Docs Update** (this step)
+   - Align all documentation with final Stage 2C roadmap
+   - Update constants and architecture notes
+
+1. **Dynamic Categories**
+   - Derive categories from `product.category` field (no hardcoded enum)
+   - Build Set → Array from API data
+   - Use in filters and UI
+
+2. **Search Feature**
+   - `features/search/ui/SearchInput.tsx` + `useSearch`
+   - **Debounce:** `DEBOUNCE_MS = 300ms`
+   - Filter by title/description on client
+
+3. **Filters v1**
+   - **Category filter:** Multi-select checkboxes (dynamic categories from data)
+   - **Price range:** Min–max sliders (dynamic from data: `Math.min(...prices)`, `Math.max(...prices)`)
+   - **Rating threshold:** Dropdown (≥ 5/4/3/2/1 stars)
+   - Compose in `ProductsToolbar`
+
+4. **Pagination**
+   - Client-side pagination
+   - **Page size:** `PAGE_SIZE = 10`
+   - Synced with search/filters (reset to page 1 on filter change)
    - `features/pagination/ui/Pagination.tsx` + `usePagination`
-3. **Favorites (toggle-favorite)**
+
+5. **Favorites (toggle-favorite)**
    - Redux slice + localStorage persist
+   - LocalStorage key: `favorites` (array of product IDs)
    - `FavoriteButton` интеграция в ProductCard
-4. **Remove Product (soft-delete)**
-   - Redux slice + persist
-   - `RemoveButton` + фильтрация удалённых
-5. **Not-Found & ErrorBoundary**
-   - `app/not-found.tsx`, `app/products/[id]/not-found.tsx`
-   - Global ErrorBoundary в layout
+   - Toggle view: "All Products" / "Favorites Only"
+
+6. **Remove + Reset Local Data**
+   - **Remove:** Soft-delete via localStorage (key: `removed`)
+   - Filter out removed products from display
+   - **Reset button:** Clear all LS keys (`favorites`, `removed`, optional `formDrafts`), reinitialize store, refetch `/products`
+
+7. **Create/Edit Forms (RHF + Zod)**
+   - React Hook Form + Zod validation
+   - **Fields:** title, price, description, category, image URL, rating
+   - Create: `/products/create`
+   - Edit: `/products/[id]/edit`
+   - Store locally (no server POST/PUT for MVP)
+
+8. **not-found.tsx + ID Validation**
+   - `app/not-found.tsx` (global 404)
+   - `app/products/[id]/not-found.tsx` (product-specific)
+   - Validate product ID format and existence
+   - Handle invalid IDs gracefully
+
+9. **Global ErrorBoundary + Guards + Tests**
+   - Global ErrorBoundary in `app/layout.tsx`
+   - Page-level guards for edge cases
+   - Smoke tests for all features
+   - Integration tests (search + filters + pagination flow)
+
+**Constants:**
+
+- `DEBOUNCE_MS = 300`
+- `PAGE_SIZE = 10`
+- LocalStorage keys: `favorites`, `removed`, optional `formDrafts`
 
 **DoD 2C:**
 
-- Все features рабочие
+- Все features рабочие (steps 1–9)
+- Dynamic categories работают корректно
+- Filters синхронизированы с pagination
+- Reset local data полностью очищает состояние
 - FSD границы не нарушены
-- Тесты зелёные
+- Все тесты зелёные (smoke + integration)
 
 ---
 
-### Stage 3 → Forms & Polish
+### Stage 3 → Polish & Production Prep
 
-1. Create/Edit Forms (React Hook Form + Zod)
-2. Optimistic UI / UX refinement
-3. Main page polish (адаптив, грид, иконки)
-4. Fallback strategy (network → cache → mocks)
-5. E2E tests
+1. **UX Refinement**
+   - Optimistic UI updates
+   - Animations and transitions
+   - Responsive design (адаптив, грид, иконки)
+2. **Fallback Strategy**
+   - Network → cache → mocks flow
+   - Offline support
+3. **E2E Tests**
+   - Full user flows with Playwright
+4. **Performance Optimization**
+   - Code splitting
+   - Image optimization (next/image)
+   - Bundle analysis
 
 ---
 

@@ -24,29 +24,33 @@ src/
 │
 ├── widgets/                       # Widgets layer - complete UI blocks
 │   └── products/                 # Product catalog widgets
-│       ├── ui/                   # Grid, Toolbar, Skeletons
-│       │   ├── ProductsGrid.tsx       # 🚧 Stage 2
-│       │   ├── ProductsToolbar.tsx    # 🚧 Stage 2
-│       │   ├── ProductsSkeleton.tsx   # 🚧 Stage 2
+│       ├── ui/                   # Grid, Toolbar, Widget
+│       │   ├── ProductsGrid/          # ✅ Stage 2A+2B
+│       │   ├── ProductsToolbar/       # ✅ Stage 2A+2B (placeholder)
+│       │   ├── ProductsWidget/        # ✅ Stage 2A+2B
 │       │   └── index.ts
 │       └── index.ts
 │
 ├── features/                      # Features layer - business functionality
 │   ├── toggle-favorite/          # Favorite products ✅ Scaffolded
-│   │   ├── ui/                   # FavoriteButton.tsx      🚧 Stage 2
-│   │   ├── model/                # favoritesSlice.ts       🚧 Stage 2
+│   │   ├── ui/                   # FavoriteButton.tsx      🚧 Stage 2C (Step 5)
+│   │   ├── model/                # favoritesSlice.ts       🚧 Stage 2C (Step 5)
 │   │   └── index.ts
 │   ├── remove-product/           # Remove products ✅ Scaffolded
-│   │   ├── ui/                   # RemoveButton.tsx        🚧 Stage 2
-│   │   ├── model/                # deletedSlice.ts         🚧 Stage 2
+│   │   ├── ui/                   # RemoveButton.tsx        🚧 Stage 2C (Step 6)
+│   │   ├── model/                # removedSlice.ts         🚧 Stage 2C (Step 6)
 │   │   └── index.ts
 │   ├── search/                   # Search with debounce ✅ Scaffolded
-│   │   ├── ui/                   # SearchInput.tsx         🚧 Stage 2
-│   │   ├── model/                # useSearch.ts            🚧 Stage 2
+│   │   ├── ui/                   # SearchInput.tsx         🚧 Stage 2C (Step 2)
+│   │   ├── model/                # useSearch.ts            🚧 Stage 2C (Step 2)
 │   │   └── index.ts
-│   └── pagination/               # Client-side pagination ✅ Scaffolded
-│       ├── ui/                   # Pagination.tsx          🚧 Stage 2
-│       ├── model/                # usePagination.ts        🚧 Stage 2
+│   ├── pagination/               # Client-side pagination ✅ Scaffolded
+│   │   ├── ui/                   # Pagination.tsx          🚧 Stage 2C (Step 4)
+│   │   ├── model/                # usePagination.ts        🚧 Stage 2C (Step 4)
+│   │   └── index.ts
+│   └── filters/                  # Product filters (category, price, rating)
+│       ├── ui/                   # Filter components       🚧 Stage 2C (Step 3)
+│       ├── model/                # useFilters.ts           🚧 Stage 2C (Step 3)
 │       └── index.ts
 │
 ├── entities/                      # Entities layer - business entities
@@ -60,8 +64,11 @@ src/
 │       │   └── index.ts
 │       ├── lib/                  # Product helpers (empty)
 │       │   └── index.ts
-│       ├── ui/                   # Display components
-│       │   ├── ProductCard.tsx  # 🚧 Stage 2
+│       ├── ui/                   # Display components ✅ Stage 2A+2B
+│       │   ├── ProductCard/          # Product card for list view
+│       │   ├── ProductCardSkeleton/  # Loading skeleton for card
+│       │   ├── ProductDetailCard/    # Detailed product card
+│       │   ├── ProductDetailCardSkeleton/ # Loading skeleton for detail
 │       │   └── index.ts
 │       └── index.ts              # Public API ✅
 │
@@ -82,9 +89,13 @@ src/
     │   ├── persist/             # localStorage utilities ✅
     │   │   ├── ls.ts            # getFromLS, setToLS, removeFromLS
     │   │   └── index.ts
+    │   ├── categories/          # Category utilities
+    │   │   └── getDynamicCategories.ts  # 🚧 Stage 2C (Step 1)
     │   └── index.ts
-    └── ui/                       # Basic UI atoms ✅
-        ├── Skeleton.tsx         # Loading skeleton
+    └── ui/                       # Basic UI atoms ✅ Stage 2A+2B
+        ├── Skeleton/            # Generic loading skeleton
+        ├── ErrorMessage/        # Error display with retry
+        ├── EmptyState/          # Empty data state
         └── index.ts
 ```
 
@@ -181,19 +192,34 @@ import { Product } from "@/entities/product"
 - **Smoke tests** - ~~Created~~ Removed at Stage 2A start
   - `/test-api`, `/test-persist` (legacy routes removed)
 
-### Stage 2: UI & Features 🚧 Planned
+### Stage 2A+2B: UI Components & Architecture ✅ Complete
 
-- Mock fallback implementation
-- entities/product/ui/ProductCard
-- features/search, pagination, toggle-favorite, remove-product
-- widgets/products (Grid, Toolbar, Skeleton)
-- Main product showcase page
+- **shared/ui** - Skeleton, ErrorMessage, EmptyState
+- **entities/product/ui** - ProductCard, ProductDetailCard + skeletons
+- **widgets/products** - ProductsGrid, ProductsToolbar, ProductsWidget
+- **Pages integration** - /products, /products/[id]
+- **Architecture** - Named files, colocated tests, FSD compliance
 
-### Stage 3: Polish & Forms 🔮 Future
+### Stage 2C: Interactive Features 🚧 In Progress
 
-- Product create/edit forms
-- Optimistic updates
-- Advanced features
+**Roadmap (Steps 0–9):** 0. Docs update (constants, architecture)
+
+1. Dynamic categories (derive from API data)
+2. Search (debounce 300ms)
+3. Filters v1 (category, price, rating)
+4. Pagination (PAGE_SIZE=10, synced with filters)
+5. Favorites (Redux + localStorage + toggle view)
+6. Remove + Reset local data (soft-delete + LS clear)
+7. Create/Edit Forms (RHF + Zod)
+8. not-found.tsx + ID validation
+9. ErrorBoundary + guards + tests
+
+### Stage 3: Polish & Production Prep 🔮 Future
+
+- UX refinement (optimistic UI, animations, responsive)
+- Fallback strategy (network → cache → mocks)
+- E2E tests (Playwright)
+- Performance optimization (code splitting, next/image)
 
 ---
 

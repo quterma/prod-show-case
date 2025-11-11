@@ -24,78 +24,103 @@ Stage 2 focuses on building the user interface and interactive features for the 
 
 ## 📋 Tasks
 
-### 1. Mock Fallback System
+### Stage 2A+2B ✅ (Completed)
 
-- [ ] Create `mocks/products.json` with sample data
-- [ ] Implement API error handler with mock fallback
-- [ ] Add fallback indicator UI
-- [ ] Test API failure scenarios
+- [x] Shared UI components (Skeleton, ErrorMessage, EmptyState)
+- [x] Product entity UI (ProductCard, ProductDetailCard + skeletons)
+- [x] Products widget (ProductsGrid, ProductsToolbar, ProductsWidget)
+- [x] Pages integration (/products, /products/[id])
+- [x] Architecture standardization (named files, colocated tests)
+- [x] FSD compliance verification
 
-### 2. Shared UI Components (`shared/ui`)
+### Stage 2C (Steps 0–9)
 
-- [ ] Skeleton component for loading states
-- [ ] Button component (if needed)
-- [ ] Input component for search
-- [ ] Other reusable atoms
+#### Step 0: Docs Update
 
-### 3. Product Entity UI (`entities/product/ui`)
+- [ ] Update all Stage 2C documentation with final roadmap
+- [ ] Define constants (DEBOUNCE_MS, PAGE_SIZE)
+- [ ] Clarify LocalStorage keys and reset behavior
 
-- [ ] ProductCard component (display-only, no favorites logic)
-  - Product image
-  - Title, price, category
-  - Rating display
-  - Link to details (future)
-- [ ] Unit test for ProductCard
+#### Step 1: Dynamic Categories
 
-### 4. Features Layer
+- [ ] Create utility to extract unique categories from products
+- [ ] `shared/lib/categories/getDynamicCategories.ts`
+- [ ] Return Set → Array for use in filters
+- [ ] Unit test for category extraction
 
-#### 4.1. Search Feature (`features/search`)
+#### Step 2: Search Feature
 
-- [ ] Search input with debounce (~300ms)
-- [ ] Search logic (filter by title/description)
+- [ ] `features/search/ui/SearchInput.tsx`
+- [ ] `features/search/model/useSearch.ts` with debounce
+- [ ] **DEBOUNCE_MS = 300ms**
+- [ ] Filter by title/description (case-insensitive)
 - [ ] Integration test
 
-#### 4.2. Pagination Feature (`features/pagination`)
+#### Step 3: Filters v1
 
-- [ ] Client-side pagination component
-- [ ] Page size selector
-- [ ] Page navigation
+- [ ] **Category filter:** Multi-select checkboxes (dynamic categories)
+- [ ] **Price range:** Min–max sliders (dynamic from data)
+- [ ] **Rating threshold:** Dropdown (≥ 5/4/3/2/1)
+- [ ] `features/filters/ui/CategoryFilter.tsx`
+- [ ] `features/filters/ui/PriceRangeFilter.tsx`
+- [ ] `features/filters/ui/RatingFilter.tsx`
+- [ ] `features/filters/model/useFilters.ts`
+- [ ] Compose in ProductsToolbar
 - [ ] Integration test
 
-#### 4.3. Toggle Favorite Feature (`features/toggle-favorite`)
+#### Step 4: Pagination
 
-- [ ] Favorite button component
-- [ ] Redux slice for favorites state
-- [ ] localStorage persistence integration
+- [ ] `features/pagination/ui/Pagination.tsx`
+- [ ] `features/pagination/model/usePagination.ts`
+- [ ] **PAGE_SIZE = 10**
+- [ ] Reset to page 1 on filter/search change
+- [ ] Sync with search + filters
 - [ ] Integration test
 
-#### 4.4. Remove Product Feature (`features/remove-product`)
+#### Step 5: Favorites (toggle-favorite)
 
-- [ ] Remove button component
-- [ ] Redux slice for deleted state
-- [ ] localStorage persistence integration
+- [ ] `features/toggle-favorite/ui/FavoriteButton.tsx`
+- [ ] `features/toggle-favorite/model/favoritesSlice.ts`
+- [ ] LocalStorage key: `favorites` (array of product IDs)
+- [ ] Integrate FavoriteButton into ProductCard
+- [ ] Toggle view: "All Products" / "Favorites Only"
 - [ ] Integration test
 
-### 5. Products Widget (`widgets/products`)
+#### Step 6: Remove + Reset Local Data
 
-- [ ] ProductsGrid - grid layout with ProductCards
-- [ ] ProductsToolbar - search + filters
-- [ ] ProductsSkeleton - loading state
-- [ ] Compose features + entity UI
+- [ ] `features/remove-product/ui/RemoveButton.tsx`
+- [ ] `features/remove-product/model/removedSlice.ts`
+- [ ] LocalStorage key: `removed`
+- [ ] Filter removed products from display
+- [ ] **Reset button:** Clear all LS (`favorites`, `removed`, `formDrafts`)
+- [ ] Reset reinitializes store and refetches `/products`
+- [ ] Integration test
 
-### 6. Main Product Page
+#### Step 7: Create/Edit Forms (RHF + Zod)
 
-- [ ] Create `/products` route (or update `/`)
-- [ ] Integrate ProductsWidget
-- [ ] Handle loading/error states
-- [ ] E2E test (skeleton → data → search → pagination)
+- [ ] `app/products/create/page.tsx`
+- [ ] `app/products/[id]/edit/page.tsx`
+- [ ] `features/product-form/ui/ProductForm.tsx`
+- [ ] Zod schema: title, price, description, category, image, rating
+- [ ] React Hook Form integration
+- [ ] Store locally (no server POST/PUT)
+- [ ] Form validation tests
 
-### 7. ProductState Integration
+#### Step 8: not-found.tsx + ID Validation
 
-- [ ] Create Redux slice for product state
-- [ ] Middleware for localStorage sync
-- [ ] Hydrate state on app init
-- [ ] Unit tests for state logic
+- [ ] `app/not-found.tsx` (global 404)
+- [ ] `app/products/[id]/not-found.tsx` (product-specific)
+- [ ] Validate product ID format
+- [ ] Handle non-existent product IDs
+- [ ] Graceful error handling
+
+#### Step 9: Global ErrorBoundary + Guards + Tests
+
+- [ ] Global ErrorBoundary in `app/layout.tsx`
+- [ ] Page-level guards for edge cases
+- [ ] Smoke tests for all features
+- [ ] Integration tests (search + filters + pagination flow)
+- [ ] E2E test (full user flow)
 
 ---
 
@@ -150,10 +175,110 @@ src/
 
 ## ⚙️ Technical Requirements
 
-### Mock Fallback
+### Constants
 
 ```typescript
-// When API fails, return data from mocks/products.json
+// Search debounce delay
+export const DEBOUNCE_MS = 300
+
+// Pagination page size
+export const PAGE_SIZE = 10
+
+// LocalStorage keys
+export const LS_KEYS = {
+  FAVORITES: "favorites", // number[]
+  REMOVED: "removed", // number[]
+  FORM_DRAFTS: "formDrafts", // optional
+} as const
+```
+
+### Dynamic Categories
+
+```typescript
+// Extract unique categories from products
+export function getDynamicCategories(products: Product[]): string[] {
+  const categorySet = new Set(products.map((p) => p.category))
+  return Array.from(categorySet).sort()
+}
+```
+
+### Search with Debounce
+
+```typescript
+// DEBOUNCE_MS = 300
+const debouncedSearch = useDebouncedValue(searchQuery, DEBOUNCE_MS)
+const filtered = products.filter(
+  (p) =>
+    p.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    p.description.toLowerCase().includes(debouncedSearch.toLowerCase())
+)
+```
+
+### Filters v1
+
+```typescript
+// Category: multi-select
+const selectedCategories: string[] = ["electronics", "jewelery"]
+const categoryFiltered = products.filter((p) =>
+  selectedCategories.includes(p.category)
+)
+
+// Price range: dynamic min/max from data
+const prices = products.map((p) => p.price)
+const minPrice = Math.min(...prices)
+const maxPrice = Math.max(...prices)
+const priceFiltered = products.filter(
+  (p) => p.price >= selectedMin && p.price <= selectedMax
+)
+
+// Rating threshold: ≥ N
+const ratingFiltered = products.filter((p) => p.rating.rate >= minRating)
+```
+
+### Client-side Pagination
+
+```typescript
+// PAGE_SIZE = 10
+const currentPage = 1
+const paginatedProducts = products.slice(
+  (currentPage - 1) * PAGE_SIZE,
+  currentPage * PAGE_SIZE
+)
+
+// Reset to page 1 on filter/search change
+useEffect(() => {
+  setCurrentPage(1)
+}, [searchQuery, selectedCategories, priceRange, minRating])
+```
+
+### Persistence Integration
+
+```typescript
+// On favorites toggle
+dispatch(toggleFavorite(productId))
+// Middleware syncs to localStorage via setToLS(LS_KEYS.FAVORITES, ids)
+
+// On app init
+const savedFavorites = getFromLS<number[]>(LS_KEYS.FAVORITES) ?? []
+dispatch(hydrateFavorites(savedFavorites))
+
+// Reset local data
+export function resetLocalData() {
+  removeFromLS(LS_KEYS.FAVORITES)
+  removeFromLS(LS_KEYS.REMOVED)
+  removeFromLS(LS_KEYS.FORM_DRAFTS)
+  // Reinitialize store
+  dispatch(resetFavorites())
+  dispatch(resetRemoved())
+  // Refetch products
+  dispatch(productsApi.util.invalidateTags(["Product"]))
+}
+```
+
+### Mock Fallback (Stage 3)
+
+```typescript
+// Deferred to Stage 3 - not in Stage 2C scope
 transformErrorResponse: (error) => {
   if (error.status === "FETCH_ERROR") {
     return getMockProducts()
@@ -162,61 +287,59 @@ transformErrorResponse: (error) => {
 }
 ```
 
-### Search with Debounce
-
-```typescript
-const debouncedSearch = useDebouncedValue(searchQuery, 300)
-const filtered = products.filter(
-  (p) =>
-    p.title.includes(debouncedSearch) || p.description.includes(debouncedSearch)
-)
-```
-
-### Client-side Pagination
-
-```typescript
-const pageSize = 10
-const currentPage = 1
-const paginatedProducts = products.slice(
-  (currentPage - 1) * pageSize,
-  currentPage * pageSize
-)
-```
-
-### Persistence Integration
-
-```typescript
-// On favorites toggle
-dispatch(toggleFavorite(productId))
-// Middleware syncs to localStorage via setToLS()
-
-// On app init
-const savedFavorites = getFromLS<number[]>("favorites")
-dispatch(hydrateFavorites(savedFavorites))
-```
-
 ---
 
 ## 🧪 Testing DoD
 
-- [ ] ProductCard: 1 component test
-- [ ] Mappers: 1-2 unit tests (from Stage 1)
-- [ ] Search: 1 integration test
-- [ ] Pagination: 1 integration test
-- [ ] Toggle Favorite: 1 integration test
-- [ ] E2E: Full flow (load → skeleton → data → search → paginate)
+### Stage 2A+2B ✅
+
+- [x] Shared UI: Skeleton, ErrorMessage, EmptyState (smoke tests)
+- [x] Product UI: ProductCard, ProductDetailCard + skeletons (smoke tests)
+- [x] Widgets: ProductsGrid, ProductsToolbar, ProductsWidget (smoke tests)
+- [x] Quality gates: 10/10 tests passing
+
+### Stage 2C
+
+- [ ] **Dynamic Categories:** Unit test for `getDynamicCategories`
+- [ ] **Search:** Integration test (debounce + filter)
+- [ ] **Filters:** Integration test (category + price + rating)
+- [ ] **Pagination:** Integration test (page navigation + reset)
+- [ ] **Favorites:** Integration test (toggle + persist + view toggle)
+- [ ] **Remove + Reset:** Integration test (soft-delete + LS reset)
+- [ ] **Forms:** Validation tests (Zod schemas)
+- [ ] **not-found:** Render tests (404 handling)
+- [ ] **ErrorBoundary:** Error handling tests
+- [ ] **E2E:** Full flow (load → search → filter → paginate → favorite → remove)
 
 ---
 
 ## 📊 Success Criteria
 
-- [ ] All products display in grid
-- [ ] Search filters products with 300ms debounce
-- [ ] Pagination works client-side
-- [ ] Favorites persist across page reloads
-- [ ] Remove marks products as deleted (hidden from list)
-- [ ] Mock fallback activates on API errors
-- [ ] All tests passing
+### Stage 2A+2B ✅
+
+- [x] All products display in grid
+- [x] ProductCard + ProductDetailCard working
+- [x] Loading states (skeletons) working
+- [x] Error handling isolated (doesn't crash app)
+- [x] All tests passing (10/10)
+- [x] FSD rules followed
+- [x] Code quality (lint + format) passing
+
+### Stage 2C
+
+- [ ] **Dynamic categories** extracted from API data
+- [ ] **Search** filters products with 300ms debounce
+- [ ] **Filters** (category + price + rating) working and synced
+- [ ] **Pagination** works client-side (PAGE_SIZE = 10)
+- [ ] Pagination resets to page 1 on filter/search change
+- [ ] **Favorites** persist across page reloads
+- [ ] Favorites toggle view ("All" / "Favorites Only") working
+- [ ] **Remove** marks products as deleted (hidden from list)
+- [ ] **Reset local data** clears LS and refetches
+- [ ] **Create/Edit forms** validate with Zod and store locally
+- [ ] **404 handling** (not-found.tsx) for invalid IDs
+- [ ] **ErrorBoundary** prevents whole app crashes
+- [ ] All tests passing (smoke + integration + E2E)
 - [ ] FSD rules followed
 - [ ] Code quality (lint + format) passing
 
@@ -239,15 +362,15 @@ dispatch(hydrateFavorites(savedFavorites))
 
 ---
 
-## 🚀 Next Steps After Stage 2
+## 🚀 Next Steps After Stage 2C
 
-**Stage 3: Forms & Advanced Features (Future)**
+**Stage 3: Polish & Production Prep**
 
-- Product create/edit forms
-- Form validation with Zod
-- Optimistic updates
-- Advanced filtering
-- Server-side features (if API supports)
+- UX refinement (optimistic UI, animations, responsive design)
+- Fallback strategy (network → cache → mocks)
+- E2E tests with Playwright
+- Performance optimization (code splitting, next/image, bundle analysis)
+- SEO and accessibility improvements
 
 ---
 

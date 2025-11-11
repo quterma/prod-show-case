@@ -69,48 +69,78 @@
 
 ---
 
-## Stage 2: UI & Features 🚧
+## Stage 2A+2B: UI Components & Architecture ✅
 
-**Status:** Planned
-**Plan:** [stage-2-plan.md](stage-2-plan.md)
-**Start Date:** TBD
+**Status:** Complete
+**Report:** [stage-2-report.md](stage-2-report.md)
+**Completion Date:** November 2025
 
-### Planned Tasks
+### Completed Tasks
 
-- [ ] Mock fallback implementation
-- [ ] Product UI components (ProductCard, Grid, Toolbar)
-- [ ] Features (search, pagination, favorites, remove)
-- [ ] ProductState Redux integration
-- [ ] Main product showcase page
-- [ ] E2E tests
+- [x] Shared UI components (Skeleton, ErrorMessage, EmptyState)
+- [x] Product entity UI (ProductCard, ProductDetailCard + skeletons)
+- [x] Products widget (ProductsGrid, ProductsToolbar, ProductsWidget)
+- [x] Pages integration (/products, /products/[id])
+- [x] Architecture standardization (named files, colocated tests)
+- [x] FSD compliance verification
+- [x] Quality gates (10/10 tests passing)
 
-### Target Artifacts
+### Delivered Artifacts
 
-- `mocks/products.json` - Fallback data
-- `entities/product/ui/ProductCard.tsx` - Product display component
-- `features/search/` - Search with debounce
-- `features/pagination/` - Client-side pagination
-- `features/toggle-favorite/` - Favorites management
-- `features/remove-product/` - Soft delete
-- `widgets/products/` - Composed product widgets
-- `/products` route - Main showcase page
+- `shared/ui/` - Skeleton, ErrorMessage, EmptyState
+- `entities/product/ui/` - ProductCard, ProductDetailCard + skeletons
+- `widgets/products/ui/` - ProductsGrid, ProductsToolbar, ProductsWidget
+- `/products` page - Product list with loading states
+- `/products/[id]` page - Product detail view
 
 ---
 
-## Stage 3: Forms & Polish 🔮
+## Stage 2C: Interactive Features 🚧
+
+**Status:** In Progress
+**Plan:** [stage-2-plan.md](stage-2-plan.md)
+**Start Date:** TBD
+
+### Roadmap (Steps 0–9)
+
+0. [x] Docs update (constants, architecture)
+1. [ ] Dynamic categories (derive from API data)
+2. [ ] Search (debounce 300ms)
+3. [ ] Filters v1 (category, price, rating)
+4. [ ] Pagination (PAGE_SIZE=10, synced with filters)
+5. [ ] Favorites (Redux + localStorage + toggle view)
+6. [ ] Remove + Reset local data (soft-delete + LS clear)
+7. [ ] Create/Edit Forms (RHF + Zod)
+8. [ ] not-found.tsx + ID validation
+9. [ ] ErrorBoundary + guards + tests
+
+### Target Artifacts
+
+- `shared/lib/categories/getDynamicCategories.ts`
+- `features/search/` - Search with debounce (DEBOUNCE_MS=300)
+- `features/filters/` - Category, price, rating filters
+- `features/pagination/` - Client-side pagination (PAGE_SIZE=10)
+- `features/toggle-favorite/` - Favorites management + view toggle
+- `features/remove-product/` - Soft delete + reset local data
+- `app/products/create/page.tsx`, `app/products/[id]/edit/page.tsx`
+- `app/not-found.tsx`, `app/products/[id]/not-found.tsx`
+- Global ErrorBoundary in layout
+
+---
+
+## Stage 3: Polish & Production Prep 🔮
 
 **Status:** Future
-**Prerequisites:** Stage 2 complete
+**Prerequisites:** Stage 2C complete
 
 ### Planned Features
 
-- Product create/edit forms
-- Form validation (Zod + React Hook Form)
-- Optimistic updates
-- Advanced filtering
-- Error boundaries
-- Loading states polish
-- Accessibility improvements
+- UX refinement (optimistic UI, animations, responsive design)
+- Fallback strategy (network → cache → mocks)
+- E2E tests with Playwright (full user flows)
+- Performance optimization (code splitting, next/image, bundle analysis)
+- SEO and accessibility improvements
+- Production deployment (Vercel/GitHub Pages)
 
 ---
 
@@ -128,10 +158,11 @@
 
 - Stage 0: ✅ 100%
 - Stage 1: ✅ 100%
-- Stage 2: 🚧 0%
+- Stage 2A+2B: ✅ 100%
+- Stage 2C: 🚧 ~10% (Step 0 complete)
 - Stage 3: 🔮 0%
 
-**Total Progress:** ~40% (2/5 stages complete)
+**Total Progress:** ~50% (Stage 2A+2B complete, 2C in progress)
 
 ---
 
@@ -139,9 +170,9 @@
 
 ### Stage 1 Decisions
 
-1. **Mock fallback deferred** - Will implement in Stage 2 with UI
-2. **No unit tests yet** - Smoke tests validate core functionality
-3. **localStorage middleware** - Will add Redux middleware in Stage 2
+1. **Mock fallback deferred** - Moved to Stage 3 (network → cache → mocks strategy)
+2. **No unit tests yet** - ~~Smoke tests validate core functionality~~ → Unit tests added in Stage 2A+2B
+3. **localStorage middleware** - Will add Redux middleware in Stage 2C (Step 5-6)
 
 ### FSD Compliance
 
