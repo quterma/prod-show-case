@@ -1,16 +1,23 @@
-// TODO: Implement ProductsToolbar component
-// Include search and filters
+import { SearchInput } from "@/features/search"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products) */
   categories?: string[]
+  /** Search query value */
+  searchQuery: string
+  /** Search query change handler */
+  onSearchChange: (value: string) => void
 }
 
-export function ProductsToolbar({ categories }: ProductsToolbarProps) {
+export function ProductsToolbar({
+  categories,
+  searchQuery,
+  onSearchChange,
+}: ProductsToolbarProps) {
   return (
     <div>
-      {/* TODO: Implement toolbar with search and filters */}
-      <p>Products Toolbar - TODO</p>
+      <SearchInput value={searchQuery} onChange={onSearchChange} />
+      {/* TODO: Implement filters */}
       {categories && categories.length > 0 && (
         <p>Available categories: {categories.join(", ")}</p>
       )}
