@@ -1,34 +1,32 @@
-import type {
-  ProductFiltersState,
-  ProductFiltersSetters,
-} from "@/features/filters"
+import { filtersActions } from "@/features/filters"
 import { SearchInput } from "@/features/search"
+import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 import { Button } from "@/shared/ui"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products) */
   categories?: string[]
-  /** Current filter state */
-  filters: ProductFiltersState
-  /** Filter setters */
-  setters: ProductFiltersSetters
   /** Whether any filters are currently active */
   hasActiveFilters: boolean
 }
 
 export function ProductsToolbar({
   categories,
-  filters,
-  setters,
   hasActiveFilters,
 }: ProductsToolbarProps) {
+  const dispatch = useAppDispatch()
+  const filters = useAppSelector((state) => state.filters)
+
   return (
     <div className="flex items-center gap-4 mb-6">
-      <SearchInput value={filters.search} onChange={setters.setSearch} />
+      <SearchInput
+        value={filters.search}
+        onChange={(value) => dispatch(filtersActions.setSearch(value))}
+      />
       <Button
         variant="outline"
         size="md"
-        onClick={setters.resetFilters}
+        onClick={() => dispatch(filtersActions.resetFilters())}
         disabled={!hasActiveFilters}
       >
         Reset filters

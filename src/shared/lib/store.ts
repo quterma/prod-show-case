@@ -1,11 +1,15 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
+import filtersReducer from "@/features/filters/model/filtersSlice"
+
 import { baseApi } from "../api/baseApi"
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(baseApi)
+const rootReducer = combineSlices(baseApi, {
+  filters: filtersReducer,
+})
 
 export const makeStore = () => {
   return configureStore({

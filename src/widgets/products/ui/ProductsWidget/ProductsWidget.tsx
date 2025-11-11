@@ -2,6 +2,7 @@
 
 import { useGetProductsQuery, useDynamicCategories } from "@/entities/product"
 import { useProductFilters } from "@/features/filters"
+import { useAppSelector } from "@/shared/lib/hooks"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 import { ProductsGrid } from "../ProductsGrid"
@@ -14,9 +15,11 @@ type ProductsWidgetProps = {
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   const { data, isLoading, error, refetch } = useGetProductsQuery()
 
-  // Filter products with composite hook
-  const { filteredProducts, filters, setters, hasActiveFilters } =
-    useProductFilters(data)
+  // Filter products with composite hook (uses Redux state internally)
+  const { filteredProducts, hasActiveFilters } = useProductFilters(data)
+
+  // Get filters state from Redux for EmptyState message
+  const filters = useAppSelector((state) => state.filters)
 
   // Extract dynamic categories from products for filters (memoized)
   const categories = useDynamicCategories(data)
@@ -48,8 +51,6 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     <div>
       <ProductsToolbar
         categories={categories}
-        filters={filters}
-        setters={setters}
         hasActiveFilters={hasActiveFilters}
       />
       {isLoading ? (

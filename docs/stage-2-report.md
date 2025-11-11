@@ -140,6 +140,53 @@
 - ✅ All imports updated, old directories removed
 - ✅ Tests: 45/45 passed
 
+### Step 2.1: RTK Filters Refactoring ✅
+
+**Motivation:** Migrate from useState-based filters to Redux Toolkit for centralized state management, Redux DevTools support, and preparation for future localStorage persistence (Step 5-6).
+
+**Implemented:**
+
+- ✅ Created `filtersSlice.ts` with Redux Toolkit slice
+- ✅ Added filters reducer to store configuration
+- ✅ Refactored `useProductFilters` to use Redux state via `useAppSelector`
+- ✅ Updated `ProductsWidget` and `ProductsToolbar` to dispatch actions directly
+- ✅ Rewrote tests with Redux Provider wrapper and proper typing
+- ✅ Added support for multi-select categories (`categories: string[]`)
+- ✅ Added `minRating` filter field (≥1-5 stars threshold)
+
+**Architecture Changes:**
+
+- **State Management:** useState → Redux Toolkit slice with actions:
+  - `setSearch(string)` - set search query
+  - `toggleCategory(string)` - add/remove category
+  - `setCategories(string[])` - replace all categories
+  - `setPriceRange({min, max})` - set price range
+  - `setMinRating(number | null)` - set rating threshold
+  - `toggleFavorites()` - toggle favorites filter
+  - `resetFilters()` - reset to initial state
+
+- **Hook API Simplified:**
+  - Before: Returns `{ filteredProducts, filters, setters, hasActiveFilters }`
+  - After: Returns `{ filteredProducts, hasActiveFilters }` (components use `useAppSelector` + `dispatch` directly)
+
+- **Benefits:**
+  - Redux DevTools support for debugging
+  - Centralized state (no prop drilling)
+  - Type-safe actions and reducers
+  - Preparation for persist middleware
+
+**Files:**
+
+- [src/features/filters/model/filtersSlice.ts](src/features/filters/model/filtersSlice.ts) — NEW
+- [src/features/filters/model/useProductFilters.ts](src/features/filters/model/useProductFilters.ts) — refactored
+- [src/features/filters/model/useProductFilters.test.tsx](src/features/filters/model/useProductFilters.test.tsx) — rewritten (renamed .ts → .tsx)
+- [src/shared/lib/store.ts](src/shared/lib/store.ts) — added filters reducer
+- [src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx](src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx) — updated
+- [src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx](src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx) — dispatch actions
+- [src/widgets/products/ui/ProductsToolbar/ProductsToolbar.test.tsx](src/widgets/products/ui/ProductsToolbar/ProductsToolbar.test.tsx) — updated
+
+**Tests:** 44/44 passed ✓
+
 ---
 
 ## 🚀 Next Steps
