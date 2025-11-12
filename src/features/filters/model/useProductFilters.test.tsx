@@ -105,17 +105,17 @@ describe("useProductFilters", () => {
 
     // Should filter now
     expect(result.current.filteredProducts).toHaveLength(1)
-    expect(result.current.filteredProducts[0].title).toBe("iPhone 14 Pro")
+    expect(result.current.filteredProducts?.[0].title).toBe("iPhone 14 Pro")
     expect(result.current.hasActiveFilters).toBe(true)
   })
 
-  it("returns empty array when products is undefined", () => {
+  it("returns undefined when products is undefined", () => {
     const { wrapper } = createWrapper()
     const { result } = renderHook(() => useProductFilters(undefined), {
       wrapper,
     })
 
-    expect(result.current.filteredProducts).toEqual([])
+    expect(result.current.filteredProducts).toBeUndefined()
   })
 
   it("filters by multiple categories", () => {
@@ -150,7 +150,7 @@ describe("useProductFilters", () => {
     })
 
     expect(result.current.filteredProducts).toHaveLength(1)
-    expect(result.current.filteredProducts[0].title).toBe("iPhone 14 Pro")
+    expect(result.current.filteredProducts?.[0].title).toBe("iPhone 14 Pro")
     expect(result.current.hasActiveFilters).toBe(true)
   })
 

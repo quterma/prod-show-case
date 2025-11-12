@@ -13,7 +13,7 @@ import {
 } from "../lib"
 
 export type ProductFiltersResult = {
-  filteredProducts: Product[]
+  filteredProducts: Product[] | undefined
   hasActiveFilters: boolean
 }
 
@@ -60,7 +60,7 @@ export function useProductFilters(
 
   // Apply all filters sequentially with memoization (cascade pattern)
   const filteredProducts = useMemo(() => {
-    if (!products) return []
+    if (!products || products.length === 0) return undefined
 
     // Pure functional cascade: each helper handles its own conditions
     let result = products

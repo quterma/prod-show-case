@@ -41,7 +41,7 @@ describe("ProductsToolbar", () => {
       <Provider store={store}>
         <ProductsToolbar
           categories={[]}
-          priceRange={null}
+          priceRange={undefined}
           hasActiveFilters={false}
         />
       </Provider>
@@ -59,7 +59,7 @@ describe("ProductsToolbar", () => {
       <Provider store={store}>
         <ProductsToolbar
           categories={["electronics", "clothing"]}
-          priceRange={null}
+          priceRange={undefined}
           hasActiveFilters={false}
         />
       </Provider>
@@ -93,7 +93,7 @@ describe("ProductsToolbar", () => {
       <Provider store={store}>
         <ProductsToolbar
           categories={[]}
-          priceRange={null}
+          priceRange={undefined}
           hasActiveFilters={false}
         />
       </Provider>
@@ -109,7 +109,7 @@ describe("ProductsToolbar", () => {
       <Provider store={store}>
         <ProductsToolbar
           categories={[]}
-          priceRange={null}
+          priceRange={undefined}
           hasActiveFilters={false}
         />
       </Provider>
@@ -127,7 +127,7 @@ describe("ProductsToolbar", () => {
       <Provider store={store}>
         <ProductsToolbar
           categories={[]}
-          priceRange={null}
+          priceRange={undefined}
           hasActiveFilters={true}
         />
       </Provider>

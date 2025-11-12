@@ -124,6 +124,41 @@
 - ✅ `shared/ui/Button` - Universal button component (4 variants)
 - ✅ Smart Widgets pattern - Data-fetching moved to widgets
 
+### Latest Refactoring (Step 3.2 - Architecture Cleanup)
+
+**Date:** November 12, 2025
+**Focus:** Undefined semantics + ProductsWidget readability
+
+#### Changes Made
+
+1. **Dynamic Hooks - Undefined Semantics** ([src/entities/product/lib/](../src/entities/product/lib/))
+   - `useDynamicCategories`: Returns `string[] | undefined` (was `string[]`)
+   - `useDynamicPriceRange`: Returns `{min, max} | undefined` (was nullable)
+   - Edge case: `min === max` → returns `undefined` (meaningless filter)
+   - Invalid data filtering: NaN/Infinity/negative/empty strings
+
+2. **ProductsWidget Readability** ([src/widgets/products/ui/ProductsWidget/](../src/widgets/products/ui/ProductsWidget/))
+   - Introduced `gridContent` variable pattern (replaced nested ternaries)
+   - Created `ProductsGridSkeleton` component (separated loading state)
+   - Simplified `ProductsGrid` (removed `isLoading` prop)
+   - Toolbar always visible (error/loading/empty states only affect grid)
+
+3. **Filters Hook Update** ([src/features/filters/model/useProductFilters.ts](../src/features/filters/model/useProductFilters.ts))
+   - `filteredProducts` now returns `Product[] | undefined` (was `Product[]`)
+   - Returns `undefined` when no data to filter
+
+4. **Tests Updated**
+   - Fixed TypeScript errors (`undefined` checks with `?.`)
+   - Updated test expectations (`[] → undefined`)
+   - All 55 tests passing
+
+**Benefits:**
+
+- Clearer semantics: `undefined` = "don't show filter" vs value = "show filter"
+- Improved UX: Toolbar accessible during errors (can reset filters)
+- Better readability: Linear `if-else` vs nested ternaries
+- Separation of concerns: Loading state in dedicated component
+
 ### Remaining Artifacts
 
 - `features/filters/` - Category, price, rating filters UI
