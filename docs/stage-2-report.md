@@ -298,6 +298,113 @@
 - ✅ `filterByFavorites` receives `showOnlyFavorites` flag only (TODO: will receive `favoriteIds[]` when feature implemented)
 - ✅ Pure functions in `features/filters/lib` — no Redux imports, fully testable
 
+### Step 3.2: Selector-Based Architecture & Component Refactoring ✅
+
+**Motivation:** Eliminate prop drilling, improve memoization, standardize component patterns, and prepare for scalability.
+
+**Critical Improvements:**
+
+1. **Selector Layer with Reselect:**
+   - Created `features/filters/model/selectors.ts` with memoized selectors
+   - **Simple selectors:** `selectSearchQuery`, `selectCategories`, `selectMinPrice`, `selectMaxPrice`, `selectMinRating`, `selectShowOnlyFavorites`
+   - **Composite selectors:** `selectHasActiveFilters` (checks if any filter is active)
+   - **Factory selector:** `makeSelectFilteredProducts()` (creates memoized filtered products selector)
+   - **Deleted:** `selectFiltersParams` (dead code - composite selector that was never used)
+
+2. **Self-Contained Filter Components:**
+   - **QueryFilter:** Debounced search with local state + Redux sync
+     - Local state (`localQuery`) for instant UI feedback
+     - `useDebounce(localQuery, 300)` for debounced dispatch
+     - Sync `useEffect` to handle external changes (reset button)
+   - **CategoryFilter:** Direct Redux dispatch, no local state
+   - **PriceRangeFilter:** Direct Redux dispatch, atomic updates
+   - **RatingFilter:** Direct Redux dispatch, dropdown selection
+   - **ResetFiltersButton:** Self-contained, uses `selectHasActiveFilters`
+
+3. **Component Pattern Standardization:**
+   - ✅ All components use **named selector imports** (not inline selectors)
+   - ✅ All components use **direct action imports** (not namespace imports)
+   - ✅ Pattern: `import { selectX, setX } from "../../model"`
+   - ✅ Consistent across all filter components
+
+4. **Architecture Patterns:**
+
+   **QueryFilter Pattern (with debounce):**
+
+   ```typescript
+   const searchQuery = useAppSelector(selectSearchQuery)
+   const [localQuery, setLocalQuery] = useState(searchQuery)
+   const debouncedQuery = useDebounce(localQuery, 300)
+
+   useEffect(() => dispatch(setSearchQuery(debouncedQuery)), [debouncedQuery])
+   useEffect(() => setLocalQuery(searchQuery), [searchQuery]) // Sync on reset
+   ```
+
+   **CategoryFilter Pattern (no debounce):**
+
+   ```typescript
+   const selectedCategories = useAppSelector(selectCategories)
+   const handleToggle = (category) => dispatch(toggleCategory(category))
+   // UI updates automatically via Redux subscription
+   ```
+
+5. **Widget Responsibilities (Smart Widgets):**
+   - **ProductsWidget:** Calls RTK Query hooks, passes data to children
+   - **ProductsToolbar:** Composition only, receives domain props (categories, priceRange)
+   - **Filter components:** Self-contained, connect directly to Redux
+   - **No prop drilling:** Pages don't pass filter state to widgets
+
+6. **Code Cleanup:**
+   - Deleted `features/search` slice (merged into filters architecture)
+   - Deleted `useProductFilters` hook (replaced with selectors + `useFilteredProducts`)
+   - Simplified debounce: removed duplicate `debounce.ts`, kept only `useDebounce` hook
+   - Removed toolbar layout complexity: RatingFilter outside conditional block
+
+**Files Changed:**
+
+- [src/features/filters/model/selectors.ts](src/features/filters/model/selectors.ts) — NEW (memoized selectors)
+- [src/features/filters/model/selectors.test.ts](src/features/filters/model/selectors.test.ts) — NEW (selector tests)
+- [src/features/filters/model/useFilteredProducts.ts](src/features/filters/model/useFilteredProducts.ts) — NEW (replaces useProductFilters)
+- [src/features/filters/model/useFilteredProducts.test.tsx](src/features/filters/model/useFilteredProducts.test.tsx) — NEW
+- [src/features/filters/ui/QueryFilter/](src/features/filters/ui/QueryFilter/) — NEW (replaces SearchInput)
+- [src/features/filters/ui/ResetFiltersButton/](src/features/filters/ui/ResetFiltersButton/) — NEW (self-contained)
+- [src/features/filters/ui/CategoryFilter/CategoryFilter.tsx](src/features/filters/ui/CategoryFilter/CategoryFilter.tsx) — refactored (selectors)
+- [src/features/filters/ui/PriceRangeFilter/PriceRangeFilter.tsx](src/features/filters/ui/PriceRangeFilter/PriceRangeFilter.tsx) — refactored (selectors)
+- [src/features/filters/ui/RatingFilter/RatingFilter.tsx](src/features/filters/ui/RatingFilter/RatingFilter.tsx) — refactored (selectors)
+- [src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx](src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx) — simplified layout
+- [src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx](src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx) — uses new hooks
+- **DELETED:** `features/search/` (merged into filters)
+- **DELETED:** `features/filters/model/useProductFilters.ts` (replaced)
+- **DELETED:** `shared/lib/debounce/debounce.ts` (duplicate)
+
+**Tests:** 71/71 passed ✓
+
+**Key Benefits:**
+
+- **Better memoization:** Selectors recompute only when specific dependencies change
+- **No prop drilling:** Components connect directly to Redux
+- **Consistent patterns:** All filters follow same structure
+- **Scalability:** Easy to add new filters without refactoring
+- **Type safety:** Full TypeScript support with RootState typing
+- **Testability:** Selectors isolated and easily testable
+
+**Architecture Notes:**
+
+- **Why no local state in CategoryFilter/PriceRangeFilter/RatingFilter?**
+  - No debounce needed → can dispatch directly
+  - Redux is already source of truth → no sync issues
+  - UI updates automatically via `useAppSelector` subscription
+
+- **Why local state in QueryFilter?**
+  - Debounce requires delay between UI update and Redux dispatch
+  - Local state provides instant feedback while Redux updates after 300ms
+  - Sync useEffect handles external changes (reset button)
+
+- **Why separate selectors instead of `selectFiltersParams`?**
+  - Better memoization: recompute only when specific values change
+  - `makeSelectFilteredProducts` would recompute on ANY filter change with composite selector
+  - Individual selectors = more granular control
+
 ---
 
 ## 🚀 Next Steps

@@ -1,3 +1,5 @@
 export { CategoryFilter } from "./CategoryFilter"
 export { PriceRangeFilter } from "./PriceRangeFilter"
+export { QueryFilter } from "./QueryFilter"
 export { RatingFilter } from "./RatingFilter"
+export { ResetFiltersButton } from "./ResetFiltersButton"

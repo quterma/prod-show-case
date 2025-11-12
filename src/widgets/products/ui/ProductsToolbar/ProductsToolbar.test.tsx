@@ -39,11 +39,7 @@ describe("ProductsToolbar", () => {
 
     render(
       <Provider store={store}>
-        <ProductsToolbar
-          categories={[]}
-          priceRange={undefined}
-          hasActiveFilters={false}
-        />
+        <ProductsToolbar categories={[]} priceRange={undefined} />
       </Provider>
     )
 
@@ -60,7 +56,6 @@ describe("ProductsToolbar", () => {
         <ProductsToolbar
           categories={["electronics", "clothing"]}
           priceRange={undefined}
-          hasActiveFilters={false}
         />
       </Provider>
     )
@@ -74,11 +69,7 @@ describe("ProductsToolbar", () => {
 
     render(
       <Provider store={store}>
-        <ProductsToolbar
-          categories={[]}
-          priceRange={mockPriceRange}
-          hasActiveFilters={false}
-        />
+        <ProductsToolbar categories={[]} priceRange={mockPriceRange} />
       </Provider>
     )
 
@@ -91,11 +82,7 @@ describe("ProductsToolbar", () => {
 
     render(
       <Provider store={store}>
-        <ProductsToolbar
-          categories={[]}
-          priceRange={undefined}
-          hasActiveFilters={false}
-        />
+        <ProductsToolbar categories={[]} priceRange={undefined} />
       </Provider>
     )
 
@@ -107,11 +94,7 @@ describe("ProductsToolbar", () => {
 
     render(
       <Provider store={store}>
-        <ProductsToolbar
-          categories={[]}
-          priceRange={undefined}
-          hasActiveFilters={false}
-        />
+        <ProductsToolbar categories={[]} priceRange={undefined} />
       </Provider>
     )
 
@@ -121,15 +104,11 @@ describe("ProductsToolbar", () => {
   })
 
   it("renders reset button as enabled when filters are active", () => {
-    const store = createTestStore()
+    const store = createTestStore({ searchQuery: "test" })
 
     render(
       <Provider store={store}>
-        <ProductsToolbar
-          categories={[]}
-          priceRange={undefined}
-          hasActiveFilters={true}
-        />
+        <ProductsToolbar categories={[]} priceRange={undefined} />
       </Provider>
     )
 

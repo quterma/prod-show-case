@@ -5,7 +5,7 @@ import {
   useDynamicCategories,
   useDynamicPriceRange,
 } from "@/entities/product"
-import { useProductFilters } from "@/features/filters"
+import { useFilteredProducts, selectSearchQuery } from "@/features/filters"
 import { useAppSelector } from "@/shared/lib/hooks"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
@@ -17,14 +17,18 @@ type ProductsWidgetProps = {
   onItemClick?: (id: number) => void
 }
 
+/**
+ * ProductsWidget - Smart widget for products list
+ * Handles data fetching, filtering, and composition of toolbar + grid
+ */
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   const { data, isLoading, error, refetch } = useGetProductsQuery()
 
-  // Filter products with composite hook (uses Redux state internally)
-  const { filteredProducts, hasActiveFilters } = useProductFilters(data)
+  // Filter products using selector-based hook (no debounce - handled in QueryFilter)
+  const filteredProducts = useFilteredProducts(data)
 
-  // Get filters state from Redux for EmptyState message
-  const filters = useAppSelector((state) => state.filters)
+  // Get search query for EmptyState message
+  const searchQuery = useAppSelector(selectSearchQuery)
 
   // Extract dynamic categories and price range from products (memoized)
   const categories = useDynamicCategories(data)
@@ -54,7 +58,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
       <EmptyState
         title="No products match your filters"
         note={
-          filters.searchQuery.trim()
+          searchQuery.trim()
             ? "Try adjusting your search query or reset filters."
             : "Try adjusting your filters or reset them to see all products."
         }
@@ -69,11 +73,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   return (
     <div>
       {/* Toolbar is always visible - provides search/filters access in all states */}
-      <ProductsToolbar
-        categories={categories}
-        priceRange={priceRange}
-        hasActiveFilters={hasActiveFilters}
-      />
+      <ProductsToolbar categories={categories} priceRange={priceRange} />
 
       {/* Grid area - conditionally rendered based on state */}
       {gridContent}

@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 
-import * as filtersActions from "../../model/filtersSlice"
+import { selectMinRating, setMinRating } from "../../model"
 
 const RATING_OPTIONS = [
   { value: 4, label: "4+ stars" },
@@ -10,10 +10,10 @@ const RATING_OPTIONS = [
 
 export function RatingFilter() {
   const dispatch = useAppDispatch()
-  const minRating = useAppSelector((state) => state.filters.minRating)
+  const minRating = useAppSelector(selectMinRating)
 
   const handleChange = (value: number | null) => {
-    dispatch(filtersActions.setMinRating(value))
+    dispatch(setMinRating(value))
   }
 
   return (

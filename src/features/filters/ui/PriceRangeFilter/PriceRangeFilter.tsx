@@ -1,6 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 
-import * as filtersActions from "../../model/filtersSlice"
+import {
+  selectMinPrice,
+  selectMaxPrice,
+  setMinPrice,
+  setMaxPrice,
+} from "../../model"
 
 type PriceRangeFilterProps = {
   /** Available price range from products */
@@ -9,16 +14,17 @@ type PriceRangeFilterProps = {
 
 export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
   const dispatch = useAppDispatch()
-  const { minPrice, maxPrice } = useAppSelector((state) => state.filters)
+  const minPrice = useAppSelector(selectMinPrice)
+  const maxPrice = useAppSelector(selectMaxPrice)
 
   const handleMinChange = (value: string) => {
     const numValue = value === "" ? null : Number(value)
-    dispatch(filtersActions.setMinPrice(numValue))
+    dispatch(setMinPrice(numValue))
   }
 
   const handleMaxChange = (value: string) => {
     const numValue = value === "" ? null : Number(value)
-    dispatch(filtersActions.setMaxPrice(numValue))
+    dispatch(setMaxPrice(numValue))
   }
 
   return (

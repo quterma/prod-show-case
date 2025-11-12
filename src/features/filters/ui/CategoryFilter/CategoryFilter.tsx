@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 
-import * as filtersActions from "../../model/filtersSlice"
+import { selectCategories, toggleCategory } from "../../model"
 
 type CategoryFilterProps = {
   /** Available categories from products */
@@ -9,10 +9,10 @@ type CategoryFilterProps = {
 
 export function CategoryFilter({ categories }: CategoryFilterProps) {
   const dispatch = useAppDispatch()
-  const selectedCategories = useAppSelector((state) => state.filters.categories)
+  const selectedCategories = useAppSelector(selectCategories)
 
   const handleToggle = (category: string) => {
-    dispatch(filtersActions.toggleCategory(category))
+    dispatch(toggleCategory(category))
   }
 
   return (
