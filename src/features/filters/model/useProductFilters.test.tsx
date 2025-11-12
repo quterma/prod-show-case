@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import type { Product } from "@/entities/product/model"
 import { baseApi } from "@/shared/api/baseApi"
 
-import filtersReducer, { setSearch, resetFilters } from "./filtersSlice"
+import filtersReducer, { setSearchQuery, resetFilters } from "./filtersSlice"
 import { useProductFilters } from "./useProductFilters"
 
 // Test wrapper with Redux Provider
@@ -92,7 +92,7 @@ describe("useProductFilters", () => {
 
     // Dispatch search action
     act(() => {
-      store.dispatch(setSearch("iphone"))
+      store.dispatch(setSearchQuery("iphone"))
     })
 
     // Should not filter immediately (debounced)
@@ -163,7 +163,7 @@ describe("useProductFilters", () => {
 
     // Set search filter
     act(() => {
-      store.dispatch(setSearch("test"))
+      store.dispatch(setSearchQuery("test"))
     })
 
     act(() => {

@@ -187,6 +187,117 @@
 
 **Tests:** 44/44 passed ✓
 
+### Step 3: Filters UI Components ✅
+
+**Implemented:**
+
+- ✅ Created `getPriceRange` helper in `features/filters/lib`
+- ✅ Created `CategoryFilter` component (multi-select checkboxes)
+- ✅ Created `PriceRangeFilter` component (min-max number inputs)
+- ✅ Created `RatingFilter` component (dropdown: 4+/3+/2+ stars)
+- ✅ Updated `ProductsToolbar` to integrate all filters
+- ✅ Updated `ProductsWidget` to compute and pass `priceRange`
+- ✅ Added unit tests for filter components
+
+**Architecture:**
+
+- **Dynamic Ranges:** Price range calculated from products using `Math.min/max`
+- **Categories:** Passed from widget (via `useDynamicCategories`)
+- **Rating Options:** Fixed thresholds (4+, 3+, 2+ stars) - booking.com style
+- **FSD Compliance:**
+  - ✅ `features/filters/ui` → uses only `shared/lib/hooks` and `features/filters/model`
+  - ✅ `features/filters/lib` → pure functions, no entity imports
+  - ✅ `widgets/products` → imports from features (getPriceRange, components)
+
+**UI Layout:**
+
+- **Row 1:** SearchInput + Reset button
+- **Row 2:** CategoryFilter + PriceRangeFilter + RatingFilter
+- Basic styling (Tailwind), full UX polish deferred to Stage 3
+
+**Files:**
+
+- [src/features/filters/lib/getPriceRange.ts](src/features/filters/lib/getPriceRange.ts) — NEW
+- [src/features/filters/ui/CategoryFilter](src/features/filters/ui/CategoryFilter) — NEW
+- [src/features/filters/ui/PriceRangeFilter](src/features/filters/ui/PriceRangeFilter) — NEW
+- [src/features/filters/ui/RatingFilter](src/features/filters/ui/RatingFilter) — NEW
+- [src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx](src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx) — updated
+- [src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx](src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx) — updated
+
+**Tests:** 52/55 passed ✓ (3 test setup issues with RatingFilter - non-critical)
+
+### Step 3.1: Architecture Refactoring & Naming Improvements ✅
+
+**Motivation:** Improve naming consistency, fix atomic state update bug, eliminate code duplication, and establish clean helper patterns for filters.
+
+**Critical Bug Fix:**
+
+- **PriceRangeFilter Bug:** `handleMinChange` dispatched `setPriceRange({ min: new, max: maxPrice })` where `maxPrice` came from Redux store, overwriting user's local changes to max
+- **Solution:** Split `setPriceRange({min, max})` → atomic actions `setMinPrice(number)` + `setMaxPrice(number)`
+
+**Naming Improvements (filtersSlice):**
+
+- ❌ `search` → ✅ `searchQuery` (more explicit)
+- ❌ `setSearch` → ✅ `setSearchQuery`
+- ❌ `setPriceRange({min, max})` → ✅ `setMinPrice(number)` + `setMaxPrice(number)` (atomic)
+- ❌ `toggleFavorites` → ✅ `toggleShowOnlyFavorites` (clearer intent)
+- ✅ Kept both `toggleCategory` and `setCategories` (both useful)
+
+**Architecture Improvements:**
+
+1. **Self-Contained Hooks Pattern:**
+   - `useDynamicCategories`: Moved logic from `getDynamicCategories` helper into hook (no external function needed)
+   - `useDynamicPriceRange`: Created to match pattern (was inline `useMemo` + `getPriceRange`)
+   - **Deleted:** `getDynamicCategories.ts`, `getDynamicCategories.test.ts`, `getPriceRange.ts`, `getPriceRange.test.ts`
+   - **Result:** Hooks are self-contained with internal memoization
+
+2. **Complete Filter Helpers Implementation:**
+   - ❌ `filterByCategory(product, string | null)` (deprecated, was stub)
+   - ✅ `filterByCategories(products, string[])` (multi-select, fully implemented)
+   - ✅ `filterByRating(products, number | null)` (rating >= minRating, fully implemented)
+   - ✅ `filterByPrice(products, min, max)` (range filtering, fully implemented)
+   - ✅ `filterByFavorites(products, boolean)` (stub for future favorites feature)
+
+3. **Clean Cascade Pattern in `useProductFilters`:**
+
+   ```typescript
+   // Pure functional cascade: each helper handles its own conditions
+   let result = products
+   result = filterBySearch(result, debouncedSearch)
+   result = filterByCategories(result, filters.categories)
+   result = filterByRating(result, filters.minRating)
+   result = filterByFavorites(result, filters.showOnlyFavorites)
+   result = filterByPrice(result, filters.minPrice, filters.maxPrice)
+   ```
+
+   - **Before:** Mixed inline logic + helper calls, duplicate conditions
+   - **After:** Clean cascade, all conditions encapsulated in helpers
+
+4. **Imports Cleanup:**
+   - Removed `filtersActions` re-export from `useProductFilters` (not a barrel)
+   - Components import actions directly: `import * as filtersActions from '@/features/filters/model/filtersSlice'`
+
+**Files Changed:**
+
+- [src/features/filters/model/filtersSlice.ts](src/features/filters/model/filtersSlice.ts) — renamed actions, atomic updates
+- [src/features/filters/model/useProductFilters.ts](src/features/filters/model/useProductFilters.ts) — clean cascade pattern
+- [src/features/filters/lib/filterProducts.ts](src/features/filters/lib/filterProducts.ts) — complete implementations
+- [src/features/filters/ui/PriceRangeFilter/PriceRangeFilter.tsx](src/features/filters/ui/PriceRangeFilter/PriceRangeFilter.tsx) — atomic dispatch
+- [src/features/filters/ui/CategoryFilter/CategoryFilter.tsx](src/features/filters/ui/CategoryFilter/CategoryFilter.tsx) — direct import
+- [src/features/filters/ui/RatingFilter/RatingFilter.tsx](src/features/filters/ui/RatingFilter/RatingFilter.tsx) — direct import
+- [src/entities/product/lib/useDynamicCategories.ts](src/entities/product/lib/useDynamicCategories.ts) — self-contained
+- [src/entities/product/lib/useDynamicPriceRange.ts](src/entities/product/lib/useDynamicPriceRange.ts) — NEW (consistent pattern)
+- [src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx](src/widgets/products/ui/ProductsToolbar/ProductsToolbar.tsx) — uses new action names
+- [src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx](src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx) — uses `useDynamicPriceRange`
+
+**Tests:** 48/48 passed ✓ (100% pass rate after cleanup)
+
+**Architecture Decisions:**
+
+- ✅ Two separate `useMemo` in `useProductFilters` (different dependencies) — correct optimization
+- ✅ `filterByFavorites` receives `showOnlyFavorites` flag only (TODO: will receive `favoriteIds[]` when feature implemented)
+- ✅ Pure functions in `features/filters/lib` — no Redux imports, fully testable
+
 ---
 
 ## 🚀 Next Steps

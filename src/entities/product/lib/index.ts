@@ -1,2 +1,2 @@
-export * from "./getDynamicCategories"
 export * from "./useDynamicCategories"
+export * from "./useDynamicPriceRange"

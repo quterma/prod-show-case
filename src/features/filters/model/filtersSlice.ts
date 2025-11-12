@@ -6,7 +6,7 @@ import { createSlice } from "@reduxjs/toolkit"
  */
 export type FiltersState = {
   /** Search query for product title/description */
-  search: string
+  searchQuery: string
   /** Selected categories (multi-select) */
   categories: string[]
   /** Minimum price filter */
@@ -23,7 +23,7 @@ export type FiltersState = {
  * Initial/default filters state
  */
 const initialState: FiltersState = {
-  search: "",
+  searchQuery: "",
   categories: [],
   minPrice: null,
   maxPrice: null,
@@ -41,8 +41,8 @@ const filtersSlice = createSlice({
     /**
      * Set search query
      */
-    setSearch: (state, action: PayloadAction<string>) => {
-      state.search = action.payload
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload
     },
 
     /**
@@ -65,14 +65,17 @@ const filtersSlice = createSlice({
     },
 
     /**
-     * Set price range (min and max together)
+     * Set minimum price filter
      */
-    setPriceRange: (
-      state,
-      action: PayloadAction<{ min: number | null; max: number | null }>
-    ) => {
-      state.minPrice = action.payload.min
-      state.maxPrice = action.payload.max
+    setMinPrice: (state, action: PayloadAction<number | null>) => {
+      state.minPrice = action.payload
+    },
+
+    /**
+     * Set maximum price filter
+     */
+    setMaxPrice: (state, action: PayloadAction<number | null>) => {
+      state.maxPrice = action.payload
     },
 
     /**
@@ -85,7 +88,7 @@ const filtersSlice = createSlice({
     /**
      * Toggle "show only favorites" filter
      */
-    toggleFavorites: (state) => {
+    toggleShowOnlyFavorites: (state) => {
       state.showOnlyFavorites = !state.showOnlyFavorites
     },
 
@@ -97,12 +100,13 @@ const filtersSlice = createSlice({
 })
 
 export const {
-  setSearch,
+  setSearchQuery,
   toggleCategory,
   setCategories,
-  setPriceRange,
+  setMinPrice,
+  setMaxPrice,
   setMinRating,
-  toggleFavorites,
+  toggleShowOnlyFavorites,
   resetFilters,
 } = filtersSlice.actions
 

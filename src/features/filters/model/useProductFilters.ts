@@ -6,12 +6,11 @@ import { useAppSelector } from "@/shared/lib/hooks"
 
 import {
   filterBySearch,
-  filterByCategory,
+  filterByCategories,
+  filterByRating,
   filterByFavorites,
   filterByPrice,
 } from "../lib"
-
-import * as filtersActions from "./filtersSlice"
 
 export type ProductFiltersResult = {
   filteredProducts: Product[]
@@ -28,7 +27,7 @@ export type ProductFiltersResult = {
  * @example
  * const { filteredProducts, hasActiveFilters } = useProductFilters(products)
  * // Access filters state from Redux: useAppSelector(state => state.filters)
- * // Dispatch actions: dispatch(setSearch('query'))
+ * // Dispatch actions: dispatch(setSearchQuery('query'))
  */
 export function useProductFilters(
   products: Product[] | undefined,
@@ -38,7 +37,7 @@ export function useProductFilters(
   const filters = useAppSelector((state) => state.filters)
 
   // Debounce search query to reduce re-renders
-  const debouncedSearch = useDebounce(filters.search, debounceDelay)
+  const debouncedSearch = useDebounce(filters.searchQuery, debounceDelay)
 
   // Check if any filters are active (memoized for performance)
   const hasActiveFilters = useMemo(
@@ -59,31 +58,15 @@ export function useProductFilters(
     ]
   )
 
-  // Apply all filters sequentially with memoization
+  // Apply all filters sequentially with memoization (cascade pattern)
   const filteredProducts = useMemo(() => {
     if (!products) return []
 
+    // Pure functional cascade: each helper handles its own conditions
     let result = products
-
-    // Apply filters in order
     result = filterBySearch(result, debouncedSearch)
-
-    // Categories filter: filter if ANY category selected
-    if (filters.categories.length > 0) {
-      result = result.filter((product) =>
-        filters.categories.includes(product.category)
-      )
-    }
-
-    // Rating filter: show products with rating >= minRating
-    if (filters.minRating !== null) {
-      result = result.filter(
-        (product) => product.rating.rate >= filters.minRating!
-      )
-    }
-
-    // Legacy filters (will be updated in Step 3)
-    result = filterByCategory(result, null) // Deprecated: using categories array now
+    result = filterByCategories(result, filters.categories)
+    result = filterByRating(result, filters.minRating)
     result = filterByFavorites(result, filters.showOnlyFavorites)
     result = filterByPrice(result, filters.minPrice, filters.maxPrice)
 
@@ -103,8 +86,3 @@ export function useProductFilters(
     hasActiveFilters,
   }
 }
-
-/**
- * Re-export filters actions for convenience
- */
-export { filtersActions }

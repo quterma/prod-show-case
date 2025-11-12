@@ -1,6 +1,10 @@
 "use client"
 
-import { useGetProductsQuery, useDynamicCategories } from "@/entities/product"
+import {
+  useGetProductsQuery,
+  useDynamicCategories,
+  useDynamicPriceRange,
+} from "@/entities/product"
 import { useProductFilters } from "@/features/filters"
 import { useAppSelector } from "@/shared/lib/hooks"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
@@ -21,8 +25,9 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   // Get filters state from Redux for EmptyState message
   const filters = useAppSelector((state) => state.filters)
 
-  // Extract dynamic categories from products for filters (memoized)
+  // Extract dynamic categories and price range from products (memoized)
   const categories = useDynamicCategories(data)
+  const priceRange = useDynamicPriceRange(data)
 
   // Error state - show only error message without toolbar
   if (error) {
@@ -51,6 +56,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     <div>
       <ProductsToolbar
         categories={categories}
+        priceRange={priceRange}
         hasActiveFilters={hasActiveFilters}
       />
       {isLoading ? (
@@ -69,7 +75,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
         <EmptyState
           title="No products match your filters"
           note={
-            filters.search.trim()
+            filters.searchQuery.trim()
               ? `Try adjusting your search query or reset filters.`
               : "Try adjusting your filters or reset them to see all products."
           }

@@ -1,4 +1,9 @@
-import { filtersActions } from "@/features/filters"
+import {
+  CategoryFilter,
+  PriceRangeFilter,
+  RatingFilter,
+} from "@/features/filters"
+import * as filtersActions from "@/features/filters/model/filtersSlice"
 import { SearchInput } from "@/features/search"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 import { Button } from "@/shared/ui"
@@ -6,37 +11,44 @@ import { Button } from "@/shared/ui"
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products) */
   categories?: string[]
+  /** Available price range from products */
+  priceRange: { min: number; max: number } | null
   /** Whether any filters are currently active */
   hasActiveFilters: boolean
 }
 
 export function ProductsToolbar({
-  categories,
+  categories = [],
+  priceRange,
   hasActiveFilters,
 }: ProductsToolbarProps) {
   const dispatch = useAppDispatch()
   const filters = useAppSelector((state) => state.filters)
 
   return (
-    <div className="flex items-center gap-4 mb-6">
-      <SearchInput
-        value={filters.search}
-        onChange={(value) => dispatch(filtersActions.setSearch(value))}
-      />
-      <Button
-        variant="outline"
-        size="md"
-        onClick={() => dispatch(filtersActions.resetFilters())}
-        disabled={!hasActiveFilters}
-      >
-        Reset filters
-      </Button>
-      {/* TODO: Implement category/price/favorites filters */}
-      {categories && categories.length > 0 && (
-        <p className="text-sm text-gray-600">
-          Available categories: {categories.join(", ")}
-        </p>
-      )}
+    <div className="flex flex-col gap-4 mb-6">
+      {/* Search and Reset row */}
+      <div className="flex items-center gap-4">
+        <SearchInput
+          value={filters.searchQuery}
+          onChange={(value) => dispatch(filtersActions.setSearchQuery(value))}
+        />
+        <Button
+          variant="outline"
+          size="md"
+          onClick={() => dispatch(filtersActions.resetFilters())}
+          disabled={!hasActiveFilters}
+        >
+          Reset filters
+        </Button>
+      </div>
+
+      {/* Filters row */}
+      <div className="flex flex-wrap items-center gap-6">
+        <CategoryFilter categories={categories} />
+        <PriceRangeFilter priceRange={priceRange} />
+        <RatingFilter />
+      </div>
     </div>
   )
 }

@@ -17,22 +17,34 @@ export function filterBySearch(products: Product[], query: string): Product[] {
 }
 
 /**
- * Filter products by category
- * TODO: Implement category filtering when needed
+ * Filter products by selected categories (multi-select)
+ * Returns products that match ANY of the selected categories
  */
-export function filterByCategory(
+export function filterByCategories(
   products: Product[],
-  category: string | null
+  categories: string[]
 ): Product[] {
-  if (!category) return products
+  if (categories.length === 0) return products
 
-  // TODO: Implement filtering logic
-  return products
+  return products.filter((product) => categories.includes(product.category))
+}
+
+/**
+ * Filter products by minimum rating
+ * Returns products with rating >= minRating
+ */
+export function filterByRating(
+  products: Product[],
+  minRating: number | null
+): Product[] {
+  if (minRating === null) return products
+
+  return products.filter((product) => product.rating.rate >= minRating)
 }
 
 /**
  * Filter products by favorites status
- * TODO: Implement favorites filtering when needed
+ * TODO: Implement when favorites feature is added
  */
 export function filterByFavorites(
   products: Product[],
@@ -46,7 +58,7 @@ export function filterByFavorites(
 
 /**
  * Filter products by price range
- * TODO: Implement price filtering when needed
+ * Returns products within the specified price range (inclusive)
  */
 export function filterByPrice(
   products: Product[],
@@ -55,6 +67,9 @@ export function filterByPrice(
 ): Product[] {
   if (minPrice === null && maxPrice === null) return products
 
-  // TODO: Implement filtering logic
-  return products
+  return products.filter((product) => {
+    const matchesMin = minPrice === null || product.price >= minPrice
+    const matchesMax = maxPrice === null || product.price <= maxPrice
+    return matchesMin && matchesMax
+  })
 }

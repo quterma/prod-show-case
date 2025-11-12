@@ -17,7 +17,7 @@ function createTestStore(initialFilters = {}) {
     },
     preloadedState: {
       filters: {
-        search: "",
+        searchQuery: "",
         categories: [],
         minPrice: null,
         maxPrice: null,
@@ -32,12 +32,18 @@ function createTestStore(initialFilters = {}) {
 }
 
 describe("ProductsToolbar", () => {
+  const mockPriceRange = { min: 10, max: 100 }
+
   it("renders search input", () => {
     const store = createTestStore()
 
     render(
       <Provider store={store}>
-        <ProductsToolbar categories={[]} hasActiveFilters={false} />
+        <ProductsToolbar
+          categories={[]}
+          priceRange={null}
+          hasActiveFilters={false}
+        />
       </Provider>
     )
 
@@ -46,13 +52,14 @@ describe("ProductsToolbar", () => {
     ).toBeInTheDocument()
   })
 
-  it("renders categories when provided", () => {
+  it("renders category filters when categories provided", () => {
     const store = createTestStore()
 
     render(
       <Provider store={store}>
         <ProductsToolbar
           categories={["electronics", "clothing"]}
+          priceRange={null}
           hasActiveFilters={false}
         />
       </Provider>
@@ -62,12 +69,49 @@ describe("ProductsToolbar", () => {
     expect(screen.getByText(/clothing/i)).toBeInTheDocument()
   })
 
+  it("renders price range filter when priceRange provided", () => {
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <ProductsToolbar
+          categories={[]}
+          priceRange={mockPriceRange}
+          hasActiveFilters={false}
+        />
+      </Provider>
+    )
+
+    expect(screen.getByPlaceholderText(/min/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/max/i)).toBeInTheDocument()
+  })
+
+  it("renders rating filter", () => {
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <ProductsToolbar
+          categories={[]}
+          priceRange={null}
+          hasActiveFilters={false}
+        />
+      </Provider>
+    )
+
+    expect(screen.getByText(/rating:/i)).toBeInTheDocument()
+  })
+
   it("renders reset button as disabled when no active filters", () => {
     const store = createTestStore()
 
     render(
       <Provider store={store}>
-        <ProductsToolbar categories={[]} hasActiveFilters={false} />
+        <ProductsToolbar
+          categories={[]}
+          priceRange={null}
+          hasActiveFilters={false}
+        />
       </Provider>
     )
 
@@ -81,7 +125,11 @@ describe("ProductsToolbar", () => {
 
     render(
       <Provider store={store}>
-        <ProductsToolbar categories={[]} hasActiveFilters={true} />
+        <ProductsToolbar
+          categories={[]}
+          priceRange={null}
+          hasActiveFilters={true}
+        />
       </Provider>
     )
 
