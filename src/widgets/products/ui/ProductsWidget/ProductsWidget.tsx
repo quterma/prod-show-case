@@ -1,11 +1,18 @@
 "use client"
 
+import { useMemo } from "react"
+
 import {
   useGetProductsQuery,
   useDynamicCategories,
   useDynamicPriceRange,
 } from "@/entities/product"
 import { useFilteredProducts, selectSearchQuery } from "@/features/filters"
+import {
+  Pagination,
+  makeSelectPaginatedProducts,
+  makeSelectTotalPages,
+} from "@/features/pagination"
 import { useAppSelector } from "@/shared/lib/hooks"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
@@ -26,6 +33,19 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
 
   // Filter products using selector-based hook (no debounce - handled in QueryFilter)
   const filteredProducts = useFilteredProducts(data)
+
+  // Create memoized pagination selectors
+  const selectPaginatedProducts = useMemo(
+    () => makeSelectPaginatedProducts(),
+    []
+  )
+  const selectTotalPages = useMemo(() => makeSelectTotalPages(), [])
+
+  // Get paginated products and total pages
+  const paginatedProducts = useAppSelector((state) =>
+    selectPaginatedProducts(state, data)
+  )
+  const totalPages = useAppSelector((state) => selectTotalPages(state, data))
 
   // Get search query for EmptyState message
   const searchQuery = useAppSelector(selectSearchQuery)
@@ -66,7 +86,13 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     )
   } else {
     gridContent = (
-      <ProductsGrid products={filteredProducts} onItemClick={onItemClick} />
+      <>
+        <ProductsGrid
+          products={paginatedProducts ?? []}
+          onItemClick={onItemClick}
+        />
+        <Pagination totalPages={totalPages} />
+      </>
     )
   }
 

@@ -405,6 +405,91 @@
   - `makeSelectFilteredProducts` would recompute on ANY filter change with composite selector
   - Individual selectors = more granular control
 
+### Step 4: Pagination ✅
+
+**Motivation:** Implement client-side pagination with `PAGE_SIZE = 10` that automatically syncs with filter changes.
+
+**Implemented:**
+
+- ✅ Created `paginationSlice` with state (`currentPage`, `pageSize`) and actions (`setPage`, `setPageSize`, `resetPage`)
+- ✅ Created memoized selectors with Reselect factory pattern (`makeSelectPaginatedProducts`, `makeSelectTotalPages`, `makeSelectPaginationMeta`)
+- ✅ Setup RTK Listener Middleware for automatic pagination reset on filter changes
+- ✅ Created `Pagination` UI component (minimal: Prev | Page X of Y | Next)
+- ✅ Integrated into `ProductsWidget` using factory selectors
+- ✅ Written 6 tests for pagination component (navigation, disabled states, rendering)
+
+**Architecture Decisions:**
+
+1. **Separate Slice (not in filters):**
+   - **Reason:** Reusability for other lists (favorites view), independent testing, looser coupling
+   - **Location:** `features/pagination/model/paginationSlice.ts`
+   - **State:** `{ currentPage: number, pageSize: number }`
+
+2. **RTK Listener Middleware for Auto-Reset:**
+   - **Reason:** Centralized side effects, no UI dependencies, easy to test
+   - **Pattern:** Listen to all filter actions with `isAnyOf()`, dispatch `resetPage()`
+   - **Alternative considered:** useEffect in component (rejected - not centralized), addMatcher in slice (rejected - tight coupling)
+
+   ```typescript
+   listenerMiddleware.startListening({
+     matcher: isAnyOf(
+       setSearchQuery,
+       toggleCategory,
+       setMinPrice,
+       setMaxPrice,
+       setMinRating,
+       toggleShowOnlyFavorites,
+       resetFilters
+     ),
+     effect: (_action, listenerApi) => {
+       listenerApi.dispatch(resetPage())
+     },
+   })
+   ```
+
+3. **Factory Selectors Pattern:**
+   - **Reason:** Products come from widget props, need to pass as parameter
+   - **Pattern:** `makeSelectPaginatedProducts()` returns selector function
+   - **Usage:** Component creates selector with `useMemo`, calls with `(state, data)`
+
+   ```typescript
+   const selectPaginatedProducts = useMemo(
+     () => makeSelectPaginatedProducts(),
+     []
+   )
+   const paginatedProducts = useAppSelector((state) =>
+     selectPaginatedProducts(state, data)
+   )
+   ```
+
+4. **Self-Contained Component:**
+   - **Pagination:** Connects directly to Redux (`useAppSelector`, `dispatch`)
+   - **Props:** Only receives `totalPages` (computed in widget)
+   - **Pattern:** Same as filter components (no prop drilling)
+
+**Implementation Details:**
+
+- **PAGE_SIZE constant:** `10` (fixed for MVP)
+- **Slice logic:** Array slicing at `(currentPage - 1) * pageSize` to `currentPage * pageSize`
+- **Conditional rendering:** Pagination hidden if `totalPages <= 1`
+- **Button states:** Prev disabled on page 1, Next disabled on last page
+- **Navigation:** `setPage(currentPage ± 1)` with bounds checking
+
+**Files:**
+
+- [src/features/pagination/model/paginationSlice.ts](src/features/pagination/model/paginationSlice.ts) — NEW (slice definition)
+- [src/features/pagination/model/selectors.ts](src/features/pagination/model/selectors.ts) — NEW (factory selectors)
+- [src/features/pagination/ui/Pagination/Pagination.tsx](src/features/pagination/ui/Pagination/Pagination.tsx) — NEW (UI component)
+- [src/features/pagination/ui/Pagination/Pagination.test.tsx](src/features/pagination/ui/Pagination/Pagination.test.tsx) — NEW (6 tests)
+- [src/shared/lib/store.ts](src/shared/lib/store.ts) — updated (listener middleware)
+- [src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx](src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx) — updated (integration)
+
+**Tests:** 77/77 passed ✓ (added 6 pagination tests)
+
+**Bug Fixed:**
+
+- **TypeScript error:** `paginatedProducts` could be `undefined`, fixed with nullish coalescing (`?? []`)
+
 ---
 
 ## 🚀 Next Steps

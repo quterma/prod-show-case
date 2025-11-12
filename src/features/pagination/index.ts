@@ -1,1 +1,2 @@
-// TODO: Export pagination feature
+export * from "./model"
+export * from "./ui/Pagination"

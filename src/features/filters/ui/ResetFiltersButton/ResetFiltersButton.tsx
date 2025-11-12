@@ -1,15 +1,16 @@
 "use client"
 
+import dynamic from "next/dynamic"
+
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 
 import { resetFilters, selectHasActiveFilters } from "../../model"
 
 /**
- * Reset filters button component
- * Self-contained - connects to Redux store directly
- * Disabled when no active filters
+ * Client-only reset filters button to avoid hydration mismatch
+ * Uses dynamic import with ssr: false
  */
-export function ResetFiltersButton() {
+function ResetFiltersButtonClient() {
   const dispatch = useAppDispatch()
   const hasActiveFilters = useAppSelector(selectHasActiveFilters)
 
@@ -35,3 +36,25 @@ export function ResetFiltersButton() {
     </button>
   )
 }
+
+// Export dynamic component with fallback
+export const ResetFiltersButton = dynamic(
+  () => Promise.resolve(ResetFiltersButtonClient),
+  {
+    ssr: false,
+    loading: () => (
+      <button
+        disabled
+        className="
+        px-4 py-2 text-base
+        font-medium rounded-md
+        bg-gray-50 text-gray-400 border border-gray-300
+        cursor-not-allowed opacity-60
+        transition-colors duration-150
+      "
+      >
+        Reset filters
+      </button>
+    ),
+  }
+)
