@@ -9,16 +9,16 @@ import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 import { Button } from "@/shared/ui"
 
 type ProductsToolbarProps = {
-  /** Available categories for filters (derived from products) */
+  /** Available categories for filters (derived from products), undefined if no valid categories */
   categories?: string[]
-  /** Available price range from products */
-  priceRange: { min: number; max: number } | null
+  /** Available price range from products, undefined if no valid prices */
+  priceRange?: { min: number; max: number }
   /** Whether any filters are currently active */
   hasActiveFilters: boolean
 }
 
 export function ProductsToolbar({
-  categories = [],
+  categories,
   priceRange,
   hasActiveFilters,
 }: ProductsToolbarProps) {
@@ -43,10 +43,10 @@ export function ProductsToolbar({
         </Button>
       </div>
 
-      {/* Filters row */}
+      {/* Filters row - conditional rendering based on available data */}
       <div className="flex flex-wrap items-center gap-6">
-        <CategoryFilter categories={categories} />
-        <PriceRangeFilter priceRange={priceRange} />
+        {categories && <CategoryFilter categories={categories} />}
+        {priceRange && <PriceRangeFilter priceRange={priceRange} />}
         <RatingFilter />
       </div>
     </div>

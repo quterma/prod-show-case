@@ -45,10 +45,10 @@ describe("useDynamicCategories", () => {
     expect(result.current).toContain("clothing")
   })
 
-  it("returns empty array when no products provided", () => {
+  it("returns undefined when no products provided", () => {
     const { result } = renderHook(() => useDynamicCategories())
 
-    expect(result.current).toEqual([])
+    expect(result.current).toBeUndefined()
   })
 
   it("memoizes result when products reference doesn't change", () => {

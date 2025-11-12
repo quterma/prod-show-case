@@ -11,10 +11,6 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
   const dispatch = useAppDispatch()
   const selectedCategories = useAppSelector((state) => state.filters.categories)
 
-  if (categories.length === 0) {
-    return null
-  }
-
   const handleToggle = (category: string) => {
     dispatch(filtersActions.toggleCategory(category))
   }

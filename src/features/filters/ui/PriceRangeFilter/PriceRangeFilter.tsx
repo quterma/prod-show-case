@@ -4,16 +4,12 @@ import * as filtersActions from "../../model/filtersSlice"
 
 type PriceRangeFilterProps = {
   /** Available price range from products */
-  priceRange: { min: number; max: number } | null
+  priceRange: { min: number; max: number }
 }
 
 export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
   const dispatch = useAppDispatch()
   const { minPrice, maxPrice } = useAppSelector((state) => state.filters)
-
-  if (!priceRange) {
-    return null
-  }
 
   const handleMinChange = (value: string) => {
     const numValue = value === "" ? null : Number(value)

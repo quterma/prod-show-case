@@ -32,17 +32,6 @@ function createTestStore(initialFilters = {}) {
 }
 
 describe("CategoryFilter", () => {
-  it("renders nothing when no categories provided", () => {
-    const store = createTestStore()
-    const { container } = render(
-      <Provider store={store}>
-        <CategoryFilter categories={[]} />
-      </Provider>
-    )
-
-    expect(container.firstChild).toBeNull()
-  })
-
   it("renders category checkboxes", () => {
     const store = createTestStore()
     render(
