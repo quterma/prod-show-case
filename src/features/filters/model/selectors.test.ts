@@ -16,6 +16,9 @@ import {
 
 const createMockState = (filters = {}) =>
   ({
+    favorites: {
+      favoriteIds: [],
+    },
     filters: {
       searchQuery: "",
       categories: [],

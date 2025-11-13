@@ -6,7 +6,9 @@ import {
   QueryFilter,
   RatingFilter,
   ResetFiltersButton,
+  ShowOnlyFavoritesToggle,
 } from "@/features/filters"
+import { ResetLocalDataButton } from "@/features/reset-local-data"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products), undefined if no valid categories */
@@ -28,9 +30,13 @@ export function ProductsToolbar({
   return (
     <div className="flex flex-col gap-4 mb-6">
       {/* Search and Reset row */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 justify-between">
         <QueryFilter />
-        <ResetFiltersButton />
+        <div className="flex items-center gap-3">
+          <ResetFiltersButton />
+          <ShowOnlyFavoritesToggle />
+          <ResetLocalDataButton />
+        </div>
       </div>
 
       {/* Filters row */}

@@ -31,6 +31,9 @@ const createMockState = (
   currentPage: number,
   pageSize: number
 ): Partial<RootState> => ({
+  favorites: {
+    favoriteIds: [],
+  },
   pagination: {
     currentPage,
     pageSize,

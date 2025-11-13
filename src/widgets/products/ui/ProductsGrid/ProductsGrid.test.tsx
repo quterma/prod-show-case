@@ -1,9 +1,26 @@
+import { configureStore } from "@reduxjs/toolkit"
 import { render, screen } from "@testing-library/react"
+import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
 import type { Product } from "@/entities/product/model"
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 
 import { ProductsGrid } from "./ProductsGrid"
+
+// Helper to create test store
+function createTestStore() {
+  return configureStore({
+    reducer: {
+      favorites: favoritesReducer,
+    },
+    preloadedState: {
+      favorites: {
+        favoriteIds: [],
+      },
+    },
+  })
+}
 
 describe("ProductsGrid", () => {
   it("renders list of products", () => {
@@ -28,7 +45,13 @@ describe("ProductsGrid", () => {
       },
     ]
 
-    render(<ProductsGrid products={mockProducts} />)
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <ProductsGrid products={mockProducts} />
+      </Provider>
+    )
 
     expect(screen.getByText("Product 1")).toBeInTheDocument()
     expect(screen.getByText("Product 2")).toBeInTheDocument()

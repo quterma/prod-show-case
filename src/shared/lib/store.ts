@@ -6,6 +6,7 @@ import {
   isAnyOf,
 } from "@reduxjs/toolkit"
 
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import filtersReducer, {
   setSearchQuery,
   toggleCategory,
@@ -24,6 +25,7 @@ import { baseApi } from "../api/baseApi"
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
 const rootReducer = combineSlices(baseApi, {
+  favorites: favoritesReducer,
   filters: filtersReducer,
   pagination: paginationReducer,
 })

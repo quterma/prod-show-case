@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react"
 import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import filtersReducer from "@/features/filters/model/filtersSlice"
 import paginationReducer, {
   PAGE_SIZE,
@@ -15,11 +16,15 @@ import { ProductsToolbar } from "./ProductsToolbar"
 function createTestStore(initialFilters = {}) {
   return configureStore({
     reducer: {
+      favorites: favoritesReducer,
       filters: filtersReducer,
       pagination: paginationReducer,
       [baseApi.reducerPath]: baseApi.reducer,
     },
     preloadedState: {
+      favorites: {
+        favoriteIds: [],
+      },
       filters: {
         searchQuery: "",
         categories: [],

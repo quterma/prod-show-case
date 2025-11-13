@@ -5,6 +5,7 @@ import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
 import type { Product } from "@/entities/product/model"
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import paginationReducer, {
   PAGE_SIZE,
 } from "@/features/pagination/model/paginationSlice"
@@ -15,10 +16,14 @@ import { useFilteredProducts } from "./useFilteredProducts"
 function createTestStore(initialState = {}) {
   return configureStore({
     reducer: {
+      favorites: favoritesReducer,
       filters: filtersReducer,
       pagination: paginationReducer,
     },
     preloadedState: {
+      favorites: {
+        favoriteIds: [],
+      },
       filters: {
         searchQuery: "",
         categories: [],

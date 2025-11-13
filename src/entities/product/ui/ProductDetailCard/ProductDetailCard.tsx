@@ -1,3 +1,7 @@
+"use client"
+
+import { FavoriteButton } from "@/features/favorites"
+
 import type { Product } from "../../model"
 
 type ProductDetailCardProps = {
@@ -6,8 +10,13 @@ type ProductDetailCardProps = {
 
 export function ProductDetailCard({ product }: ProductDetailCardProps) {
   return (
-    <div>
-      <h2>{product.title}</h2>
+    <div className="relative">
+      {/* Favorite button in top-right corner */}
+      <div className="absolute top-0 right-0">
+        <FavoriteButton productId={product.id} />
+      </div>
+
+      <h2 className="pr-12">{product.title}</h2>
       <p>Price: ${product.price}</p>
       <p>Category: {product.category}</p>
       <p>Description: {product.description}</p>

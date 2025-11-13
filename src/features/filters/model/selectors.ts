@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product/model"
+import { selectFavoriteIds } from "@/features/favorites"
 import type { RootState } from "@/shared/lib/store"
 
 import {
@@ -65,6 +66,7 @@ export const makeSelectFilteredProducts = () =>
       selectCategories,
       selectMinRating,
       selectShowOnlyFavorites,
+      selectFavoriteIds,
       selectMinPrice,
       selectMaxPrice,
     ],
@@ -74,6 +76,7 @@ export const makeSelectFilteredProducts = () =>
       categories,
       minRating,
       showOnlyFavorites,
+      favoriteIds,
       minPrice,
       maxPrice
     ) => {
@@ -84,7 +87,7 @@ export const makeSelectFilteredProducts = () =>
       result = filterBySearch(result, searchQuery)
       result = filterByCategories(result, categories)
       result = filterByRating(result, minRating)
-      result = filterByFavorites(result, showOnlyFavorites)
+      result = filterByFavorites(result, showOnlyFavorites, favoriteIds)
       result = filterByPrice(result, minPrice, maxPrice)
 
       return result

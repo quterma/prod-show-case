@@ -44,16 +44,16 @@ export function filterByRating(
 
 /**
  * Filter products by favorites status
- * TODO: Implement when favorites feature is added
+ * Returns only favorited products when showOnlyFavorites is true
  */
 export function filterByFavorites(
   products: Product[],
-  showOnlyFavorites: boolean
+  showOnlyFavorites: boolean,
+  favoriteIds: number[]
 ): Product[] {
   if (!showOnlyFavorites) return products
 
-  // TODO: Implement filtering logic (needs favorites state from store)
-  return products
+  return products.filter((product) => favoriteIds.includes(product.id))
 }
 
 /**

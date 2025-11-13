@@ -1,9 +1,27 @@
+import { configureStore } from "@reduxjs/toolkit"
 import { render, screen } from "@testing-library/react"
+import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
+
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 
 import type { Product } from "../../model"
 
 import { ProductCard } from "./ProductCard"
+
+// Helper to create test store
+function createTestStore() {
+  return configureStore({
+    reducer: {
+      favorites: favoritesReducer,
+    },
+    preloadedState: {
+      favorites: {
+        favoriteIds: [],
+      },
+    },
+  })
+}
 
 describe("ProductCard", () => {
   it("renders product information", () => {
@@ -17,7 +35,13 @@ describe("ProductCard", () => {
       rating: { rate: 4.5, count: 100 },
     }
 
-    render(<ProductCard product={mockProduct} />)
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <ProductCard product={mockProduct} />
+      </Provider>
+    )
 
     expect(screen.getByText("Test Product")).toBeInTheDocument()
     expect(screen.getByText(/\$99\.99/i)).toBeInTheDocument()
