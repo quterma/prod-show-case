@@ -17,6 +17,7 @@ function createTestStore(initialState = {}) {
       pagination: {
         currentPage: 1,
         pageSize: 10,
+        maxPage: null,
         ...initialState,
       },
     },
@@ -24,16 +25,18 @@ function createTestStore(initialState = {}) {
 }
 
 describe("Pagination", () => {
-  it("does not render when totalPages <= 1", () => {
+  it("renders pagination even with 1 page (with disabled buttons)", () => {
     const store = createTestStore()
 
-    const { container } = render(
+    render(
       <Provider store={store}>
         <Pagination totalPages={1} />
       </Provider>
     )
 
-    expect(container.firstChild).toBeNull()
+    expect(screen.getByText("Page 1 of 1")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /previous/i })).toBeDisabled()
+    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled()
   })
 
   it("renders pagination controls when totalPages > 1", () => {

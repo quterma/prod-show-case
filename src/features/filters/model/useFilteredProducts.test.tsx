@@ -5,6 +5,9 @@ import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
 import type { Product } from "@/entities/product/model"
+import paginationReducer, {
+  PAGE_SIZE,
+} from "@/features/pagination/model/paginationSlice"
 
 import filtersReducer from "./filtersSlice"
 import { useFilteredProducts } from "./useFilteredProducts"
@@ -13,6 +16,7 @@ function createTestStore(initialState = {}) {
   return configureStore({
     reducer: {
       filters: filtersReducer,
+      pagination: paginationReducer,
     },
     preloadedState: {
       filters: {
@@ -23,6 +27,11 @@ function createTestStore(initialState = {}) {
         minRating: null,
         showOnlyFavorites: false,
         ...initialState,
+      },
+      pagination: {
+        currentPage: 1,
+        pageSize: PAGE_SIZE,
+        maxPage: null,
       },
     },
   })

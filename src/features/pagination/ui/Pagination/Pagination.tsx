@@ -12,13 +12,11 @@ type PaginationProps = {
 /**
  * Pagination component - self-contained navigation controls
  * Shows "< Prev | Page X of Y | Next >" with disabled states
- * Only renders if totalPages > 1
+ * Always visible (even for 1 page) to avoid confusion when filters change page count
  */
 export function Pagination({ totalPages }: PaginationProps) {
   const dispatch = useAppDispatch()
   const currentPage = useAppSelector(selectCurrentPage)
-
-  if (totalPages <= 1) return null
 
   const canGoPrev = currentPage > 1
   const canGoNext = currentPage < totalPages

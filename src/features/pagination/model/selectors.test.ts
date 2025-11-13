@@ -34,6 +34,7 @@ const createMockState = (
   pagination: {
     currentPage,
     pageSize,
+    maxPage: null,
   },
   filters: {
     searchQuery: "",

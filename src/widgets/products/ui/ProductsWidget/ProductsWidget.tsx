@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 import {
   useGetProductsQuery,
@@ -12,8 +12,9 @@ import {
   Pagination,
   makeSelectPaginatedProducts,
   makeSelectTotalPages,
+  setMaxPage,
 } from "@/features/pagination"
-import { useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 import { ProductsGrid } from "../ProductsGrid"
@@ -29,6 +30,7 @@ type ProductsWidgetProps = {
  * Handles data fetching, filtering, and composition of toolbar + grid
  */
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
+  const dispatch = useAppDispatch()
   const { data, isLoading, error, refetch } = useGetProductsQuery()
 
   // Filter products using selector-based hook (no debounce - handled in QueryFilter)
@@ -46,6 +48,11 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     selectPaginatedProducts(state, data)
   )
   const totalPages = useAppSelector((state) => selectTotalPages(state, data))
+
+  // Sync maxPage with totalPages (for pagination bounds validation)
+  useEffect(() => {
+    dispatch(setMaxPage(totalPages))
+  }, [totalPages, dispatch])
 
   // Get search query for EmptyState message
   const searchQuery = useAppSelector(selectSearchQuery)

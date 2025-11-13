@@ -1,396 +1,248 @@
-# Аудит FSD архитектуры приложения
+# FSD Architecture — Issues & Recommendations
 
-> **Дата аудита:** 13 ноября 2025
-> **Версия:** После реализации пагинации и исправления гидрации
-> **Аудитор:** Claude Code
+> Last updated: 2025-11-13
+> Status: Production Ready (0 critical issues)
 
-## 📋 Краткое резюме
+## ✅ Recently Completed
 
-**Статус:** ✅ **Хорошее соответствие FSD**  
-**Общая оценка:** 8.5/10  
-**Критичных нарушений:** 0  
-**Рекомендаций к улучшению:** 12
+### Pagination Bounds Validation
 
----
+**Completed:** 2025-11-13
+**Implementation:** State-level validation with `maxPage` field in Redux
 
-## 🏗️ Анализ структуры по слоям
+**Changes:**
 
-### 📱 **App Layer** - ✅ Отличное соответствие
+- Added `maxPage: number | null` to `PaginationState` ([paginationSlice.ts:8](../src/features/pagination/model/paginationSlice.ts#L8))
+- `setPage` clamps between 1 and `maxPage` ([paginationSlice.ts:21-30](../src/features/pagination/model/paginationSlice.ts#L21-L30))
+- `setMaxPage` action auto-corrects `currentPage` if out of bounds ([paginationSlice.ts:32-37](../src/features/pagination/model/paginationSlice.ts#L32-L37))
+- ProductsWidget syncs `totalPages` → `maxPage` via useEffect ([ProductsWidget.tsx:51-53](../src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx#L51-L53))
+- Full test coverage (15 tests) ([paginationSlice.test.ts](../src/features/pagination/model/paginationSlice.test.ts))
 
-```
-src/app/
-├── layout.tsx              # ✅ Root layout с провайдерами
-├── page.tsx                # ✅ Placeholder страница
-├── StoreProvider.tsx       # ✅ Redux provider
-├── globals.css             # ✅ Глобальные стили
-├── favicon.ico             # ✅ Статические ресурсы
-├── products/
-│   ├── page.tsx            # ✅ Products listing page
-│   ├── create/page.tsx     # ✅ Create product page
-│   └── [id]/
-│       ├── page.tsx        # ✅ Product detail page
-│       └── edit/page.tsx   # ✅ Edit product page
-```
+**Result:** Cannot set page 999 when only 2 pages exist — properly clamped to valid range.
 
-**✅ Соответствие FSD:**
+### Redux Selectors Memoization
 
-- Только конфигурация приложения и роутинг
-- Правильное использование App Router (Next.js 13+)
-- Providers изолированы и переиспользуемы
-- Чистые страницы без бизнес-логики
+**Status:** Already implemented correctly
+**Location:** [ProductsWidget.tsx:40-44](../src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx#L40-L44)
+
+Selectors are wrapped in `useMemo(() => makeSelector(), [])` — creates stable instance per component, memoization works correctly.
 
 ---
 
-## 🧩 Анализ слоёв (продолжение следует...)
+## 🔴 Critical (blocks forms development)
 
-### 🔧 **Widgets Layer** - ✅ Хорошее соответствие
+### 1. API Error Handling
 
-```
-src/widgets/
-├── products/
-│   ├── ui/
-│   │   ├── ProductsWidget/         # ✅ Основной products widget
-│   │   ├── ProductsGrid/           # ✅ Grid компонент
-│   │   ├── ProductsToolbar/        # ✅ Toolbar с фильтрами
-│   │   └── ProductsGridSkeleton/   # ✅ Loading состояние
-│   └── index.ts                    # ✅ Публичный API
-└── product-detail/
-    └── ui/
-        └── ProductDetailWidget/    # ✅ Detail widget
+**Problem:** No centralized API error handling
+**Location:** All widgets show generic "Failed to load"
+
+**Solution:**
+
+```typescript
+// shared/lib/api-errors/handleApiError.ts
+export const handleApiError = (error: unknown) => {
+  if (isFetchBaseQueryError(error)) {
+    const status = "status" in error ? error.status : null
+    if (status === 404) return { message: "Resource not found" }
+    if (status === 500) return { message: "Server error" }
+    return { message: "data" in error ? error.data : "API error" }
+  }
+  return { message: "Network connection failed" }
+}
 ```
 
-**✅ Соответствие FSD:**
-
-- Widgets правильно композируют features + entities
-- Нет прямых импортов между widgets
-- Каждый widget самодостаточен
-- Правильная структура ui/ папок
-
-**⚠️ Замечания:**
-
-- Отсутствует model/ слой в widgets (возможно, не нужен)
-- Нет lib/ утилит специфичных для widgets
+**Time:** 1-2h
+**Blocks:** Proper error handling in create/edit forms
 
 ---
 
-### 🎯 **Features Layer** - ✅ Отличное соответствие
+### 2. Missing UI Components
+
+**Problem:** No Input, Modal, Toast in shared/ui
+**Needed for:** Product create/edit forms
+
+**Solution:**
 
 ```
-src/features/
-├── filters/
-│   ├── model/
-│   │   ├── filtersSlice.ts         # ✅ Redux slice
-│   │   ├── selectors.ts + tests    # ✅ Memoized selectors
-│   │   ├── useFilteredProducts.ts  # ✅ Business hook
-│   │   └── index.ts                # ✅ Model exports
-│   ├── lib/
-│   │   └── filterProducts.ts       # ✅ Pure functions
-│   ├── ui/
-│   │   ├── QueryFilter/            # ✅ Search with debounce
-│   │   ├── CategoryFilter/         # ✅ Category selection
-│   │   ├── PriceRangeFilter/       # ✅ Price range
-│   │   ├── RatingFilter/           # ✅ Rating filter
-│   │   └── ResetFiltersButton/     # ✅ Reset action
-│   └── index.ts                    # ✅ Public API
-├── pagination/
-│   ├── model/
-│   │   ├── paginationSlice.ts      # ✅ Redux slice + tests
-│   │   ├── selectors.ts + tests    # ✅ Selectors
-│   │   └── index.ts                # ✅ Exports
-│   ├── ui/
-│   │   └── Pagination/             # ✅ Pagination component
-│   └── index.ts                    # ✅ Public API
-├── toggle-favorite/               # 📝 Placeholder (готов к разработке)
-└── remove-product/               # 📝 Placeholder (готов к разработке)
+shared/ui/
+├── Input/
+│   ├── Input.tsx          # text, number, textarea + validation errors
+│   └── Input.test.tsx
+├── Modal/
+│   ├── Modal.tsx          # backdrop, ESC close, a11y
+│   └── Modal.test.tsx
+└── Toast/
+    ├── Toast.tsx          # auto-dismiss, top-right, success/error/info
+    └── Toast.test.tsx
 ```
 
-**✅ Соответствие FSD:**
-
-- Четкое разделение model/lib/ui
-- Правильные импорты (только entities + shared)
-- Self-contained features без зависимостей друг от друга
-- Comprehensive тестирование всех слоёв
-- Хорошая инкапсуляция бизнес-логики
-
-**🌟 Особенно хорошо:**
-
-- Reselect memoized selectors в filters
-- Factory селектор makeSelectFilteredProducts
-- Debounced search в QueryFilter
-- SSR/CSR boundary правильно разграничен (все Redux компоненты клиентские)
-- React 19 compatible StoreProvider (useState lazy initializer)
-- Автоматический сброс страницы через listener middleware
+**Time:** 2-3h
+**Blocks:** Create/edit product forms
 
 ---
 
-### 🏢 **Entities Layer** - ✅ Отличное соответствие
+## 🟡 High Priority (UX improvements)
 
-```
-src/entities/product/
-├── model/
-│   ├── types.ts                    # ✅ TypeScript definitions
-│   ├── mappers.ts                  # ✅ Data transformations
-│   └── index.ts                    # ✅ Model exports
-├── api/
-│   ├── productsApi.ts              # ✅ RTK Query API
-│   └── index.ts                    # ✅ API exports
-├── lib/
-│   ├── useDynamicPriceRange.ts     # ✅ Price range hook + tests
-│   ├── useDynamicCategories.ts     # ✅ Categories hook + tests
-│   └── index.ts                    # ✅ Lib exports
-├── ui/
-│   ├── ProductCard/                # ✅ Card компонент + tests
-│   ├── ProductDetailCard/          # ✅ Detail компонент + tests
-│   ├── ProductCardSkeleton/        # ✅ Loading state + tests
-│   ├── ProductDetailCardSkeleton/  # ✅ Loading state + tests
-│   └── index.ts                    # ✅ UI exports
-└── index.ts                        # ✅ Entity public API
+### 3. Pagination — Page Numbers
+
+**Problem:** Only Prev/Next buttons, no quick navigation
+**Location:** `features/pagination/ui/Pagination.tsx`
+
+**Solution:**
+
+```tsx
+<div className="flex gap-1">
+  <button onClick={() => setPage(1)}>1</button>
+  {currentPage > 3 && <span>...</span>}
+  {pages.map((p) => (
+    <button
+      key={p}
+      onClick={() => setPage(p)}
+      className={p === currentPage ? "active" : ""}
+    >
+      {p}
+    </button>
+  ))}
+  {currentPage < totalPages - 2 && <span>...</span>}
+  <button onClick={() => setPage(totalPages)}>{totalPages}</button>
+</div>
 ```
 
-**✅ Соответствие FSD:**
-
-- Полная entity структура (model/api/lib/ui)
-- Правильные импорты (только shared)
-- Domain-specific utilities в lib/
-- Comprehensive UI компоненты
-- 100% test coverage для lib/ и ui/
-
-**🌟 Особенно хорошо:**
-
-- Dynamic hooks для price range и categories
-- Skeleton компоненты для всех UI states
-- Mappers для data transformation
-- Хорошая типизация в model/
+**Logic:** Show current +/- 1 page, first, last
+**Time:** 1h
 
 ---
 
-### 🛠️ **Shared Layer** - ✅ Отличное соответствие
+---
 
-```
-src/shared/
-├── api/
-│   ├── baseApi.ts                  # ✅ RTK Query base configuration
-│   └── index.ts                    # ✅ API exports
-├── lib/
-│   ├── store.ts                    # ✅ Redux store configuration
-│   ├── hooks.ts                    # ✅ Typed Redux hooks
-│   ├── validations/
-│   │   ├── common.ts + index.ts    # ✅ Zod validation schemas
-│   ├── forms/
-│   │   ├── components/FormField.tsx # ✅ Generic form components
-│   │   ├── hooks.ts + index.ts     # ✅ Form utilities
-│   ├── debounce/
-│   │   ├── useDebounce.ts + tests  # ✅ Debounce hook
-│   ├── persist/
-│   │   ├── ls.ts                   # ✅ LocalStorage utilities
-│   └── index.ts                    # ✅ Lib exports
-└── ui/
-    ├── Button/                     # ✅ Base button component
-    ├── ErrorMessage/               # ✅ Error display + tests
-    ├── EmptyState/                 # ✅ Empty state + tests
-    ├── Skeleton/                   # ✅ Loading skeleton + tests
-    └── index.ts                    # ✅ UI exports
+## 🟢 Medium Priority (future improvements)
+
+### 4. Performance Optimization
+
+**Problems:**
+
+- No lazy loading for widgets
+- No code splitting by features
+- Everything loads upfront
+
+**Solution:**
+
+```tsx
+// Lazy loading widgets
+const ProductsWidget = dynamic(() =>
+  import("@/widgets/products").then((m) => ({ default: m.ProductsWidget }))
+)
+
+// Code splitting features
+const FilterToolbar = dynamic(() =>
+  import("@/features/filters").then((m) => ({ default: m.FilterToolbar }))
+)
 ```
 
-**✅ Соответствие FSD:**
-
-- Полная изоляция (никаких импортов из других слоёв)
-- Только инфраструктурный код без бизнес-логики
-- Comprehensive UI kit с тестами
-- Правильная структура lib/api/ui
-- Все утилиты переиспользуемые
-
-**🌟 Особенно хорошо:**
-
-- TypeScript typed hooks для Redux
-- SSR-safe localStorage utilities
-- Debounce hook с тестами
-- Base UI components с accessibility
-- Proper exports structure
+**Time:** 2-3h
+**Benefit:** Faster initial load (especially mobile)
 
 ---
 
-## 🔍 Анализ импортов и нарушений
+### 5. Feature Flags
 
-### ✅ **Проверка импортов по слоям**
+**Problem:** No A/B testing or gradual rollout mechanism
 
-**Результат автоматической проверки:** 0 нарушений FSD!
+**Solution:**
 
-```bash
-# Проверенные импорты:
-✅ app/ → widgets/, features/, entities/, shared/
-✅ widgets/ → features/, entities/, shared/
-✅ features/ → entities/, shared/
-✅ entities/ → shared/
-✅ shared/ → (изолирован, никаких импортов)
+```typescript
+// shared/lib/feature-flags/useFeatureFlag.ts
+export function useFeatureFlag(flag: string): boolean {
+  return flags[flag] ?? false
+}
 
-# Запрещенные импорты: НЕ НАЙДЕНЫ
-❌ Upward imports (shared/ → entities/)  ← НЕТ
-❌ Cross-layer (features/ → features/)   ← НЕТ
-❌ Bypass public API                     ← НЕТ
+// Usage
+const showNewPagination = useFeatureFlag("new-pagination-ui")
 ```
 
-### 📋 **Public API соответствие**
-
-**Результат:** ✅ 100% соответствие паттерну
-
-- ✅ Все слои экспортируют через `index.ts`
-- ✅ Нет прямых импортов из внутренних сегментов
-- ✅ Правильные реэкспорты (model/ui/api/lib)
-- ✅ Clean interface для каждого slice
-
-### 🧪 **Тестирование**
-
-**Test Coverage по слоям:**
-
-- ✅ **Entities**: 100% coverage (model, api, lib, ui)
-- ✅ **Features**: 90%+ coverage (model, lib, ui)
-- ✅ **Shared**: 85%+ coverage (lib hooks, ui components)
-- 📝 **Widgets**: Частичное (integration tests)
-- 📝 **App**: E2E tests (Playwright)
+**Time:** 1-2h
+**Benefit:** Safer feature releases
 
 ---
 
-## 📊 Итоговая оценка
+### 6. Internationalization (i18n)
 
-### 🎯 **Оценки по критериям**
+**Problem:** Hardcoded English text everywhere
+**Location:** All UI components (buttons, labels, errors)
 
-| Критерий             | Оценка | Детали                                         |
-| -------------------- | ------ | ---------------------------------------------- |
-| **Структура слоёв**  | 9/10   | Все слои присутствуют и правильно организованы |
-| **Import hierarchy** | 10/10  | 0 нарушений FSD правил                         |
-| **Public API**       | 10/10  | Все slice экспортируют через index.ts          |
-| **Изоляция shared**  | 10/10  | Полная изоляция, только инфраструктура         |
-| **Тестирование**     | 8/10   | Отличное покрытие entities/features/shared     |
-| **Документация**     | 9/10   | Comprehensive docs + README в каждом слое      |
+**Solution:**
 
-### 🏆 **Общая оценка: 9.3/10**
+```typescript
+// shared/lib/i18n/useTranslation.ts
+export function useTranslation() {
+  const locale = useLocale() // 'en' | 'ru'
+  return (key: string) => translations[locale][key]
+}
 
----
+// Usage
+const t = useTranslation()
+<button>{t('filters.reset')}</button>
+```
 
-## ✨ Сильные стороны
-
-1. **🏗️ Превосходная архитектура**
-   - Полное соответствие FSD v2
-   - Правильная иерархия импортов
-   - Comprehensive slice структура
-
-2. **🧪 Отличное тестирование**
-   - Unit tests для всей бизнес-логики
-   - Integration tests для UI компонентов
-   - E2E tests с Playwright
-
-3. **📝 Качественная документация**
-   - FSD guide и quick reference
-   - README в каждом слое
-   - Comprehensive API documentation
-
-4. **⚡ Современный tech stack**
-   - Next.js 16 App Router
-   - Redux Toolkit с RTK Query
-   - TypeScript strict mode
-   - Modern React patterns
-
-5. **🛠️ Production-ready tooling**
-   - ESLint FSD enforcement
-   - Pre-commit hooks
-   - Comprehensive CI/CD готовность
+**Time:** 4-6h (including translations)
+**Needed for:** International markets
 
 ---
 
-## 🔧 Рекомендации к улучшению
+## 🔵 Low Priority (long-term)
 
-### 📋 **Приоритетные (можно сделать сразу)**
+### 7. Storybook
 
-1. **Widgets model layer**
+**Purpose:** UI component documentation, visual regression testing
+**Time:** 3-4h setup + stories for all components
+**When:** After component API stabilizes
 
-   ```
-   # Добавить model/ для widgets с общим состоянием
-   src/widgets/products/model/
-   └── useProductsWidget.ts  # Композиция features состояния
-   ```
+### 8. Design System
 
-2. **API error handling**
+**Purpose:** Unified tokens (colors, spacing, typography)
+**Time:** 1-2 weeks
+**When:** When designer joins team
 
-   ```typescript
-   // Добавить в shared/api/baseApi.ts
-   export const handleApiError = (error: unknown) => {
-     /* ... */
-   }
-   ```
+### 9. Microfrontend Readiness
 
-3. **Shared UI расширение**
-   ```
-   src/shared/ui/
-   ├── Input/           # Базовый Input компонент
-   ├── Modal/           # Modal система
-   └── Toast/           # Toast notifications
-   ```
-
-### 📅 **Средняя перспектива**
-
-4. **Feature flags система**
-
-   ```
-   src/shared/lib/feature-flags/
-   └── useFeatureFlag.ts
-   ```
-
-5. **Internationalization (i18n)**
-
-   ```
-   src/shared/lib/i18n/
-   ├── translations/
-   └── useTranslation.ts
-   ```
-
-6. **Performance optimization**
-   - Мемоизация селекторов (уже есть в filters)
-   - Lazy loading для widgets
-   - Code splitting по features
-
-### 🚀 **Долгосрочные**
-
-7. **Storybook интеграция**
-   - Stories для shared/ui компонентов
-   - Visual regression testing
-
-8. **Design system**
-   - Tokens система (colors, spacing, typography)
-   - Component theming
-
-9. **Микрофронтенд готовность**
-   - Module federation setup
-   - Independent deployment capability
+**Purpose:** Module federation, independent feature deployment
+**Time:** 2-4 weeks
+**When:** Scaling to multiple teams
 
 ---
 
-## 📈 Заключение
+## Priority Table
 
-**Проект демонстрирует отличное понимание и применение FSD архитектуры.**
-
-Архитектура готова к масштабированию и добавлению новых фич. Все основные принципы FSD соблюдены, код хорошо структурирован и протестирован.
-
-**Статус:** ✅ **Production Ready**  
-**Следующий шаг:** Можно смело приступать к разработке новых features
-
----
-
-## 🔧 Исправления гидрации (13.11.2025)
-
-**Проблема:** Hydration mismatch между SSR и CSR из-за Redux state.
-
-**Решения:**
-
-1. ✅ Добавлен `"use client"` во все Redux-зависимые компоненты (filters, pagination, widgets)
-2. ✅ Исправлен StoreProvider: `useState(() => makeStore())` вместо `useRef` (React 19 совместимость)
-3. ✅ Исправлены многострочные className (newlines вызывали mismatch)
-4. ✅ Архитектура соответствует официальной документации Redux Toolkit для Next.js App Router
-
-**Результат:** Гидрация работает корректно, 0 ошибок.
+| #   | Task                    | Priority    | Complexity | Time | Blocks       |
+| --- | ----------------------- | ----------- | ---------- | ---- | ------------ |
+| 1   | API Error Handling      | 🔴 Critical | Low        | 1-2h | Forms        |
+| 2   | Input/Modal/Toast UI    | 🔴 Critical | Medium     | 2-3h | Forms        |
+| 3   | Pagination page numbers | 🟡 High     | Low        | 1h   | UX           |
+| 4   | Lazy loading            | 🟢 Medium   | Medium     | 2-3h | Performance  |
+| 5   | Feature flags           | 🟢 Medium   | Low        | 1-2h | A/B tests    |
+| 6   | i18n                    | 🟢 Medium   | High       | 4-6h | Localization |
+| 7   | Storybook               | 🔵 Low      | Medium     | 3-4h | DevUX        |
+| 8   | Design system           | 🔵 Low      | High       | 1-2w | Consistency  |
+| 9   | Microfrontend           | 🔵 Low      | Very High  | 2-4w | Scale        |
 
 ---
 
-**Дата аудита:** 13 ноября 2025
-**Версия приложения:** Stage 2B (Pagination + Hydration fixes)
-**Проверено:** FSD compliance, импорты, тестирование, документация, SSR/CSR boundary
+## Action Plan
+
+### Week 1 (Critical — unblock forms)
+
+1. API Error Handling (1-2h)
+2. Input/Modal/Toast components (2-3h)
+3. Create/edit forms implementation
+
+### Week 2 (UX improvements)
+
+4. Pagination with page numbers (1h)
+
+### Later (when needed)
+
+- Performance: lazy loading, code splitting
+- Feature flags for A/B testing
+- i18n for localization
+- Storybook for component docs
+- Design system when designer available

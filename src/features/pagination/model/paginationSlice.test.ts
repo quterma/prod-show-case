@@ -4,6 +4,7 @@ import paginationReducer, {
   setPage,
   setPageSize,
   resetPage,
+  setMaxPage,
   PAGE_SIZE,
 } from "./paginationSlice"
 
@@ -11,6 +12,7 @@ describe("paginationSlice", () => {
   const initialState = {
     currentPage: 1,
     pageSize: PAGE_SIZE,
+    maxPage: null,
   }
 
   describe("setPage", () => {
@@ -23,7 +25,7 @@ describe("paginationSlice", () => {
 
     it("allows setting page to 1", () => {
       const state = paginationReducer(
-        { currentPage: 5, pageSize: PAGE_SIZE },
+        { currentPage: 5, pageSize: PAGE_SIZE, maxPage: null },
         setPage(1)
       )
 
@@ -42,17 +44,26 @@ describe("paginationSlice", () => {
       expect(state.currentPage).toBe(1)
     })
 
-    it("allows large page numbers", () => {
+    it("allows large page numbers when maxPage not set", () => {
       const state = paginationReducer(initialState, setPage(999))
 
       expect(state.currentPage).toBe(999)
+    })
+
+    it("clamps page to maxPage when maxPage is set", () => {
+      const state = paginationReducer(
+        { currentPage: 1, pageSize: PAGE_SIZE, maxPage: 5 },
+        setPage(999)
+      )
+
+      expect(state.currentPage).toBe(5)
     })
   })
 
   describe("setPageSize", () => {
     it("updates page size and resets to page 1", () => {
       const state = paginationReducer(
-        { currentPage: 5, pageSize: PAGE_SIZE },
+        { currentPage: 5, pageSize: PAGE_SIZE, maxPage: null },
         setPageSize(20)
       )
 
@@ -71,7 +82,7 @@ describe("paginationSlice", () => {
   describe("resetPage", () => {
     it("resets current page to 1", () => {
       const state = paginationReducer(
-        { currentPage: 10, pageSize: PAGE_SIZE },
+        { currentPage: 10, pageSize: PAGE_SIZE, maxPage: null },
         resetPage()
       )
 
@@ -94,7 +105,42 @@ describe("paginationSlice", () => {
       expect(state).toEqual({
         currentPage: 1,
         pageSize: PAGE_SIZE,
+        maxPage: null,
       })
+    })
+  })
+
+  describe("setMaxPage", () => {
+    it("sets maxPage value", () => {
+      const state = paginationReducer(initialState, setMaxPage(10))
+
+      expect(state.maxPage).toBe(10)
+    })
+
+    it("clamps maxPage to minimum 1", () => {
+      const state = paginationReducer(initialState, setMaxPage(0))
+
+      expect(state.maxPage).toBe(1)
+    })
+
+    it("auto-corrects currentPage when it exceeds new maxPage", () => {
+      const state = paginationReducer(
+        { currentPage: 10, pageSize: PAGE_SIZE, maxPage: null },
+        setMaxPage(3)
+      )
+
+      expect(state.maxPage).toBe(3)
+      expect(state.currentPage).toBe(3)
+    })
+
+    it("does not change currentPage when within bounds", () => {
+      const state = paginationReducer(
+        { currentPage: 2, pageSize: PAGE_SIZE, maxPage: null },
+        setMaxPage(5)
+      )
+
+      expect(state.maxPage).toBe(5)
+      expect(state.currentPage).toBe(2)
     })
   })
 })

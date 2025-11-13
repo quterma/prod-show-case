@@ -4,6 +4,9 @@ import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
 import filtersReducer from "@/features/filters/model/filtersSlice"
+import paginationReducer, {
+  PAGE_SIZE,
+} from "@/features/pagination/model/paginationSlice"
 import { baseApi } from "@/shared/api/baseApi"
 
 import { ProductsToolbar } from "./ProductsToolbar"
@@ -13,6 +16,7 @@ function createTestStore(initialFilters = {}) {
   return configureStore({
     reducer: {
       filters: filtersReducer,
+      pagination: paginationReducer,
       [baseApi.reducerPath]: baseApi.reducer,
     },
     preloadedState: {
@@ -24,6 +28,11 @@ function createTestStore(initialFilters = {}) {
         minRating: null,
         showOnlyFavorites: false,
         ...initialFilters,
+      },
+      pagination: {
+        currentPage: 1,
+        pageSize: PAGE_SIZE,
+        maxPage: null,
       },
     },
     middleware: (getDefaultMiddleware) =>
