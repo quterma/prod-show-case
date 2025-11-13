@@ -1,3 +1,5 @@
+"use client"
+
 import {
   CategoryFilter,
   PriceRangeFilter,
@@ -15,6 +17,7 @@ type ProductsToolbarProps = {
 
 /**
  * ProductsToolbar - Composition of filter components
+ * Client-side component to avoid hydration issues with Redux-connected filters
  * Only receives domain props (categories, priceRange)
  * All filter components are self-contained and connect to Redux directly
  */

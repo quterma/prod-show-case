@@ -1,22 +1,23 @@
 "use client"
 
-import { useRef } from "react"
+import { useState } from "react"
 import { Provider } from "react-redux"
 
-import { makeStore, type AppStore } from "@/shared/lib/store"
+import { makeStore } from "@/shared/lib/store"
 
-interface StoreProviderProps {
+/**
+ * StoreProvider - Redux store provider following official RTK pattern
+ * React 19 compatible: uses useState with lazy initializer
+ * See: https://redux-toolkit.js.org/usage/nextjs
+ */
+export default function StoreProvider({
+  children,
+}: {
   children: React.ReactNode
-}
+}) {
+  // Use useState with lazy initializer to create store only once
+  // This is React 19 compatible and avoids ref access during render
+  const [store] = useState(() => makeStore())
 
-export default function StoreProvider({ children }: StoreProviderProps) {
-  const storeRef = useRef<AppStore | undefined>(undefined)
-  // eslint-disable-next-line react-hooks/refs
-  if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore()
-  }
-
-  // eslint-disable-next-line react-hooks/refs
-  return <Provider store={storeRef.current}>{children}</Provider>
+  return <Provider store={store}>{children}</Provider>
 }

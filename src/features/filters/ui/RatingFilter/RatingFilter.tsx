@@ -1,3 +1,5 @@
+"use client"
+
 import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
 
 import { selectMinRating, setMinRating } from "../../model"
