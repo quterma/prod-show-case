@@ -6,6 +6,29 @@
 
 ## [Unreleased]
 
+### Improved - Reset Local Data now resets filters
+
+**Дата:** 2025-01-13
+
+**Описание:** Reset Local Data теперь сбрасывает не только избранное и удаленные продукты, но и все активные фильтры.
+
+**Изменения:**
+
+- `resetLocalData` thunk теперь вызывает `resetFilters()` для сброса всех фильтров
+- Добавлены unit-тесты для `resetLocalData` thunk (2 теста)
+- Обновлена документация в `docs/features-overview.md`
+
+**UX обоснование:**
+После очистки локальных данных логично видеть полный список продуктов без активных фильтров. Например, фильтр "показывать только избранное" не имеет смысла после очистки избранного.
+
+**Файлы:**
+
+- `src/features/reset-local-data/model/resetLocalData.ts` - добавлен `resetFilters()`
+- `src/features/reset-local-data/model/resetLocalData.test.ts` - новый файл с тестами
+- `docs/features-overview.md` - обновлена документация
+
+---
+
 ### Added - Remove Product Feature (Soft Delete)
 
 **Дата:** 2025-01-13
