@@ -14,7 +14,7 @@ import {
   makeSelectTotalPages,
   setMaxPage,
 } from "@/features/pagination"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 import { ProductsGrid } from "../ProductsGrid"

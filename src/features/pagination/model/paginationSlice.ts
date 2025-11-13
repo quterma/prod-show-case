@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 export const PAGE_SIZE = 10
 
-type PaginationState = {
+export type PaginationState = {
   currentPage: number
   pageSize: number
   maxPage: number | null // null when data not loaded yet

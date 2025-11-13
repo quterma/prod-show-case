@@ -3,10 +3,11 @@ export {
   addRemoved,
   removeRemoved,
   resetRemoved,
-  removedReducer,
+} from "./removedSlice"
+export { default as removedReducer } from "./removedSlice"
+
+export {
   selectRemovedIds,
   makeSelectIsRemoved,
   makeSelectVisibleProducts,
-} from "./model"
-
-export { RemoveButton } from "./ui"
+} from "./selectors"

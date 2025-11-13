@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation"
 
-import { ProductDetailWidget } from "@/widgets/product-detail/ui"
+import { ProductDetailWidget } from "@/widgets/product-detail"
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>()

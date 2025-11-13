@@ -1,1 +1,3 @@
-export { ResetLocalDataButton } from "./ui/ResetLocalDataButton"
+export { resetLocalData } from "./model"
+
+export { ResetLocalDataButton } from "./ui"

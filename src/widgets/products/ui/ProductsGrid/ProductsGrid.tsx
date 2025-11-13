@@ -1,5 +1,5 @@
-import type { Product } from "@/entities/product/model"
-import { ProductCard } from "@/entities/product/ui"
+import type { Product } from "@/entities/product"
+import { ProductCard } from "@/entities/product"
 
 type ProductsGridProps = {
   products: Product[]

@@ -1,1 +1,1 @@
-export * from "./ProductsToolbar"
+export { ProductsToolbar } from "./ProductsToolbar"

@@ -1,6 +1,7 @@
 "use client"
 
-import { FavoriteButton } from "@/features/favorites"
+import { FavoriteToggle } from "@/features/favorites"
+import { RemoveButton } from "@/features/remove-product"
 
 import type { Product } from "../../model"
 
@@ -11,12 +12,13 @@ type ProductDetailCardProps = {
 export function ProductDetailCard({ product }: ProductDetailCardProps) {
   return (
     <div className="relative">
-      {/* Favorite button in top-right corner */}
-      <div className="absolute top-0 right-0">
-        <FavoriteButton productId={product.id} />
+      {/* Action buttons in top-right corner */}
+      <div className="absolute top-0 right-0 flex gap-1">
+        <RemoveButton productId={product.id} />
+        <FavoriteToggle productId={product.id} />
       </div>
 
-      <h2 className="pr-12">{product.title}</h2>
+      <h2 className="pr-20">{product.title}</h2>
       <p>Price: ${product.price}</p>
       <p>Category: {product.category}</p>
       <p>Description: {product.description}</p>

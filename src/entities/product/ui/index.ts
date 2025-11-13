@@ -1,4 +1,4 @@
-export * from "./ProductCard"
-export * from "./ProductCardSkeleton"
-export * from "./ProductDetailCard"
-export * from "./ProductDetailCardSkeleton"
+export { ProductCard } from "./ProductCard"
+export { ProductCardSkeleton } from "./ProductCardSkeleton"
+export { ProductDetailCard } from "./ProductDetailCard"
+export { ProductDetailCardSkeleton } from "./ProductDetailCardSkeleton"

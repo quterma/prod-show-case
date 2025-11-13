@@ -1,8 +1,8 @@
 "use client"
 
-import { toggleShowOnlyFavorites } from "@/features/filters/model/filtersSlice"
-import { selectShowOnlyFavorites } from "@/features/filters/model/selectors"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib"
+
+import { toggleShowOnlyFavorites, selectShowOnlyFavorites } from "../../model"
 
 /**
  * ShowOnlyFavoritesToggle - toggles between showing all products or only favorites

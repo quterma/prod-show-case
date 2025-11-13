@@ -1,1 +1,1 @@
-export * from "./ProductsWidget"
+export { ProductsWidget } from "./ProductsWidget"

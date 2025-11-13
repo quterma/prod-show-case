@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { useDebounce } from "@/shared/lib/debounce"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useDebounce, useAppDispatch, useAppSelector } from "@/shared/lib"
 
 import { selectSearchQuery, setSearchQuery } from "../../model"
 

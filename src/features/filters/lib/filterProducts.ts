@@ -1,6 +1,20 @@
 import type { Product } from "@/entities/product/model"
 
 /**
+ * Filter out removed products
+ * Returns only visible (non-removed) products
+ * Should be applied FIRST in the filter chain
+ */
+export function filterByRemoved(
+  products: Product[],
+  removedIds: number[]
+): Product[] {
+  if (removedIds.length === 0) return products
+
+  return products.filter((product) => !removedIds.includes(product.id))
+}
+
+/**
  * Filter products by search query (case-insensitive)
  * Searches in product title and description
  */

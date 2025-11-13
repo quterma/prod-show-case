@@ -19,6 +19,9 @@ const createMockState = (filters = {}) =>
     favorites: {
       favoriteIds: [],
     },
+    removed: {
+      removedIds: [],
+    },
     filters: {
       searchQuery: "",
       categories: [],

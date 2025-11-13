@@ -1,1 +1,1 @@
-export * from "./ProductsGrid"
+export { ProductsGrid } from "./ProductsGrid"

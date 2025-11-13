@@ -8,6 +8,7 @@ import filtersReducer from "@/features/filters/model/filtersSlice"
 import paginationReducer, {
   PAGE_SIZE,
 } from "@/features/pagination/model/paginationSlice"
+import removedReducer from "@/features/remove-product/model/removedSlice"
 import { baseApi } from "@/shared/api/baseApi"
 
 import { ProductsToolbar } from "./ProductsToolbar"
@@ -17,6 +18,7 @@ function createTestStore(initialFilters = {}) {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
+      removed: removedReducer,
       filters: filtersReducer,
       pagination: paginationReducer,
       [baseApi.reducerPath]: baseApi.reducer,
@@ -24,6 +26,9 @@ function createTestStore(initialFilters = {}) {
     preloadedState: {
       favorites: {
         favoriteIds: [],
+      },
+      removed: {
+        removedIds: [],
       },
       filters: {
         searchQuery: "",

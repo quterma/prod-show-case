@@ -2,9 +2,11 @@ import { createSelector } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product/model"
 import { selectFavoriteIds } from "@/features/favorites"
+import { selectRemovedIds } from "@/features/remove-product"
 import type { RootState } from "@/shared/lib/store"
 
 import {
+  filterByRemoved,
   filterBySearch,
   filterByCategories,
   filterByRating,
@@ -62,6 +64,7 @@ export const makeSelectFilteredProducts = () =>
       // Extract products from second argument
       (_state: RootState, products: Product[] | undefined) => products,
       // Extract individual filter values from state
+      selectRemovedIds,
       selectSearchQuery,
       selectCategories,
       selectMinRating,
@@ -72,6 +75,7 @@ export const makeSelectFilteredProducts = () =>
     ],
     (
       products,
+      removedIds,
       searchQuery,
       categories,
       minRating,
@@ -83,7 +87,9 @@ export const makeSelectFilteredProducts = () =>
       if (!products || products.length === 0) return undefined
 
       // Apply filters sequentially (cascade pattern)
+      // IMPORTANT: filterByRemoved must be FIRST to hide removed products everywhere
       let result = products
+      result = filterByRemoved(result, removedIds)
       result = filterBySearch(result, searchQuery)
       result = filterByCategories(result, categories)
       result = filterByRating(result, minRating)

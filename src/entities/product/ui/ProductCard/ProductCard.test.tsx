@@ -4,6 +4,7 @@ import { Provider } from "react-redux"
 import { describe, it, expect } from "vitest"
 
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
+import removedReducer from "@/features/remove-product/model/removedSlice"
 
 import type { Product } from "../../model"
 
@@ -14,10 +15,14 @@ function createTestStore() {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
+      removed: removedReducer,
     },
     preloadedState: {
       favorites: {
         favoriteIds: [],
+      },
+      removed: {
+        removedIds: [],
       },
     },
   })

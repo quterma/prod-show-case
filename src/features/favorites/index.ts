@@ -9,4 +9,4 @@ export {
   makeSelectFavoriteProducts,
 } from "./model"
 
-export { FavoriteButton } from "./ui/FavoriteButton"
+export { FavoriteToggle } from "./ui"

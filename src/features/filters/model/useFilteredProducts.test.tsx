@@ -9,6 +9,7 @@ import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import paginationReducer, {
   PAGE_SIZE,
 } from "@/features/pagination/model/paginationSlice"
+import removedReducer from "@/features/remove-product/model/removedSlice"
 
 import filtersReducer from "./filtersSlice"
 import { useFilteredProducts } from "./useFilteredProducts"
@@ -17,12 +18,16 @@ function createTestStore(initialState = {}) {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
+      removed: removedReducer,
       filters: filtersReducer,
       pagination: paginationReducer,
     },
     preloadedState: {
       favorites: {
         favoriteIds: [],
+      },
+      removed: {
+        removedIds: [],
       },
       filters: {
         searchQuery: "",

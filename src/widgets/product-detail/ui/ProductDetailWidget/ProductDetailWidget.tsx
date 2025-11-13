@@ -1,10 +1,10 @@
 "use client"
 
-import { useGetProductByIdQuery } from "@/entities/product"
 import {
+  useGetProductByIdQuery,
   ProductDetailCard,
   ProductDetailCardSkeleton,
-} from "@/entities/product/ui"
+} from "@/entities/product"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 type ProductDetailWidgetProps = {

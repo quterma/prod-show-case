@@ -2,11 +2,11 @@
 
 import { useMemo } from "react"
 
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib"
 
 import { toggleFavorite, makeSelectIsFavorite } from "../../model"
 
-type FavoriteButtonProps = {
+type FavoriteToggleProps = {
   /** Product ID to toggle favorite status */
   productId: number
   /** Optional additional CSS classes */
@@ -14,14 +14,14 @@ type FavoriteButtonProps = {
 }
 
 /**
- * FavoriteButton - toggles favorite status for a product
+ * FavoriteToggle - toggles favorite status for a product
  * Shows filled heart if favorited, outline heart if not
  * Integrates with Redux favorites slice
  */
-export function FavoriteButton({
+export function FavoriteToggle({
   productId,
   className = "",
-}: FavoriteButtonProps) {
+}: FavoriteToggleProps) {
   const dispatch = useAppDispatch()
 
   // Create memoized selector instance for this product

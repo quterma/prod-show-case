@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-import { ProductsWidget } from "@/widgets/products/ui"
+import { ProductsWidget } from "@/widgets/products"
 
 export default function ProductsPage() {
   const router = useRouter()

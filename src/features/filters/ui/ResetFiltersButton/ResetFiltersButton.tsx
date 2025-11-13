@@ -1,6 +1,6 @@
 "use client"
 
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib"
 
 import { resetFilters, selectHasActiveFilters } from "../../model"
 

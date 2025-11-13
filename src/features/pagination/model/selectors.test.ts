@@ -34,6 +34,9 @@ const createMockState = (
   favorites: {
     favoriteIds: [],
   },
+  removed: {
+    removedIds: [],
+  },
   pagination: {
     currentPage,
     pageSize,

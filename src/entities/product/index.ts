@@ -1,4 +1,25 @@
-export * from "./model"
-export * from "./api"
-export * from "./lib"
-export * from "./ui"
+// Model exports (types and mappers)
+export type {
+  ProductRating,
+  Product,
+  ProductDTO,
+  ProductsList,
+  ProductsListDTO,
+  ProductFilters,
+  ProductState,
+} from "./model"
+export { mapProductDTO, mapProductsDTO } from "./model"
+
+// API exports
+export { productsApi, useGetProductsQuery, useGetProductByIdQuery } from "./api"
+
+// Lib exports (hooks)
+export { useDynamicCategories, useDynamicPriceRange } from "./lib"
+
+// UI exports
+export {
+  ProductCard,
+  ProductCardSkeleton,
+  ProductDetailCard,
+  ProductDetailCardSkeleton,
+} from "./ui"
