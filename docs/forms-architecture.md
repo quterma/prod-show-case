@@ -499,7 +499,7 @@ export function ProductForm({
 ```typescript
 "use client"
 
-import { useAppDispatch } from "@/shared/lib/hooks"
+import { useAppDispatch } from "@/shared/lib/store"
 import { addLocalProduct } from "../../model/localProductsSlice"
 import { formToProductInput, createLocalProduct } from "@/entities/product"
 import type { ProductFormData } from "@/shared/lib/validations/product"
@@ -541,7 +541,7 @@ export function CreateProductDialog({ onClose }: CreateProductDialogProps) {
 ```typescript
 "use client"
 
-import { useAppDispatch, useAppSelector } from "@/shared/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 import { updateLocalProduct } from "../../model/localProductsSlice"
 import { selectLocalProductById } from "../../model/selectors"
 import { productToFormData } from "@/entities/product"
@@ -619,7 +619,7 @@ const rootReducer = combineSlices(baseApi, {
 ```typescript
 import { useGetProductsQuery } from "@/entities/product"
 import { selectLocalProducts } from "@/features/product-form/model/selectors"
-import { useAppSelector } from "@/shared/lib/hooks"
+import { useAppSelector } from "@/shared/lib/store"
 
 export function ProductsWidget() {
   const { data: apiProducts, isLoading, error } = useGetProductsQuery()

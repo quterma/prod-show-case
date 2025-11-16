@@ -15,7 +15,7 @@ import {
   setMaxPage,
   resetPage,
 } from "@/features/pagination"
-import { useAppDispatch, useAppSelector } from "@/shared/lib"
+import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
 import { ProductsGrid } from "../ProductsGrid"

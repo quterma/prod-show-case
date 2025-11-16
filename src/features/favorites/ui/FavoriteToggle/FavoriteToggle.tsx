@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 
-import { useAppDispatch, useAppSelector } from "@/shared/lib"
+import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 
 import { toggleFavorite, makeSelectIsFavorite } from "../../model"
 

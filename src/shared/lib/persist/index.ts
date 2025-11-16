@@ -5,4 +5,5 @@
 
 export { getFromLS, setToLS, removeFromLS } from "./ls"
 export { safeLoadFromStorage } from "./safeLoadFromStorage"
-export { createHydratedState } from "./createHydratedState"
+export { createPersistMiddleware, flushPersist } from "./persistMiddleware"
+export { createPreloadedState } from "./createPreloadedState"

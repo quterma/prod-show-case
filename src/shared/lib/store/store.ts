@@ -1,15 +1,13 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
-import {
-  favoritesReducer,
-  getInitialFavoritesState,
-} from "@/features/favorites"
+import { favoritesReducer } from "@/features/favorites"
 import { filtersReducer } from "@/features/filters"
 import { localProductsReducer } from "@/features/local-products"
 import { paginationReducer } from "@/features/pagination"
 
-import { baseApi } from "../api/baseApi"
+import { baseApi } from "../../api/baseApi"
+import { createPersistMiddleware, createPreloadedState } from "../persist/"
 
 const rootReducer = combineSlices(baseApi, {
   favorites: favoritesReducer,
@@ -18,13 +16,11 @@ const rootReducer = combineSlices(baseApi, {
   localProducts: localProductsReducer,
 })
 
-// Preloaded state with hydration from localStorage
-// Each slice provides a getter function for hydration
-const preloadedState = {
-  favorites: getInitialFavoritesState(),
-}
-
 export const makeStore = () => {
+  // Create preloadedState per store instance (important for SSR)
+  const preloadedState = createPreloadedState()
+  const persistMiddleware = createPersistMiddleware()
+
   return configureStore({
     reducer: rootReducer,
     preloadedState,
@@ -40,7 +36,9 @@ export const makeStore = () => {
             "persist/REGISTER",
           ],
         },
-      }).concat(baseApi.middleware),
+      })
+        .concat(baseApi.middleware)
+        .concat(persistMiddleware),
     devTools: process.env.NODE_ENV !== "production",
   })
 }

@@ -46,10 +46,32 @@ export function setToLS<T>(key: string, value: T): void {
     }
 
     const serialized = JSON.stringify(value)
+    const sizeInKB = serialized.length / 1024
+
+    // Warn if data is large (> 1MB)
+    if (sizeInKB > 1024) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Large localStorage write (${key}): ${sizeInKB.toFixed(2)}KB. Consider data optimization.`
+      )
+    }
+
     window.localStorage.setItem(key, serialized)
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error writing to localStorage (key: ${key}):`, error)
+    // Special handling for quota exceeded
+    if (
+      error instanceof DOMException &&
+      (error.name === "QuotaExceededError" ||
+        error.name === "NS_ERROR_DOM_QUOTA_REACHED")
+    ) {
+      // eslint-disable-next-line no-console
+      console.error(
+        `localStorage quota exceeded (${key}). Consider clearing old data or reducing data size.`
+      )
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(`Error writing to localStorage (key: ${key}):`, error)
+    }
   }
 }
 

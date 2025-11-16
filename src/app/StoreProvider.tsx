@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 
+import { flushPersist } from "@/shared/lib/persist"
 import { makeStore } from "@/shared/lib/store"
 
 /**
@@ -18,6 +19,19 @@ export default function StoreProvider({
   // Use useState with lazy initializer to create store only once
   // This is React 19 compatible and avoids ref access during render
   const [store] = useState(() => makeStore())
+
+  // Flush pending persist operations on page unload to prevent data loss
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      flushPersist(store)
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [store])
 
   return <Provider store={store}>{children}</Provider>
 }

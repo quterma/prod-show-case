@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import { setToLS, safeLoadFromStorage } from "@/shared/lib/persist"
+import { removeProduct } from "@/features/local-products/model/localProductsSlice"
+import { safeLoadFromStorage } from "@/shared/lib/persist"
 
 /**
  * Storage key for favorites (versioned)
@@ -57,9 +58,6 @@ const favoritesSlice = createSlice({
         // Remove from favorites
         state.favoriteIds.splice(index, 1)
       }
-
-      // Persist to localStorage
-      setToLS(FAVORITES_STORAGE_KEY, state.favoriteIds)
     },
 
     /**
@@ -69,7 +67,6 @@ const favoritesSlice = createSlice({
       const id = action.payload
       if (!state.favoriteIds.includes(id)) {
         state.favoriteIds.push(id)
-        setToLS(FAVORITES_STORAGE_KEY, state.favoriteIds)
       }
     },
 
@@ -82,7 +79,6 @@ const favoritesSlice = createSlice({
 
       if (index !== -1) {
         state.favoriteIds.splice(index, 1)
-        setToLS(FAVORITES_STORAGE_KEY, state.favoriteIds)
       }
     },
 
@@ -92,8 +88,17 @@ const favoritesSlice = createSlice({
      */
     resetFavorites: (state) => {
       state.favoriteIds = []
-      setToLS(FAVORITES_STORAGE_KEY, [])
     },
+  },
+  extraReducers: (builder) => {
+    // Auto-remove from favorites when product is removed
+    builder.addCase(removeProduct, (state, action) => {
+      const productId = action.payload
+      const index = state.favoriteIds.indexOf(productId)
+      if (index !== -1) {
+        state.favoriteIds.splice(index, 1)
+      }
+    })
   },
 })
 

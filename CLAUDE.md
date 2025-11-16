@@ -155,13 +155,13 @@ ui/ базовые атомы, только если реально переис
 
 **Key Files:**
 
-- Store setup: [src/shared/lib/store.ts](src/shared/lib/store.ts)
+- Store setup: [src/shared/lib/store/store.ts](src/shared/lib/store/store.ts)
+- Typed hooks: [src/shared/lib/store/hooks.ts](src/shared/lib/store/hooks.ts)
 - Base API: [src/shared/api/baseApi.ts](src/shared/api/baseApi.ts)
-- Typed hooks: [src/shared/lib/hooks.ts](src/shared/lib/hooks.ts)
 
 **Usage:**
 
-- Use typed hooks: `useAppDispatch()`, `useAppSelector()`, `useAppStore()`
+- Use typed hooks from `@/shared/lib/store`: `useAppDispatch()`, `useAppSelector()`, `useAppStore()`
 - RTK Query base API configured with tag types: `["Product", "Category", "User"]`
 - Feature-specific APIs should inject endpoints into the base API
 - Store provider is at [src/app/StoreProvider.tsx](src/app/StoreProvider.tsx)

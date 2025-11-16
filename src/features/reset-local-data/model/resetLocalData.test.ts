@@ -99,8 +99,8 @@ describe("resetLocalData thunk", () => {
       showOnlyFavorites: false,
     })
 
-    // Check localStorage was cleared (using new versioned key)
-    expect(mockLocalStorage.getItem("app:favorites:v1")).toBe("[]")
+    // Note: localStorage persistence is handled by persistMiddleware
+    // which is not included in this unit test (tested separately in integration tests)
   })
 
   it("should invalidate RTK Query cache", () => {

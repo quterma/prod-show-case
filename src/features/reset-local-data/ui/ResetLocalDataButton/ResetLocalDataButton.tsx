@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { useAppDispatch } from "@/shared/lib"
+import { useAppDispatch } from "@/shared/lib/store"
 
 import { resetLocalData } from "../../model"
 

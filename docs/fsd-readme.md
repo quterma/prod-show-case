@@ -302,7 +302,7 @@ import { SearchInput } from "@/features/search"
 import type { Product } from "@/entities/product"
 
 // entities/product → shared/lib
-import { getFromLS } from "@/shared/lib"
+import { getFromLS } from "@/shared/lib/persist"
 ```
 
 ### ❌ Bad Examples

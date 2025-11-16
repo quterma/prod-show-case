@@ -16,8 +16,9 @@
 
 **State Management:**
 
-- Redux slice `favoritesSlice` хранит массив ID избранных продуктов
-- Персистентность через localStorage (ключ: `prod-showcase:favorites`)
+- Redux slice `favoritesSlice` хранит `{ favoriteIds: number[] }`
+- Автоматическая персистентность через persist middleware (ключ: `app:favorites:v1`)
+- При удалении продукта автоматически удаляется из избранного (через `extraReducers`)
 - Селекторы: `makeSelectIsFavorite`, `selectFavoriteIds`
 
 **Действия:**
@@ -29,33 +30,39 @@
 
 ---
 
-### remove-product (Удаление продуктов)
+### local-products (Локальные продукты и удаление)
 
-**Расположение:** `src/features/remove-product/`
+**Расположение:** `src/features/local-products/`
 
-**Описание:** Soft-delete функциональность для скрытия продуктов с подтверждением через browser confirm.
+**Описание:** Унифицированное управление локально созданными продуктами, изменениями API-продуктов и soft-delete функциональностью.
 
 **Компоненты:**
 
-- `RemoveButton` - Кнопка удаления с иконкой корзины и подтверждением
+- Feature не имеет собственных UI компонентов (используется другими features)
 
 **State Management:**
 
-- Redux slice `removedSlice` хранит массив ID удаленных продуктов
-- Персистентность через localStorage (ключ: `prod-showcase:removed`)
-- Селекторы: `makeSelectIsRemoved`, `makeSelectVisibleProducts`
+- Redux slice `localProductsSlice` с полной структурой:
+  ```ts
+  {
+    localProductsById: Record<number, LocalProductEntry>  // Локальные продукты и overrides
+    removedApiIds: number[]                                // ID удаленных API-продуктов
+    nextLocalId: number                                    // Счетчик для новых ID (начиная с -1)
+  }
+  ```
+- Автоматическая персистентность через persist middleware (ключ: `app:localProducts:v1`)
+- Гидрация при старте приложения восстанавливает все локальные изменения
 
 **Действия:**
 
-- `toggleRemoved(productId)` - переключение статуса удаления
-- `addRemoved(productId)` - пометить как удаленный
-- `removeRemoved(productId)` - восстановить продукт
-- `resetRemoved()` - очистка всех удаленных
+- `upsertLocalProduct({ id?, data, source })` - создание/обновление локального продукта
+- `removeProduct(productId)` - мягкое удаление (toggle для API-продуктов, жесткое для локальных)
+- `resetLocalProducts()` - полная очистка локальных данных
 
 **Интеграция:**
 
 - Удаленные продукты фильтруются ПЕРВЫМИ в каскаде фильтров (`filterByRemoved`)
-- RemoveButton размещен рядом с FavoriteToggle в обеих карточках продукта
+- При удалении продукта автоматически удаляется из избранного (через inter-slice communication)
 
 ---
 
@@ -150,8 +157,8 @@
 **Действия:**
 Thunk `resetLocalData()` последовательно:
 
-1. `resetFavorites()` - очищает избранное из Redux + localStorage
-2. `resetRemoved()` - очищает удаленные продукты из Redux + localStorage
+1. `resetFavorites()` - очищает избранное из Redux (persist middleware автоматически обновит localStorage)
+2. `resetLocalProducts()` - очищает локальные продукты из Redux (persist middleware автоматически обновит localStorage)
 3. `resetFilters()` - сбрасывает все активные фильтры к начальным значениям
 4. Инвалидирует RTK Query кеш для продуктов (триггерит refetch)
 
@@ -174,13 +181,38 @@ Thunk `resetLocalData()` последовательно:
 
 Все селекторы используют фабрики (`makeSelect*`) для создания мемоизированных экземпляров через `createSelector`.
 
-### localStorage Persistence
+### State Persistence System
 
-Персистентность через SSR-safe утилиты из `shared/lib/persist`:
+**Централизованная архитектура** через `shared/lib/persist`:
 
-- `getFromLS(key)` - чтение с проверкой typeof window
-- `setToLS(key, value)` - запись с автоматической сериализацией
-- `removeFromLS(key)` - удаление
+**Компоненты системы:**
+
+- `persistRegistry` - реестр всех персистируемых слайсов
+- `persistMiddleware` - автоматическое сохранение изменений с debounce (300ms)
+- `createPreloadedState()` - автоматическая гидрация при создании store
+- `flushPersist()` - принудительное сохранение при beforeunload
+
+**Персистируемые слайсы:**
+
+- `favorites` → `app:favorites:v1` - избранные продукты
+- `localProducts` → `app:localProducts:v1` - локальные продукты, изменения, удаления
+
+**НЕ персистируются:**
+
+- `filters` - UI state, должен сбрасываться при новом визите
+- `pagination` - UI state, всегда начинается с первой страницы
+
+**SSR-безопасность:**
+
+- Все операции проверяют `typeof window !== "undefined"`
+- `createPreloadedState()` вызывается внутри `makeStore()` для каждого запроса
+- На сервере возвращаются fallback значения (пустые массивы/объекты)
+
+**Утилиты:**
+
+- `getFromLS(key)` - чтение с JSON.parse
+- `setToLS(key, value)` - запись с JSON.stringify + size warning
+- `safeLoadFromStorage(key, fallback)` - загрузка с валидацией типов
 
 ### Client Components
 

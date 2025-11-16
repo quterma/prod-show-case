@@ -1,6 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product/model"
+import { safeLoadFromStorage } from "@/shared/lib/persist"
+
+/**
+ * Storage key for local products (versioned)
+ * Format: "app:{feature}:v{version}"
+ */
+export const LOCAL_PRODUCTS_STORAGE_KEY = "app:localProducts:v1"
 
 /**
  * Local product entry: stores product data and source (local or API override)
@@ -16,7 +23,7 @@ type LocalProductEntry = {
  * - localProductsById: stores created/modified products (local creations + API overrides)
  * - removedApiIds: tracks soft-deleted API products (local products are just removed from localProductsById)
  */
-type LocalProductsState = {
+export type LocalProductsState = {
   /** Map of product ID to local product entry */
   localProductsById: Record<number, LocalProductEntry>
   /** IDs of removed API products (local products are deleted directly) */
@@ -25,11 +32,31 @@ type LocalProductsState = {
   nextLocalId: number
 }
 
-const initialState: LocalProductsState = {
+/**
+ * Default state for local products (used as fallback)
+ */
+const defaultLocalProductsState: LocalProductsState = {
   localProductsById: {},
   removedApiIds: [],
   nextLocalId: -1,
 }
+
+/**
+ * Hydration getter for local products
+ * Use this in store.ts preloadedState to load from localStorage
+ */
+export function getInitialLocalProductsState(): LocalProductsState {
+  return safeLoadFromStorage(
+    LOCAL_PRODUCTS_STORAGE_KEY,
+    defaultLocalProductsState
+  )
+}
+
+/**
+ * Initial state for local products (pure default, no side effects)
+ * Hydration happens via preloadedState in store.ts
+ */
+const initialState: LocalProductsState = defaultLocalProductsState
 
 /**
  * Local products slice - manages local products, API overrides, and soft-deletions
