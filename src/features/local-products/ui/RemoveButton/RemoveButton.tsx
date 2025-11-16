@@ -4,7 +4,7 @@ import { useMemo } from "react"
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib"
 
-import { toggleRemoved, makeSelectIsRemoved } from "../../model"
+import { removeProduct, makeSelectIsRemoved } from "../../model"
 
 type RemoveButtonProps = {
   /** Product ID to toggle removed status */
@@ -16,7 +16,12 @@ type RemoveButtonProps = {
 /**
  * RemoveButton - soft-deletes/restores a product
  * Shows trash icon, uses browser confirm() for MVP
- * Integrates with Redux removed slice
+ * Integrates with new local-products slice
+ *
+ * Logic:
+ * - Local products (id < 0): permanently delete from localProductsById
+ * - API products (id > 0): soft-delete by adding to removedApiIds
+ * - Already removed: restore by removing from removedApiIds
  */
 export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
   const dispatch = useAppDispatch()
@@ -35,7 +40,7 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
     )
 
     if (confirmed) {
-      dispatch(toggleRemoved(productId))
+      dispatch(removeProduct(productId))
     }
   }
 

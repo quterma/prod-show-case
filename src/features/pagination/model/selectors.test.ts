@@ -34,8 +34,10 @@ const createMockState = (
   favorites: {
     favoriteIds: [],
   },
-  removed: {
-    removedIds: [],
+  localProducts: {
+    localProductsById: {},
+    removedApiIds: [],
+    nextLocalId: -1,
   },
   pagination: {
     currentPage,

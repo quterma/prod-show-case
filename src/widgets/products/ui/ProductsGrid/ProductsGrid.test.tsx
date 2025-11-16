@@ -5,7 +5,7 @@ import { describe, it, expect } from "vitest"
 
 import type { Product } from "@/entities/product/model"
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
-import removedReducer from "@/features/remove-product/model/removedSlice"
+import { localProductsReducer } from "@/features/local-products"
 
 import { ProductsGrid } from "./ProductsGrid"
 
@@ -14,14 +14,16 @@ function createTestStore() {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
-      removed: removedReducer,
+      localProducts: localProductsReducer,
     },
     preloadedState: {
       favorites: {
         favoriteIds: [],
       },
-      removed: {
-        removedIds: [],
+      localProducts: {
+        localProductsById: {},
+        removedApiIds: [],
+        nextLocalId: -1,
       },
     },
   })

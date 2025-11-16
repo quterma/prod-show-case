@@ -6,10 +6,10 @@ import { describe, it, expect } from "vitest"
 
 import type { Product } from "@/entities/product/model"
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
+import { localProductsReducer } from "@/features/local-products"
 import paginationReducer, {
   PAGE_SIZE,
 } from "@/features/pagination/model/paginationSlice"
-import removedReducer from "@/features/remove-product/model/removedSlice"
 
 import filtersReducer from "./filtersSlice"
 import { useFilteredProducts } from "./useFilteredProducts"
@@ -18,7 +18,7 @@ function createTestStore(initialState = {}) {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
-      removed: removedReducer,
+      localProducts: localProductsReducer,
       filters: filtersReducer,
       pagination: paginationReducer,
     },
@@ -26,8 +26,10 @@ function createTestStore(initialState = {}) {
       favorites: {
         favoriteIds: [],
       },
-      removed: {
-        removedIds: [],
+      localProducts: {
+        localProductsById: {},
+        removedApiIds: [],
+        nextLocalId: -1,
       },
       filters: {
         searchQuery: "",

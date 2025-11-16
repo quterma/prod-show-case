@@ -1,7 +1,7 @@
 "use client"
 
 import { FavoriteToggle } from "@/features/favorites"
-import { RemoveButton } from "@/features/remove-product"
+import { RemoveButton } from "@/features/local-products"
 
 import type { Product } from "../../model"
 

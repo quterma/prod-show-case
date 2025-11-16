@@ -19,8 +19,10 @@ const createMockState = (filters = {}) =>
     favorites: {
       favoriteIds: [],
     },
-    removed: {
-      removedIds: [],
+    localProducts: {
+      localProductsById: {},
+      removedApiIds: [],
+      nextLocalId: -1,
     },
     filters: {
       searchQuery: "",

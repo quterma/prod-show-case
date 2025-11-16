@@ -16,10 +16,10 @@ import filtersReducer, {
   toggleShowOnlyFavorites,
   resetFilters,
 } from "@/features/filters/model/filtersSlice"
+import { localProductsReducer } from "@/features/local-products"
 import paginationReducer, {
   resetPage,
 } from "@/features/pagination/model/paginationSlice"
-import removedReducer from "@/features/remove-product/model/removedSlice"
 
 import { baseApi } from "../api/baseApi"
 
@@ -29,7 +29,7 @@ const rootReducer = combineSlices(baseApi, {
   favorites: favoritesReducer,
   filters: filtersReducer,
   pagination: paginationReducer,
-  removed: removedReducer,
+  localProducts: localProductsReducer,
 })
 
 // Listener middleware for pagination auto-reset
