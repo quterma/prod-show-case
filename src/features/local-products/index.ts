@@ -14,5 +14,7 @@ export {
   makeSelectVisibleProducts,
 } from "./model"
 
+export type { LocalProductsState, LocalProductEntry } from "./model"
+
 // UI exports
 export { RemoveButton } from "./ui"

@@ -12,7 +12,7 @@ export const LOCAL_PRODUCTS_STORAGE_KEY = "app:localProducts:v1"
 /**
  * Local product entry: stores product data and source (local or API override)
  */
-type LocalProductEntry = {
+export type LocalProductEntry = {
   id: number
   data: Product
   source: "local" | "api"

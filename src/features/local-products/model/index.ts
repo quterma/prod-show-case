@@ -3,6 +3,8 @@ export {
   upsertLocalProduct,
   removeProduct,
   resetLocalProducts,
+  type LocalProductsState,
+  type LocalProductEntry,
 } from "./localProductsSlice"
 
 export {
