@@ -13,6 +13,7 @@ import {
   makeSelectPaginatedProducts,
   makeSelectTotalPages,
   setMaxPage,
+  resetPage,
 } from "@/features/pagination"
 import { useAppDispatch, useAppSelector } from "@/shared/lib"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
@@ -53,6 +54,11 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   useEffect(() => {
     dispatch(setMaxPage(totalPages))
   }, [totalPages, dispatch])
+
+  // Reset pagination to page 1 when filters change (filteredProducts length changes)
+  useEffect(() => {
+    dispatch(resetPage())
+  }, [filteredProducts?.length, dispatch])
 
   // Get search query for EmptyState message
   const searchQuery = useAppSelector(selectSearchQuery)

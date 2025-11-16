@@ -99,8 +99,8 @@ describe("resetLocalData thunk", () => {
       showOnlyFavorites: false,
     })
 
-    // Check localStorage was cleared
-    expect(mockLocalStorage.getItem("prod-showcase:favorites")).toBe("[]")
+    // Check localStorage was cleared (using new versioned key)
+    expect(mockLocalStorage.getItem("app:favorites:v1")).toBe("[]")
   })
 
   it("should invalidate RTK Query cache", () => {

@@ -1,30 +1,16 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
-import {
-  combineSlices,
-  configureStore,
-  createListenerMiddleware,
-  isAnyOf,
-} from "@reduxjs/toolkit"
+import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
-import favoritesReducer from "@/features/favorites/model/favoritesSlice"
-import filtersReducer, {
-  setSearchQuery,
-  toggleCategory,
-  setMinPrice,
-  setMaxPrice,
-  setMinRating,
-  toggleShowOnlyFavorites,
-  resetFilters,
-} from "@/features/filters/model/filtersSlice"
+import {
+  favoritesReducer,
+  getInitialFavoritesState,
+} from "@/features/favorites"
+import { filtersReducer } from "@/features/filters"
 import { localProductsReducer } from "@/features/local-products"
-import paginationReducer, {
-  resetPage,
-} from "@/features/pagination/model/paginationSlice"
+import { paginationReducer } from "@/features/pagination"
 
 import { baseApi } from "../api/baseApi"
 
-// `combineSlices` automatically combines the reducers using
-// their `reducerPath`s, therefore we no longer need to call `combineReducers`.
 const rootReducer = combineSlices(baseApi, {
   favorites: favoritesReducer,
   filters: filtersReducer,
@@ -32,28 +18,16 @@ const rootReducer = combineSlices(baseApi, {
   localProducts: localProductsReducer,
 })
 
-// Listener middleware for pagination auto-reset
-const listenerMiddleware = createListenerMiddleware()
-
-// Reset pagination to page 1 when any filter changes
-listenerMiddleware.startListening({
-  matcher: isAnyOf(
-    setSearchQuery,
-    toggleCategory,
-    setMinPrice,
-    setMaxPrice,
-    setMinRating,
-    toggleShowOnlyFavorites,
-    resetFilters
-  ),
-  effect: (_action, listenerApi) => {
-    listenerApi.dispatch(resetPage())
-  },
-})
+// Preloaded state with hydration from localStorage
+// Each slice provides a getter function for hydration
+const preloadedState = {
+  favorites: getInitialFavoritesState(),
+}
 
 export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
+    preloadedState,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
@@ -66,9 +40,7 @@ export const makeStore = () => {
             "persist/REGISTER",
           ],
         },
-      })
-        .concat(baseApi.middleware) // ESSENTIAL: RTK Query middleware for cache management
-        .prepend(listenerMiddleware.middleware), // Listener middleware for pagination auto-reset
+      }).concat(baseApi.middleware),
     devTools: process.env.NODE_ENV !== "production",
   })
 }
@@ -76,7 +48,6 @@ export const makeStore = () => {
 export type AppStore = ReturnType<typeof makeStore>
 export type RootState = ReturnType<AppStore["getState"]>
 export type AppDispatch = AppStore["dispatch"]
-// Keep AppThunk for future custom async logic that RTK Query doesn't handle
 export type AppThunk<ThunkReturnType = void> = ThunkAction<
   ThunkReturnType,
   RootState,

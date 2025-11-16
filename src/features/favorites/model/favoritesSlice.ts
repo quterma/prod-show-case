@@ -1,26 +1,38 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import { getFromLS, setToLS } from "@/shared/lib/persist/ls"
+import { setToLS, safeLoadFromStorage } from "@/shared/lib/persist"
 
-const FAVORITES_STORAGE_KEY = "prod-showcase:favorites"
+/**
+ * Storage key for favorites (versioned)
+ * Format: "app:{feature}:v{version}"
+ */
+export const FAVORITES_STORAGE_KEY = "app:favorites:v1"
 
-type FavoritesState = {
+export type FavoritesState = {
   /** Array of favorite product IDs */
   favoriteIds: number[]
 }
 
 /**
- * Load initial favorites from localStorage
- * Returns empty array if no data or parse error
+ * Default state for favorites (used as fallback)
  */
-function loadInitialState(): FavoritesState {
-  const stored = getFromLS<number[]>(FAVORITES_STORAGE_KEY)
-  return {
-    favoriteIds: Array.isArray(stored) ? stored : [],
-  }
+const defaultFavoritesState: FavoritesState = {
+  favoriteIds: [],
 }
 
-const initialState: FavoritesState = loadInitialState()
+/**
+ * Hydration getter for favorites
+ * Use this in store.ts preloadedState to load from localStorage
+ */
+export function getInitialFavoritesState(): FavoritesState {
+  return safeLoadFromStorage(FAVORITES_STORAGE_KEY, defaultFavoritesState)
+}
+
+/**
+ * Initial state for favorites (pure default, no side effects)
+ * Hydration happens via preloadedState in store.ts
+ */
+const initialState: FavoritesState = defaultFavoritesState
 
 /**
  * Favorites slice - manages favorite product IDs with localStorage persistence

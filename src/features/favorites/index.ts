@@ -3,6 +3,7 @@ export {
   addFavorite,
   removeFavorite,
   resetFavorites,
+  getInitialFavoritesState,
   favoritesReducer,
   selectFavoriteIds,
   makeSelectIsFavorite,

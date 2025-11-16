@@ -4,3 +4,5 @@
  */
 
 export { getFromLS, setToLS, removeFromLS } from "./ls"
+export { safeLoadFromStorage } from "./safeLoadFromStorage"
+export { createHydratedState } from "./createHydratedState"
