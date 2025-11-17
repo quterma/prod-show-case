@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest"
 
 import type { Product } from "@/entities/product"
-import type { LocalProductsState } from "@/features/local-products"
 
-import { applyLocalChanges } from "./applyLocalChanges"
+import type { LocalProductsState } from "../model"
+
+import {
+  addLocalProducts,
+  applyProductPatches,
+  mergeLocalProducts,
+  removeDeletedProducts,
+  sortProductsByTitle,
+} from "./mergeLocalProducts"
 
 // Test helpers
 const createProduct = (id: number, title: string): Product => ({
@@ -26,72 +33,58 @@ const createLocalEntry = (
   source,
 })
 
-describe("applyLocalChanges", () => {
-  describe("Step 1: Filter removed products", () => {
+describe("mergeLocalProducts utilities", () => {
+  describe("removeDeletedProducts", () => {
     it("should remove products with IDs in removedApiIds", () => {
-      const apiProducts = [
+      const products = [
         createProduct(1, "Product 1"),
         createProduct(2, "Product 2"),
         createProduct(3, "Product 3"),
       ]
       const removedApiIds = [2]
 
-      const result = applyLocalChanges(apiProducts, {}, removedApiIds)
+      const result = removeDeletedProducts(products, removedApiIds)
 
       expect(result).toHaveLength(2)
       expect(result.find((p) => p.id === 2)).toBeUndefined()
     })
 
-    it("should handle empty removedApiIds", () => {
-      const apiProducts = [createProduct(1, "Product 1")]
+    it("should return all products when removedApiIds is empty", () => {
+      const products = [createProduct(1, "Product 1")]
 
-      const result = applyLocalChanges(apiProducts, {}, [])
+      const result = removeDeletedProducts(products, [])
 
       expect(result).toHaveLength(1)
     })
 
     it("should handle all products removed", () => {
-      const apiProducts = [
+      const products = [
         createProduct(1, "Product 1"),
         createProduct(2, "Product 2"),
       ]
       const removedApiIds = [1, 2]
 
-      const result = applyLocalChanges(apiProducts, {}, removedApiIds)
+      const result = removeDeletedProducts(products, removedApiIds)
 
       expect(result).toHaveLength(0)
     })
   })
 
-  describe("Step 2: Apply patches from localProductsById", () => {
-    it("should override API product with local patch (source=api)", () => {
-      const apiProducts = [createProduct(1, "Original Title")]
+  describe("applyProductPatches", () => {
+    it("should override API product with local patch", () => {
+      const products = [createProduct(1, "Original Title")]
       const localProductsById = {
         1: createLocalEntry(1, "Edited Title", "api"),
       }
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
+      const result = applyProductPatches(products, localProductsById)
 
       expect(result).toHaveLength(1)
       expect(result[0].title).toBe("Edited Title")
     })
 
-    it("should not override if local entry has source=local (handled in step 3)", () => {
-      const apiProducts = [createProduct(1, "Original Title")]
-      const localProductsById = {
-        1: createLocalEntry(1, "Should Not Override", "local"),
-      }
-
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
-
-      // API product stays as-is, local product will be added in step 3
-      expect(
-        result.find((p) => p.id === 1 && p.title === "Original Title")
-      ).toBeDefined()
-    })
-
     it("should handle multiple patches", () => {
-      const apiProducts = [
+      const products = [
         createProduct(1, "Product 1"),
         createProduct(2, "Product 2"),
         createProduct(3, "Product 3"),
@@ -101,23 +94,31 @@ describe("applyLocalChanges", () => {
         3: createLocalEntry(3, "Edited Product 3", "api"),
       }
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
+      const result = applyProductPatches(products, localProductsById)
 
       expect(result.find((p) => p.id === 1)?.title).toBe("Edited Product 1")
       expect(result.find((p) => p.id === 2)?.title).toBe("Product 2")
       expect(result.find((p) => p.id === 3)?.title).toBe("Edited Product 3")
     })
+
+    it("should return unchanged products when no patches exist", () => {
+      const products = [createProduct(1, "Product 1")]
+
+      const result = applyProductPatches(products, {})
+
+      expect(result).toEqual(products)
+    })
   })
 
-  describe("Step 3: Add locally created products", () => {
+  describe("addLocalProducts", () => {
     it("should add local products (source=local) to the list", () => {
-      const apiProducts = [createProduct(1, "API Product")]
+      const products = [createProduct(1, "API Product")]
       const localProductsById = {
         [-1]: createLocalEntry(-1, "Local Product 1", "local"),
         [-2]: createLocalEntry(-2, "Local Product 2", "local"),
       }
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
+      const result = addLocalProducts(products, localProductsById)
 
       expect(result).toHaveLength(3)
       expect(result.find((p) => p.id === -1)).toBeDefined()
@@ -125,61 +126,54 @@ describe("applyLocalChanges", () => {
     })
 
     it("should handle only local products (no API products)", () => {
-      const apiProducts: Product[] = []
+      const products: Product[] = []
       const localProductsById = {
         [-1]: createLocalEntry(-1, "Local Product", "local"),
       }
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
+      const result = addLocalProducts(products, localProductsById)
 
       expect(result).toHaveLength(1)
       expect(result[0].id).toBe(-1)
     })
 
-    it("should not duplicate products with source=local", () => {
-      const apiProducts: Product[] = []
+    it("should not add products with source=api", () => {
+      const products = [createProduct(1, "API Product")]
       const localProductsById = {
-        [-1]: createLocalEntry(-1, "Local Product", "local"),
+        2: createLocalEntry(2, "API Patch (should not be added)", "api"),
       }
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
+      const result = addLocalProducts(products, localProductsById)
 
-      const localProductCount = result.filter((p) => p.id === -1).length
-      expect(localProductCount).toBe(1)
+      // Only original product, no new ones added
+      expect(result).toHaveLength(1)
+      expect(result[0].id).toBe(1)
     })
   })
 
-  describe("Step 4: Sort alphabetically", () => {
+  describe("sortProductsByTitle", () => {
     it("should sort products alphabetically by title (case-insensitive)", () => {
-      const apiProducts = [
+      const products = [
         createProduct(1, "Zebra"),
         createProduct(2, "apple"),
         createProduct(3, "Banana"),
       ]
 
-      const result = applyLocalChanges(apiProducts, {}, [])
+      const result = sortProductsByTitle(products)
 
       expect(result[0].title).toBe("apple")
       expect(result[1].title).toBe("Banana")
       expect(result[2].title).toBe("Zebra")
     })
 
-    it("should sort local and API products together", () => {
-      const apiProducts = [createProduct(1, "Zebra")]
-      const localProductsById = {
-        [-1]: createLocalEntry(-1, "Apple", "local"),
-        [-2]: createLocalEntry(-2, "Banana", "local"),
-      }
+    it("should handle empty array", () => {
+      const result = sortProductsByTitle([])
 
-      const result = applyLocalChanges(apiProducts, localProductsById, [])
-
-      expect(result[0].title).toBe("Apple")
-      expect(result[1].title).toBe("Banana")
-      expect(result[2].title).toBe("Zebra")
+      expect(result).toHaveLength(0)
     })
   })
 
-  describe("Integration: All steps combined", () => {
+  describe("mergeLocalProducts (integration)", () => {
     it("should correctly apply all transformations", () => {
       const apiProducts = [
         createProduct(1, "Product 1"),
@@ -194,7 +188,7 @@ describe("applyLocalChanges", () => {
       }
       const removedApiIds = [3] // remove Product 3
 
-      const result = applyLocalChanges(
+      const result = mergeLocalProducts(
         apiProducts,
         localProductsById,
         removedApiIds
@@ -223,7 +217,7 @@ describe("applyLocalChanges", () => {
     })
 
     it("should handle empty inputs", () => {
-      const result = applyLocalChanges([], {}, [])
+      const result = mergeLocalProducts([], {}, [])
 
       expect(result).toHaveLength(0)
     })
@@ -238,7 +232,7 @@ describe("applyLocalChanges", () => {
       }
       const removedApiIds = [1, 2]
 
-      const result = applyLocalChanges(
+      const result = mergeLocalProducts(
         apiProducts,
         localProductsById,
         removedApiIds

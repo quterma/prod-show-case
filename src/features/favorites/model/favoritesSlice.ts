@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import { removeProduct } from "@/features/local-products/model/localProductsSlice"
+import { removeProduct } from "@/features/local-products"
 import { safeLoadFromStorage } from "@/shared/lib/persist"
 
 /**
@@ -90,6 +90,7 @@ const favoritesSlice = createSlice({
       state.favoriteIds = []
     },
   },
+  //TODO: Consider moving this to a middleware if more cross-slice interactions are needed
   extraReducers: (builder) => {
     // Auto-remove from favorites when product is removed
     builder.addCase(removeProduct, (state, action) => {

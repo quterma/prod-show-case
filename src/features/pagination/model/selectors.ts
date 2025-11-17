@@ -1,7 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product"
-import { makeSelectFilteredProducts } from "@/features/filters/model/selectors"
+//TODO: fix circular dependency
+import { makeSelectFilteredProducts } from "@/features/filters"
 import type { RootState } from "@/shared/lib/store"
 
 /**
@@ -17,6 +18,7 @@ export const selectPageSize = (state: RootState) => state.pagination.pageSize
  */
 export const makeSelectTotalPages = () => {
   // Create filtered products selector instance once
+  //TODO: fix circular dependency
   const selectFilteredProducts = makeSelectFilteredProducts()
 
   return createSelector(

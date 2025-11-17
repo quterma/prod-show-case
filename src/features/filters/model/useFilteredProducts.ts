@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import type { Product } from "@/entities/product/model"
+import type { Product } from "@/entities/product"
 import { useAppSelector } from "@/shared/lib/store"
 
 import { makeSelectFilteredProducts } from "./selectors"

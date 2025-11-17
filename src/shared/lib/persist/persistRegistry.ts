@@ -1,5 +1,5 @@
-import { getInitialFavoritesState } from "@/features/favorites/model/favoritesSlice"
-import { getInitialLocalProductsState } from "@/features/local-products/model/localProductsSlice"
+import { getInitialFavoritesState } from "@/features/favorites"
+import { getInitialLocalProductsState } from "@/features/local-products"
 
 import type { RootState } from "../store"
 

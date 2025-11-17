@@ -1,23 +1,18 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect } from "react"
 
 import {
   useGetProductsQuery,
   useDynamicCategories,
   useDynamicPriceRange,
 } from "@/entities/product"
-import { useFilteredProducts, selectSearchQuery } from "@/features/filters"
-import {
-  Pagination,
-  makeSelectPaginatedProducts,
-  makeSelectTotalPages,
-  setMaxPage,
-  resetPage,
-} from "@/features/pagination"
+import { selectSearchQuery, useFilteredProducts } from "@/features/filters"
+import { Pagination, resetPage } from "@/features/pagination"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
+import { usePagination } from "../../model/hooks"
 import { ProductsGrid } from "../ProductsGrid"
 import { ProductsGridSkeleton } from "../ProductsGridSkeleton"
 import { ProductsToolbar } from "../ProductsToolbar"
@@ -37,23 +32,8 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   // Filter products using selector-based hook (no debounce - handled in QueryFilter)
   const filteredProducts = useFilteredProducts(data)
 
-  // Create memoized pagination selectors
-  const selectPaginatedProducts = useMemo(
-    () => makeSelectPaginatedProducts(),
-    []
-  )
-  const selectTotalPages = useMemo(() => makeSelectTotalPages(), [])
-
-  // Get paginated products and total pages
-  const paginatedProducts = useAppSelector((state) =>
-    selectPaginatedProducts(state, data)
-  )
-  const totalPages = useAppSelector((state) => selectTotalPages(state, data))
-
-  // Sync maxPage with totalPages (for pagination bounds validation)
-  useEffect(() => {
-    dispatch(setMaxPage(totalPages))
-  }, [totalPages, dispatch])
+  // Paginate filtered products
+  const { paginatedProducts, totalPages } = usePagination(filteredProducts)
 
   // Reset pagination to page 1 when filters change (filteredProducts length changes)
   useEffect(() => {
@@ -100,10 +80,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   } else {
     gridContent = (
       <>
-        <ProductsGrid
-          products={paginatedProducts ?? []}
-          onItemClick={onItemClick}
-        />
+        <ProductsGrid products={paginatedProducts} onItemClick={onItemClick} />
         <Pagination totalPages={totalPages} />
       </>
     )

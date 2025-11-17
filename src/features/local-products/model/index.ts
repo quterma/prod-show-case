@@ -1,4 +1,7 @@
-export { default as localProductsReducer } from "./localProductsSlice"
+export {
+  default as localProductsReducer,
+  getInitialLocalProductsState,
+} from "./localProductsSlice"
 export {
   upsertLocalProduct,
   removeProduct,
@@ -16,4 +19,7 @@ export {
   selectIsLocalProduct,
   makeSelectIsRemoved,
   makeSelectVisibleProducts,
+  makeSelectMergedProducts,
 } from "./selectors"
+
+export { useMergedProducts } from "./useMergedProducts"

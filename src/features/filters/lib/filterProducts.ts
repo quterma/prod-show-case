@@ -1,4 +1,4 @@
-import type { Product } from "@/entities/product/model"
+import type { Product } from "@/entities/product"
 
 /**
  * Filter out removed products

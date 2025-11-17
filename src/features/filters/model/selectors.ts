@@ -1,7 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product/model"
+//TODO: fix circular dependency
 import { selectFavoriteIds } from "@/features/favorites"
+//TODO: fix circular dependency
 import { selectRemovedApiIds } from "@/features/local-products"
 import type { RootState } from "@/shared/lib/store"
 
@@ -64,11 +66,13 @@ export const makeSelectFilteredProducts = () =>
       // Extract products from second argument
       (_state: RootState, products: Product[] | undefined) => products,
       // Extract individual filter values from state
+      //TODO: fix circular dependency
       selectRemovedApiIds,
       selectSearchQuery,
       selectCategories,
       selectMinRating,
       selectShowOnlyFavorites,
+      //TODO: fix circular dependency
       selectFavoriteIds,
       selectMinPrice,
       selectMaxPrice,

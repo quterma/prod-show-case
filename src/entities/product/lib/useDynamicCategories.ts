@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import type { Product } from "@/entities/product/model"
+import type { Product } from "@/entities/product"
 
 /**
  * Hook to get dynamic categories from products with memoization

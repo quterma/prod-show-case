@@ -12,6 +12,7 @@ import type { AppThunk } from "@/shared/lib/store"
  * - Resetting all active filters to initial state
  * - Invalidating RTK Query cache to trigger refetch
  */
+//TODO: fix circular dependency
 export const resetLocalData = (): AppThunk => (dispatch) => {
   // Reset all local data
   dispatch(resetFavorites())

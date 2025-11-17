@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import type { Product } from "@/entities/product/model"
+import type { Product } from "@/entities/product"
 import { safeLoadFromStorage } from "@/shared/lib/persist"
 
 /**
