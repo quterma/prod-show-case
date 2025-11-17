@@ -1,10 +1,10 @@
 import type { Middleware } from "@reduxjs/toolkit"
 
 import { debounce } from "../debounce"
-import type { AppStore } from "../store"
+import { setToLS } from "../persist/ls"
+import { persistRegistry } from "../persist/persistRegistry"
 
-import { setToLS } from "./ls"
-import { persistRegistry } from "./persistRegistry"
+import type { AppStore } from "./store"
 
 /**
  * Default debounce delay for all persist operations (ms)

@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import { removeProduct } from "@/features/local-products"
 import { safeLoadFromStorage } from "@/shared/lib/persist"
 
 /**
@@ -12,6 +11,8 @@ export const FAVORITES_STORAGE_KEY = "app:favorites:v1"
 export type FavoritesState = {
   /** Array of favorite product IDs */
   favoriteIds: number[]
+  /** Show only favorite products filter (runtime-only, not persisted) */
+  showOnlyFavorites: boolean
 }
 
 /**
@@ -19,14 +20,24 @@ export type FavoritesState = {
  */
 const defaultFavoritesState: FavoritesState = {
   favoriteIds: [],
+  showOnlyFavorites: false,
 }
 
 /**
  * Hydration getter for favorites
  * Use this in store.ts preloadedState to load from localStorage
+ * NOTE: Only favoriteIds is persisted, showOnlyFavorites is always false on load
  */
 export function getInitialFavoritesState(): FavoritesState {
-  return safeLoadFromStorage(FAVORITES_STORAGE_KEY, defaultFavoritesState)
+  const persisted = safeLoadFromStorage<Pick<FavoritesState, "favoriteIds">>(
+    FAVORITES_STORAGE_KEY,
+    { favoriteIds: [] }
+  )
+
+  return {
+    ...defaultFavoritesState,
+    favoriteIds: persisted.favoriteIds,
+  }
 }
 
 /**
@@ -83,27 +94,29 @@ const favoritesSlice = createSlice({
     },
 
     /**
+     * Toggle "show only favorites" filter
+     */
+    toggleShowOnlyFavorites: (state) => {
+      state.showOnlyFavorites = !state.showOnlyFavorites
+    },
+
+    /**
      * Clear all favorites
      * Used by "Reset local data" button
      */
     resetFavorites: (state) => {
       state.favoriteIds = []
+      state.showOnlyFavorites = false
     },
-  },
-  //TODO: Consider moving this to a middleware if more cross-slice interactions are needed
-  extraReducers: (builder) => {
-    // Auto-remove from favorites when product is removed
-    builder.addCase(removeProduct, (state, action) => {
-      const productId = action.payload
-      const index = state.favoriteIds.indexOf(productId)
-      if (index !== -1) {
-        state.favoriteIds.splice(index, 1)
-      }
-    })
   },
 })
 
-export const { toggleFavorite, addFavorite, removeFavorite, resetFavorites } =
-  favoritesSlice.actions
+export const {
+  toggleFavorite,
+  addFavorite,
+  removeFavorite,
+  toggleShowOnlyFavorites,
+  resetFavorites,
+} = favoritesSlice.actions
 
 export default favoritesSlice.reducer

@@ -1,20 +1,6 @@
 import type { Product } from "@/entities/product"
 
 /**
- * Filter out removed products
- * Returns only visible (non-removed) products
- * Should be applied FIRST in the filter chain
- */
-export function filterByRemoved(
-  products: Product[],
-  removedIds: number[]
-): Product[] {
-  if (removedIds.length === 0) return products
-
-  return products.filter((product) => !removedIds.includes(product.id))
-}
-
-/**
  * Filter products by search query (case-insensitive)
  * Searches in product title and description
  */
@@ -54,20 +40,6 @@ export function filterByRating(
   if (minRating === null) return products
 
   return products.filter((product) => product.rating.rate >= minRating)
-}
-
-/**
- * Filter products by favorites status
- * Returns only favorited products when showOnlyFavorites is true
- */
-export function filterByFavorites(
-  products: Product[],
-  showOnlyFavorites: boolean,
-  favoriteIds: number[]
-): Product[] {
-  if (!showOnlyFavorites) return products
-
-  return products.filter((product) => favoriteIds.includes(product.id))
 }
 
 /**

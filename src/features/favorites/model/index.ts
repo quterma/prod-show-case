@@ -2,6 +2,7 @@ export {
   toggleFavorite,
   addFavorite,
   removeFavorite,
+  toggleShowOnlyFavorites,
   resetFavorites,
   getInitialFavoritesState,
   default as favoritesReducer,
@@ -9,6 +10,7 @@ export {
 
 export {
   selectFavoriteIds,
+  selectShowOnlyFavorites,
   makeSelectIsFavorite,
   makeSelectFavoriteProducts,
 } from "./selectors"

@@ -1,12 +1,8 @@
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 
 import type { Product } from "@/entities/product"
-import {
-  makeSelectPaginatedProducts,
-  makeSelectTotalPages,
-  setMaxPage,
-} from "@/features/pagination"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { makeSelectPaginatedProducts } from "@/features/pagination"
+import { useAppSelector } from "@/shared/lib/store"
 
 /**
  * Result interface for usePagination hook
@@ -18,54 +14,60 @@ export interface UsePaginationResult {
   totalCount: number
   /** Total number of pages */
   totalPages: number
+  /** Range start (1-based index of first item on page) */
+  rangeStart: number
+  /** Range end (1-based index of last item on page) */
+  rangeEnd: number
+  /** Current page number */
+  currentPage: number
+  /** Items per page */
+  pageSize: number
 }
 
 /**
  * Hook for managing pagination of products
  *
  * Handles:
- * - Creating memoized pagination selectors
- * - Calculating total pages based on products length
- * - Syncing maxPage in Redux for bounds validation
+ * - Creating memoized pagination selector
+ * - Calculating pagination metadata (total pages, ranges, etc.)
  * - Returning paginated slice of products
  *
- * @param products - Products array to paginate (after filtering)
+ * NOTE: This hook expects pre-processed products (already filtered/merged).
+ * It only handles pagination logic - slicing the array into pages.
+ *
+ * @param products - Products array to paginate (after all filters applied)
  * @returns Pagination result with paginated products and metadata
  *
  * @example
  * ```ts
- * const filteredProducts = useFilteredProducts(data)
- * const { paginatedProducts, totalCount, totalPages } = usePagination(filteredProducts)
+ * // In widget: apply all filters first, then paginate
+ * const merged = useMergedProducts(apiProducts)
+ * const filtered = useFilteredProducts(merged)
+ * const favoritesFiltered = useFavoritesFilter(filtered)
+ * const pagination = usePagination(favoritesFiltered)
  * ```
  */
 export function usePagination(
   products: Product[] | undefined
 ): UsePaginationResult {
-  const dispatch = useAppDispatch()
-
-  // Create memoized pagination selectors (stable across re-renders)
+  // Create memoized pagination selector (stable across re-renders)
   const selectPaginatedProducts = useMemo(
     () => makeSelectPaginatedProducts(),
     []
   )
-  const selectTotalPages = useMemo(() => makeSelectTotalPages(), [])
 
-  // Get paginated products and total pages from selectors
-  const paginatedProducts = useAppSelector((state) =>
+  // Get pagination result from selector
+  const result = useAppSelector((state) =>
     selectPaginatedProducts(state, products)
   )
-  const totalPages = useAppSelector((state) =>
-    selectTotalPages(state, products)
-  )
-
-  // Sync maxPage with totalPages (for pagination bounds validation)
-  useEffect(() => {
-    dispatch(setMaxPage(totalPages))
-  }, [totalPages, dispatch])
 
   return {
-    paginatedProducts: paginatedProducts ?? [],
-    totalCount: products?.length ?? 0,
-    totalPages,
+    paginatedProducts: result.items,
+    totalCount: result.totalCount,
+    totalPages: result.totalPages,
+    rangeStart: result.rangeStart,
+    rangeEnd: result.rangeEnd,
+    currentPage: result.currentPage,
+    pageSize: result.pageSize,
   }
 }

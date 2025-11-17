@@ -1,8 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import type { Product } from "@/entities/product"
-//TODO: fix circular dependency
-import { makeSelectFilteredProducts } from "@/features/filters"
 import type { RootState } from "@/shared/lib/store"
 
 /**
@@ -13,87 +11,55 @@ export const selectCurrentPage = (state: RootState) =>
 export const selectPageSize = (state: RootState) => state.pagination.pageSize
 
 /**
- * Factory selector for total pages calculation
- * Accepts products as parameter (can be raw or filtered products)
+ * Factory selector for paginated products
+ * Accepts already filtered/merged products array and returns slice for current page
+ *
+ * NOTE: This selector is pure pagination logic - it doesn't know about filters or favorites.
+ * The products array should be pre-processed by the widget layer.
+ *
+ * @returns Object with paginated items and metadata
  */
-export const makeSelectTotalPages = () => {
-  // Create filtered products selector instance once
-  //TODO: fix circular dependency
-  const selectFilteredProducts = makeSelectFilteredProducts()
-
-  return createSelector(
+export const makeSelectPaginatedProducts = () =>
+  createSelector(
     [
       (_state: RootState, products: Product[] | undefined) => products,
-      (state: RootState, products: Product[] | undefined) =>
-        selectFilteredProducts(state, products),
-      selectPageSize,
-    ],
-    (_products, filtered, pageSize) => {
-      const count = filtered?.length ?? 0
-      return Math.ceil(count / pageSize)
-    }
-  )
-}
-
-/**
- * Factory selector for paginated products slice
- * Returns products for current page only
- */
-export const makeSelectPaginatedProducts = () => {
-  // Create filtered products selector instance once
-  const selectFilteredProducts = makeSelectFilteredProducts()
-
-  return createSelector(
-    [
-      (_state: RootState, products: Product[] | undefined) => products,
-      (state: RootState, products: Product[] | undefined) =>
-        selectFilteredProducts(state, products),
       selectCurrentPage,
       selectPageSize,
     ],
-    (_products, filtered, currentPage, pageSize) => {
-      if (!filtered || filtered.length === 0) return undefined
+    (products, currentPage, pageSize) => {
+      if (!products || products.length === 0) {
+        return {
+          items: [],
+          totalCount: 0,
+          totalPages: 0,
+          currentPage: 1,
+          pageSize,
+          rangeStart: 0,
+          rangeEnd: 0,
+        }
+      }
 
-      const start = (currentPage - 1) * pageSize
+      const totalCount = products.length
+      const totalPages = Math.ceil(totalCount / pageSize)
+
+      // Clamp currentPage to valid range
+      const validPage = Math.max(1, Math.min(currentPage, totalPages))
+
+      const start = (validPage - 1) * pageSize
       const end = start + pageSize
+      const items = products.slice(start, end)
 
-      return filtered.slice(start, end)
-    }
-  )
-}
-
-/**
- * Factory selector for pagination metadata
- * Returns all pagination info for UI display
- */
-export const makeSelectPaginationMeta = () => {
-  // Create selector instances once
-  const selectFilteredProducts = makeSelectFilteredProducts()
-  const selectTotalPages = makeSelectTotalPages()
-
-  return createSelector(
-    [
-      (_state: RootState, products: Product[] | undefined) => products,
-      (state: RootState, products: Product[] | undefined) =>
-        selectFilteredProducts(state, products),
-      selectCurrentPage,
-      selectPageSize,
-      (state: RootState, products: Product[] | undefined) =>
-        selectTotalPages(state, products),
-    ],
-    (_products, filtered, currentPage, pageSize, totalPages) => {
-      const totalCount = filtered?.length ?? 0
-      const rangeStart = totalCount > 0 ? (currentPage - 1) * pageSize + 1 : 0
-      const rangeEnd = Math.min(currentPage * pageSize, totalCount)
+      const rangeStart = totalCount > 0 ? start + 1 : 0
+      const rangeEnd = Math.min(end, totalCount)
 
       return {
+        items,
         totalCount,
         totalPages,
+        currentPage: validPage,
+        pageSize,
         rangeStart,
         rangeEnd,
-        currentPage,
-        pageSize,
       }
     }
   )
-}

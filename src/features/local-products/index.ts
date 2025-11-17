@@ -11,7 +11,6 @@ export {
   selectLocalProductsArray,
   selectIsLocalProduct,
   makeSelectIsRemoved,
-  makeSelectVisibleProducts,
   makeSelectMergedProducts,
   useMergedProducts,
   getInitialLocalProductsState,

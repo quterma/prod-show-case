@@ -15,8 +15,6 @@ export type FiltersState = {
   maxPrice: number | null
   /** Minimum rating filter (1-5) */
   minRating: number | null
-  /** Show only favorite products */
-  showOnlyFavorites: boolean
 }
 
 /**
@@ -28,7 +26,6 @@ const initialState: FiltersState = {
   minPrice: null,
   maxPrice: null,
   minRating: null,
-  showOnlyFavorites: false,
 }
 
 /**
@@ -86,13 +83,6 @@ const filtersSlice = createSlice({
     },
 
     /**
-     * Toggle "show only favorites" filter
-     */
-    toggleShowOnlyFavorites: (state) => {
-      state.showOnlyFavorites = !state.showOnlyFavorites
-    },
-
-    /**
      * Reset all filters to initial state
      */
     resetFilters: () => initialState,
@@ -106,7 +96,6 @@ export const {
   setMinPrice,
   setMaxPrice,
   setMinRating,
-  toggleShowOnlyFavorites,
   resetFilters,
 } = filtersSlice.actions
 

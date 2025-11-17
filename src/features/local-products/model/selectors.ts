@@ -57,23 +57,6 @@ export const selectLocalProductsArray = createSelector(
 )
 
 /**
- * Factory selector: filter out removed products from a list
- * Returns only visible (non-removed) products
- * Compatible with existing filterByRemoved usage
- */
-export const makeSelectVisibleProducts = () =>
-  createSelector(
-    [
-      selectRemovedApiIds,
-      (_state: RootState, products: Product[] | undefined) => products,
-    ],
-    (removedApiIds, products) => {
-      if (!products) return undefined
-      return products.filter((product) => !removedApiIds.includes(product.id))
-    }
-  )
-
-/**
  * Check if a product is a local creation (negative ID)
  */
 export const selectIsLocalProduct = createSelector(

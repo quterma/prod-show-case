@@ -18,7 +18,6 @@ export {
   selectLocalProductsArray,
   selectIsLocalProduct,
   makeSelectIsRemoved,
-  makeSelectVisibleProducts,
   makeSelectMergedProducts,
 } from "./selectors"
 

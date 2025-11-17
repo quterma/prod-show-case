@@ -1,5 +1,5 @@
-import { getInitialFavoritesState } from "@/features/favorites"
-import { getInitialLocalProductsState } from "@/features/local-products"
+import { getInitialFavoritesState } from "@/features/favorites/model/favoritesSlice"
+import { getInitialLocalProductsState } from "@/features/local-products/model/localProductsSlice"
 
 import type { RootState } from "../store"
 
@@ -17,7 +17,8 @@ export type PersistItem<T = unknown> = {
 export const persistRegistry: readonly PersistItem[] = [
   {
     lsKey: "app:favorites:v1",
-    select: (state) => state.favorites,
+    // Only persist favoriteIds, exclude showOnlyFavorites (runtime-only)
+    select: (state) => ({ favoriteIds: state.favorites.favoriteIds }),
     sliceName: "favorites",
     hydrate: getInitialFavoritesState,
   },

@@ -9,7 +9,6 @@ import {
   selectMinPrice,
   selectMaxPrice,
   selectMinRating,
-  selectShowOnlyFavorites,
   selectHasActiveFilters,
   makeSelectFilteredProducts,
 } from "./selectors"
@@ -30,7 +29,6 @@ const createMockState = (filters = {}) =>
       minPrice: null,
       maxPrice: null,
       minRating: null,
-      showOnlyFavorites: false,
       ...filters,
     },
   }) as unknown as RootState
@@ -61,11 +59,6 @@ describe("Filter Selectors", () => {
       const state = createMockState({ minRating: 4 })
       expect(selectMinRating(state)).toBe(4)
     })
-
-    it("selectShowOnlyFavorites returns favorites flag", () => {
-      const state = createMockState({ showOnlyFavorites: true })
-      expect(selectShowOnlyFavorites(state)).toBe(true)
-    })
   })
 
   describe("selectHasActiveFilters", () => {
@@ -91,11 +84,6 @@ describe("Filter Selectors", () => {
 
     it("returns true when rating filter set", () => {
       const state = createMockState({ minRating: 4 })
-      expect(selectHasActiveFilters(state)).toBe(true)
-    })
-
-    it("returns true when showOnlyFavorites is true", () => {
-      const state = createMockState({ showOnlyFavorites: true })
       expect(selectHasActiveFilters(state)).toBe(true)
     })
   })

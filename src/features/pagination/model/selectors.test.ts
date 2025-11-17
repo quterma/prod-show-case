@@ -6,9 +6,7 @@ import type { RootState } from "@/shared/lib/store"
 import {
   selectCurrentPage,
   selectPageSize,
-  makeSelectTotalPages,
   makeSelectPaginatedProducts,
-  makeSelectPaginationMeta,
 } from "./selectors"
 
 // Mock products for testing
@@ -26,23 +24,14 @@ const mockProducts: Product[] = Array.from({ length: 25 }, (_, i) =>
   createMockProduct(i + 1)
 )
 
-// Helper to create mock state (needs filters for makeSelectFilteredProducts dependency)
+// Helper to create mock state (simplified - only pagination state needed)
 const createMockState = (
   currentPage: number,
   pageSize: number
 ): Partial<RootState> => ({
-  favorites: {
-    favoriteIds: [],
-  },
-  localProducts: {
-    localProductsById: {},
-    removedApiIds: [],
-    nextLocalId: -1,
-  },
   pagination: {
     currentPage,
     pageSize,
-    maxPage: null,
   },
   filters: {
     searchQuery: "",
@@ -50,7 +39,6 @@ const createMockState = (
     minPrice: null,
     maxPrice: null,
     minRating: null,
-    showOnlyFavorites: false,
   },
 })
 
@@ -71,53 +59,6 @@ describe("pagination selectors", () => {
     })
   })
 
-  describe("makeSelectTotalPages", () => {
-    it("calculates total pages correctly for products evenly divisible by page size", () => {
-      const state = createMockState(1, 5) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      // 25 products / 5 per page = 5 pages
-      expect(selectTotalPages(state, mockProducts)).toBe(5)
-    })
-
-    it("calculates total pages correctly with remainder", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      // 25 products / 10 per page = 3 pages (ceiling)
-      expect(selectTotalPages(state, mockProducts)).toBe(3)
-    })
-
-    it("returns 1 page when products length equals page size", () => {
-      const state = createMockState(1, 25) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      expect(selectTotalPages(state, mockProducts)).toBe(1)
-    })
-
-    it("returns 0 pages when products array is empty", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      expect(selectTotalPages(state, [])).toBe(0)
-    })
-
-    it("returns 0 pages when products is undefined", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      expect(selectTotalPages(state, undefined)).toBe(0)
-    })
-
-    it("handles large page sizes correctly", () => {
-      const state = createMockState(1, 100) as RootState
-      const selectTotalPages = makeSelectTotalPages()
-
-      // 25 products / 100 per page = 1 page (ceiling)
-      expect(selectTotalPages(state, mockProducts)).toBe(1)
-    })
-  })
-
   describe("makeSelectPaginatedProducts", () => {
     it("returns first page of products", () => {
       const state = createMockState(1, 10) as RootState
@@ -125,9 +66,15 @@ describe("pagination selectors", () => {
 
       const result = selectPaginatedProducts(state, mockProducts)
 
-      expect(result).toHaveLength(10)
-      expect(result?.[0].id).toBe(1)
-      expect(result?.[9].id).toBe(10)
+      expect(result.items).toHaveLength(10)
+      expect(result.items[0].id).toBe(1)
+      expect(result.items[9].id).toBe(10)
+      expect(result.totalCount).toBe(25)
+      expect(result.totalPages).toBe(3)
+      expect(result.currentPage).toBe(1)
+      expect(result.pageSize).toBe(10)
+      expect(result.rangeStart).toBe(1)
+      expect(result.rangeEnd).toBe(10)
     })
 
     it("returns second page of products", () => {
@@ -136,9 +83,14 @@ describe("pagination selectors", () => {
 
       const result = selectPaginatedProducts(state, mockProducts)
 
-      expect(result).toHaveLength(10)
-      expect(result?.[0].id).toBe(11)
-      expect(result?.[9].id).toBe(20)
+      expect(result.items).toHaveLength(10)
+      expect(result.items[0].id).toBe(11)
+      expect(result.items[9].id).toBe(20)
+      expect(result.totalCount).toBe(25)
+      expect(result.totalPages).toBe(3)
+      expect(result.currentPage).toBe(2)
+      expect(result.rangeStart).toBe(11)
+      expect(result.rangeEnd).toBe(20)
     })
 
     it("returns partial last page when products do not fill page", () => {
@@ -148,9 +100,14 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       // Page 3: products 21-25 (only 5 products)
-      expect(result).toHaveLength(5)
-      expect(result?.[0].id).toBe(21)
-      expect(result?.[4].id).toBe(25)
+      expect(result.items).toHaveLength(5)
+      expect(result.items[0].id).toBe(21)
+      expect(result.items[4].id).toBe(25)
+      expect(result.totalCount).toBe(25)
+      expect(result.totalPages).toBe(3)
+      expect(result.currentPage).toBe(3)
+      expect(result.rangeStart).toBe(21)
+      expect(result.rangeEnd).toBe(25)
     })
 
     it("returns empty array when page exceeds total pages", () => {
@@ -160,25 +117,36 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       // Page 10 with 10 per page = products 91-100, but we only have 25 products
-      expect(result).toEqual([])
+      // Selector clamps to valid page (page 3), so returns last page
+      expect(result.items).toHaveLength(5)
+      expect(result.currentPage).toBe(3) // Clamped to max valid page
+      expect(result.totalPages).toBe(3)
     })
 
-    it("returns undefined when products array is empty", () => {
+    it("returns empty result when products array is empty", () => {
       const state = createMockState(1, 10) as RootState
       const selectPaginatedProducts = makeSelectPaginatedProducts()
 
       const result = selectPaginatedProducts(state, [])
 
-      expect(result).toBeUndefined()
+      expect(result.items).toEqual([])
+      expect(result.totalCount).toBe(0)
+      expect(result.totalPages).toBe(0)
+      expect(result.rangeStart).toBe(0)
+      expect(result.rangeEnd).toBe(0)
     })
 
-    it("returns undefined when products is undefined", () => {
+    it("returns empty result when products is undefined", () => {
       const state = createMockState(1, 10) as RootState
       const selectPaginatedProducts = makeSelectPaginatedProducts()
 
       const result = selectPaginatedProducts(state, undefined)
 
-      expect(result).toBeUndefined()
+      expect(result.items).toEqual([])
+      expect(result.totalCount).toBe(0)
+      expect(result.totalPages).toBe(0)
+      expect(result.rangeStart).toBe(0)
+      expect(result.rangeEnd).toBe(0)
     })
 
     it("handles page size of 1 correctly", () => {
@@ -187,90 +155,10 @@ describe("pagination selectors", () => {
 
       const result = selectPaginatedProducts(state, mockProducts)
 
-      expect(result).toHaveLength(1)
-      expect(result?.[0].id).toBe(5)
-    })
-  })
-
-  describe("makeSelectPaginationMeta", () => {
-    it("returns correct metadata for first page", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectPaginationMeta = makeSelectPaginationMeta()
-
-      const meta = selectPaginationMeta(state, mockProducts)
-
-      expect(meta).toEqual({
-        totalCount: 25,
-        totalPages: 3,
-        rangeStart: 1,
-        rangeEnd: 10,
-        currentPage: 1,
-        pageSize: 10,
-      })
-    })
-
-    it("returns correct metadata for middle page", () => {
-      const state = createMockState(2, 10) as RootState
-      const selectPaginationMeta = makeSelectPaginationMeta()
-
-      const meta = selectPaginationMeta(state, mockProducts)
-
-      expect(meta).toEqual({
-        totalCount: 25,
-        totalPages: 3,
-        rangeStart: 11,
-        rangeEnd: 20,
-        currentPage: 2,
-        pageSize: 10,
-      })
-    })
-
-    it("returns correct metadata for last partial page", () => {
-      const state = createMockState(3, 10) as RootState
-      const selectPaginationMeta = makeSelectPaginationMeta()
-
-      const meta = selectPaginationMeta(state, mockProducts)
-
-      expect(meta).toEqual({
-        totalCount: 25,
-        totalPages: 3,
-        rangeStart: 21,
-        rangeEnd: 25, // Only 5 products on last page
-        currentPage: 3,
-        pageSize: 10,
-      })
-    })
-
-    it("returns correct metadata when empty", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectPaginationMeta = makeSelectPaginationMeta()
-
-      const meta = selectPaginationMeta(state, [])
-
-      expect(meta).toEqual({
-        totalCount: 0,
-        totalPages: 0,
-        rangeStart: 0,
-        rangeEnd: 0,
-        currentPage: 1,
-        pageSize: 10,
-      })
-    })
-
-    it("returns correct metadata when products is undefined", () => {
-      const state = createMockState(1, 10) as RootState
-      const selectPaginationMeta = makeSelectPaginationMeta()
-
-      const meta = selectPaginationMeta(state, undefined)
-
-      expect(meta).toEqual({
-        totalCount: 0,
-        totalPages: 0,
-        rangeStart: 0,
-        rangeEnd: 0,
-        currentPage: 1,
-        pageSize: 10,
-      })
+      expect(result.items).toHaveLength(1)
+      expect(result.items[0].id).toBe(5)
+      expect(result.totalPages).toBe(25) // 25 products with page size 1
+      expect(result.currentPage).toBe(5)
     })
   })
 
@@ -301,8 +189,8 @@ describe("pagination selectors", () => {
       const result2 = selectPaginatedProducts(state2, mockProducts)
 
       expect(result1).not.toBe(result2) // Different references
-      expect(result1?.[0].id).toBe(1)
-      expect(result2?.[0].id).toBe(11)
+      expect(result1.items[0].id).toBe(1)
+      expect(result2.items[0].id).toBe(11)
     })
   })
 })

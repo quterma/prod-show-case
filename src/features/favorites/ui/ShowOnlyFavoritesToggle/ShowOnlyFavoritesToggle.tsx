@@ -7,7 +7,7 @@ import { toggleShowOnlyFavorites, selectShowOnlyFavorites } from "../../model"
 /**
  * ShowOnlyFavoritesToggle - toggles between showing all products or only favorites
  * Shows as "All | Favorites" toggle buttons
- * Integrates with filters slice (showOnlyFavorites field)
+ * Integrates with favorites slice (showOnlyFavorites field)
  */
 export function ShowOnlyFavoritesToggle() {
   const dispatch = useAppDispatch()

@@ -1,12 +1,12 @@
 "use client"
 
+import { ShowOnlyFavoritesToggle } from "@/features/favorites"
 import {
   CategoryFilter,
   PriceRangeFilter,
   QueryFilter,
   RatingFilter,
   ResetFiltersButton,
-  ShowOnlyFavoritesToggle,
 } from "@/features/filters"
 import { ResetLocalDataButton } from "@/features/reset-local-data"
 

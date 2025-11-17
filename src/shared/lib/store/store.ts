@@ -1,13 +1,16 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 
-import { favoritesReducer } from "@/features/favorites"
-import { filtersReducer } from "@/features/filters"
-import { localProductsReducer } from "@/features/local-products"
-import { paginationReducer } from "@/features/pagination"
+import favoritesReducer from "@/features/favorites/model/favoritesSlice"
+import filtersReducer from "@/features/filters/model/filtersSlice"
+import localProductsReducer from "@/features/local-products/model/localProductsSlice"
+import paginationReducer from "@/features/pagination/model/paginationSlice"
 
 import { baseApi } from "../../api/baseApi"
-import { createPersistMiddleware, createPreloadedState } from "../persist/"
+import { createPreloadedState } from "../persist/"
+
+import { createCleanupFavoriteMiddleware } from "./cleanupFavoriteMiddleware"
+import { createPersistMiddleware } from "./persistMiddleware"
 
 const rootReducer = combineSlices(baseApi, {
   favorites: favoritesReducer,
@@ -20,6 +23,7 @@ export const makeStore = () => {
   // Create preloadedState per store instance (important for SSR)
   const preloadedState = createPreloadedState()
   const persistMiddleware = createPersistMiddleware()
+  const cleanupFavoriteMiddleware = createCleanupFavoriteMiddleware()
 
   return configureStore({
     reducer: rootReducer,
@@ -38,6 +42,7 @@ export const makeStore = () => {
         },
       })
         .concat(baseApi.middleware)
+        .concat(cleanupFavoriteMiddleware)
         .concat(persistMiddleware),
     devTools: process.env.NODE_ENV !== "production",
   })

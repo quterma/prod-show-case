@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 
-import { flushPersist } from "@/shared/lib/persist"
-import { makeStore } from "@/shared/lib/store"
+import { makeStore, flushPersist } from "@/shared/lib/store"
 
 /**
  * StoreProvider - Redux store provider following official RTK pattern

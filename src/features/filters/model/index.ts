@@ -5,7 +5,6 @@ export {
   setMinPrice,
   setMaxPrice,
   setMinRating,
-  toggleShowOnlyFavorites,
   resetFilters,
 } from "./filtersSlice"
 export { default as filtersReducer } from "./filtersSlice"
@@ -17,7 +16,6 @@ export {
   selectMinPrice,
   selectMaxPrice,
   selectMinRating,
-  selectShowOnlyFavorites,
   selectHasActiveFilters,
   makeSelectFilteredProducts,
 } from "./selectors"

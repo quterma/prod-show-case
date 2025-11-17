@@ -42,6 +42,7 @@ describe("resetLocalData thunk", () => {
       preloadedState: {
         favorites: {
           favoriteIds: [1, 2, 3],
+          showOnlyFavorites: true,
         },
         localProducts: {
           localProductsById: {
@@ -68,7 +69,6 @@ describe("resetLocalData thunk", () => {
           minPrice: 10,
           maxPrice: 100,
           minRating: 4,
-          showOnlyFavorites: true,
         },
       },
     })
@@ -87,6 +87,7 @@ describe("resetLocalData thunk", () => {
     const state = store.getState()
 
     expect(state.favorites.favoriteIds).toEqual([])
+    expect(state.favorites.showOnlyFavorites).toBe(false)
     expect(state.localProducts.localProductsById).toEqual({})
     expect(state.localProducts.removedApiIds).toEqual([])
     expect(state.localProducts.nextLocalId).toBe(-1)
@@ -96,7 +97,6 @@ describe("resetLocalData thunk", () => {
       minPrice: null,
       maxPrice: null,
       minRating: null,
-      showOnlyFavorites: false,
     })
 
     // Note: localStorage persistence is handled by persistMiddleware
