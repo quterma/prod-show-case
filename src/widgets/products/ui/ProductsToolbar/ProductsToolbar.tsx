@@ -8,7 +8,7 @@ import {
   RatingFilter,
   ResetFiltersButton,
 } from "@/features/filters"
-import { ResetLocalDataButton } from "@/features/reset-local-data"
+import { ResetLocalDataButton } from "@/shared/ui"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products), undefined if no valid categories */

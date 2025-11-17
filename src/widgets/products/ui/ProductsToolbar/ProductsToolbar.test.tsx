@@ -26,6 +26,7 @@ function createTestStore(initialFilters = {}) {
     preloadedState: {
       favorites: {
         favoriteIds: [],
+        showOnlyFavorites: false,
       },
       localProducts: {
         localProductsById: {},
@@ -38,13 +39,11 @@ function createTestStore(initialFilters = {}) {
         minPrice: null,
         maxPrice: null,
         minRating: null,
-        showOnlyFavorites: false,
         ...initialFilters,
       },
       pagination: {
         currentPage: 1,
         pageSize: PAGE_SIZE,
-        maxPage: null,
       },
     },
     middleware: (getDefaultMiddleware) =>

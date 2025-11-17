@@ -2,13 +2,19 @@
 
 import { useState } from "react"
 
-import { useAppDispatch } from "@/shared/lib/store"
-
-import { resetLocalData } from "../../model"
+import { resetLocalData, useAppDispatch } from "@/shared/lib/store"
 
 /**
- * ResetLocalDataButton - clears all localStorage data with confirmation
- * Delegates to resetLocalData thunk for coordinating cross-feature operations
+ * ResetLocalDataButton - infrastructure UI component for clearing all local data
+ *
+ * Provides a button with confirmation modal to reset:
+ * - Favorites
+ * - Local products
+ * - Filters
+ * - RTK Query cache
+ *
+ * Lives in shared/ui because it's an infrastructure utility component,
+ * not business logic specific to any feature.
  */
 export function ResetLocalDataButton() {
   const dispatch = useAppDispatch()

@@ -2,4 +2,5 @@
 export { Button } from "./Button"
 export { EmptyState } from "./EmptyState"
 export { ErrorMessage } from "./ErrorMessage"
+export { ResetLocalDataButton } from "./ResetLocalDataButton"
 export { Skeleton } from "./Skeleton"

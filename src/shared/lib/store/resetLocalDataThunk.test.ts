@@ -3,10 +3,10 @@ import { describe, expect, it, vi } from "vitest"
 
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import filtersReducer from "@/features/filters/model/filtersSlice"
-import { localProductsReducer } from "@/features/local-products"
+import localProductsReducer from "@/features/local-products/model/localProductsSlice"
 import { baseApi } from "@/shared/api/baseApi"
 
-import { resetLocalData } from "./resetLocalData"
+import { resetLocalData } from "./resetLocalDataThunk"
 
 // Mock localStorage
 const mockLocalStorage = (() => {
