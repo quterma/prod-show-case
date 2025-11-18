@@ -16,34 +16,72 @@ This application demonstrates a production-ready approach to building scalable f
 
 ## 📚 Documentation
 
-- **[Master Progress Log](docs/master-log.md)** - Overall project progress and stage completion
-- **[Stage 1 Report](docs/stage-1-report.md)** - Foundation & Entity Layer completion
-- **[Stage 2 Plan](docs/stage-2-plan.md)** - UI & Features roadmap
-- **[FSD Architecture](docs/fsd-architecture.md)** - Detailed architecture documentation
-- **[FSD Quick Reference](docs/fsd-readme.md)** - Layer rules and patterns
-- **[API Contracts](docs/api-contracts.md)** - FakeStore API specification
+### Core Documentation
+
 - **[CLAUDE.md](CLAUDE.md)** - Development guidelines for Claude Code
+- **[Current Architecture](docs/current-architecture.md)** - Подробное описание текущей архитектуры
+- **[FSD Architecture](docs/fsd-architecture.md)** - Полная документация FSD
+- **[FSD Quick Reference](docs/fsd-readme.md)** - Краткая справка по FSD слоям
+
+### Progress & Planning
+
+- **[Completion Report](docs/completion-report.md)** - Отчёт по Stage 1-2C
+- **[Roadmap](docs/roadmap.md)** - План Stage 2D, 3, 4
+- **[Features Overview](docs/features-overview.md)** - Обзор всех фич
+- **[Changelog](docs/changelog.md)** - История изменений
+
+### Technical Details
+
+- **[API Contracts](docs/api-contracts.md)** - FakeStore API спецификация
+- **[Pre-commit Hooks](docs/pre-commit-hooks.md)** - Настройка хуков
 
 ## 🏗️ Project Status
 
-**Current Stage:** Stage 1 Complete ✅
-**Version:** v0.2.0
+**Current Stage:** Stage 2C Complete ✅ → Stage 2D Next
+**Version:** v0.9.0
 
-### Completed (Stage 1)
+### Completed (Stage 1-2C)
 
-- ✅ FakeStore API integration
-- ✅ Product entity with types, mappers, RTK Query endpoints
-- ✅ Type-safe localStorage persistence utilities
-- ✅ Smoke tests for API and persistence
-- ✅ FSD architecture setup with strict layer rules
+**Foundation:**
 
-### Planned (Stage 2)
+- ✅ Next.js 16 + React 19 + TypeScript strict
+- ✅ FSD архитектура с валидацией границ
+- ✅ Redux Toolkit + RTK Query
+- ✅ Централизованная persistence система
 
-- Mock fallback implementation
-- Product UI components (Card, Grid, Toolbar)
-- Features: search, pagination, favorites, remove
-- Redux state integration with persistence
-- Main product showcase page
+**Entities:**
+
+- ✅ Product entity (types, mappers, API, UI)
+- ✅ Dynamic categories/price range hooks
+
+**Features:**
+
+- ✅ Favorites (localStorage persist, auto-cleanup)
+- ✅ Local Products (create, edit, soft-delete)
+- ✅ Filters (search, category, price, rating)
+- ✅ Pagination (auto-reset на изменение фильтров)
+- ✅ Product Form (React Hook Form + Zod)
+
+**UI:**
+
+- ✅ Smart Widgets (data-fetching в виджетах)
+- ✅ Product Cards & Detail views
+- ✅ Skeletons, Error, Empty states
+- ✅ Modal dialogs
+
+**Tests:**
+
+- ✅ 116+ тестов (unit, component, integration)
+
+### Next (Stage 2D)
+
+- ⏳ not-found.tsx для /products/[id]
+- ⏳ Global ErrorBoundary в app/layout.tsx
+- ⏳ Валидация ID продуктов
+
+### Planned (Stage 3-4)
+
+См. [docs/roadmap.md](docs/roadmap.md)
 
 ## 🛠️ Quick Start
 
@@ -148,20 +186,38 @@ See [docs/fsd-architecture.md](docs/fsd-architecture.md) for detailed guidelines
 
 ## 📦 Key Features
 
-### Stage 1 (Current)
+### Product Management
 
-- FakeStore API integration with typed endpoints
-- Product entity with DTO mapping
-- Type-safe localStorage utilities with SSR safety
-- Comprehensive documentation
+- Просмотр каталога продуктов (FakeStore API)
+- Создание/редактирование локальных продуктов
+- Soft-delete (API-продукты) и hard-delete (локальные)
+- Детальная страница продукта
 
-### Stage 2 (Planned)
+### Filtering & Search
 
-- Product catalog with grid layout
-- Search with debounce (300ms)
-- Client-side pagination
-- Favorites and remove functionality
-- Mock fallback for API errors
+- Поиск по названию/описанию (debounce 300ms)
+- Фильтры: категории, цена, рейтинг
+- "Показывать только избранное"
+- Сброс всех фильтров
+
+### Favorites & Persistence
+
+- Добавление в избранное с localStorage
+- Автоудаление из избранного при удалении продукта
+- Persist для избранного и локальных продуктов
+- SSR-безопасная гидрация
+
+### Pagination
+
+- Фронтенд-пагинация (10 продуктов на страницу)
+- Автосброс на страницу 1 при изменении фильтров
+
+### Developer Experience
+
+- Smart Widgets паттерн (data-fetching изолирован)
+- View Hooks Aggregators (useProductsView, useProductView)
+- Factory Selectors для мемоизации
+- Централизованная persistence система
 
 ## 📝 Development Guidelines
 
@@ -187,5 +243,5 @@ This is a test assignment project.
 
 ---
 
-**Last Updated:** November 9, 2025
-**Stage:** 1 Complete (Foundation & Entity Layer)
+**Last Updated:** Ноябрь 18, 2025
+**Stage:** 2C Complete (Interactive Features)
