@@ -1,22 +1,20 @@
 "use client"
 
 import {
-  useGetProductByIdQuery,
   ProductDetailCard,
   ProductDetailCardSkeleton,
 } from "@/entities/product"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
+
+import { useProductView } from "../../hooks"
 
 type ProductDetailWidgetProps = {
   productId: number
 }
 
 export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {
-  const { data, isLoading, error, refetch } = useGetProductByIdQuery(productId)
-
-  if (isLoading) {
-    return <ProductDetailCardSkeleton />
-  }
+  const { product, isLoading, error, emptyState, refetch } =
+    useProductView(productId)
 
   if (error) {
     return (
@@ -27,9 +25,22 @@ export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {
     )
   }
 
-  if (!data) {
+  if (isLoading) {
+    return <ProductDetailCardSkeleton />
+  }
+
+  if (emptyState === "removed") {
+    return (
+      <EmptyState
+        title="Product was removed"
+        note="This product has been deleted. It may have been removed from the catalog."
+      />
+    )
+  }
+
+  if (emptyState === "notFound") {
     return <EmptyState title="Product not found" />
   }
 
-  return <ProductDetailCard product={data} />
+  return <ProductDetailCard product={product!} />
 }

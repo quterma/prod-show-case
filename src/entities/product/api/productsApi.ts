@@ -28,11 +28,15 @@ export const productsApi = baseApi.injectEndpoints({
 
     /**
      * Get single product by ID from FakeStore API
-     * Returns mapped domain model
+     * Returns mapped domain model or undefined if not found
      */
-    getProductById: builder.query<Product, number>({
+    getProductById: builder.query<Product | undefined, number>({
       query: (id) => `/products/${id}`,
-      transformResponse: (response: ProductDTO) => mapProductDTO(response),
+      transformResponse: (response: ProductDTO | null) => {
+        // Handle 404 or null response from API
+        if (!response) return undefined
+        return mapProductDTO(response)
+      },
       providesTags: (_result, _error, id) => [{ type: "Product", id }],
     }),
   }),

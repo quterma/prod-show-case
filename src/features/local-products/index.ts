@@ -11,6 +11,7 @@ export {
   selectLocalProductsArray,
   selectIsLocalProduct,
   makeSelectIsRemoved,
+  makeSelectMergedProduct,
   makeSelectMergedProducts,
   getInitialLocalProductsState,
 } from "./model"
@@ -18,7 +19,7 @@ export {
 export type { LocalProductsState, LocalProductEntry } from "./model"
 
 // Hooks exports
-export { useMergedProducts } from "./hooks"
+export { useMergedProduct, useMergedProducts } from "./hooks"
 
 // Lib exports
 export {

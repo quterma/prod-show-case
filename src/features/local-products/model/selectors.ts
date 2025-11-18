@@ -65,6 +65,56 @@ export const selectIsLocalProduct = createSelector(
 )
 
 /**
+ * Factory function for creating a memoized selector that merges a single product with local changes
+ * Returns a selector that takes (state, productId, apiProduct) and returns merged product or null
+ *
+ * Logic:
+ * - If productId < 0: return local product from localProductsById (ignore apiProduct)
+ * - If productId > 0 and in removedApiIds: return null (soft-deleted)
+ * - If productId > 0 and has patch: return patched product
+ * - Otherwise: return apiProduct (or null if undefined)
+ *
+ * Usage:
+ * ```ts
+ * const selectMergedProduct = useMemo(() => makeSelectMergedProduct(), [])
+ * const product = useAppSelector(state => selectMergedProduct(state, productId, apiProduct))
+ * ```
+ */
+export const makeSelectMergedProduct = () =>
+  createSelector(
+    [
+      (_state: RootState, productId: number, _apiProduct?: Product) =>
+        productId,
+      (_state: RootState, _productId: number, apiProduct?: Product) =>
+        apiProduct,
+      selectLocalProductsById,
+      selectRemovedApiIds,
+    ],
+    (productId, apiProduct, localProductsById, removedApiIds) => {
+      // Local product (negative ID)
+      if (productId < 0) {
+        const localEntry = localProductsById[productId]
+        return localEntry?.data ?? null
+      }
+
+      // API product (positive ID)
+      // Check if soft-deleted
+      if (removedApiIds.includes(productId)) {
+        return null
+      }
+
+      // Check if has local patch
+      const localEntry = localProductsById[productId]
+      if (localEntry) {
+        return localEntry.data
+      }
+
+      // Return API product or null
+      return apiProduct ?? null
+    }
+  )
+
+/**
  * Factory function for creating a memoized selector that merges API products with local changes
  * Returns a selector that takes (state, products) and returns merged products
  *
