@@ -1,0 +1,1 @@
+export { ProductFormDialogWidget } from "./ProductFormDialogWidget"

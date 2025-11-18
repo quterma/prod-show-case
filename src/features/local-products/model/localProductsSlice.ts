@@ -19,6 +19,18 @@ export type LocalProductEntry = {
 }
 
 /**
+ * Payload for upsertLocalProduct action
+ * - id: optional, auto-assigned for new local products
+ * - data: product data without ID
+ * - source: "local" for created products, "api" for API overrides
+ */
+export type UpsertLocalProductPayload = {
+  id?: number
+  data: Omit<Product, "id">
+  source: "local" | "api"
+}
+
+/**
  * State for local products management
  * - localProductsById: stores created/modified products (local creations + API overrides)
  * - removedApiIds: tracks soft-deleted API products (local products are just removed from localProductsById)
@@ -82,11 +94,7 @@ const localProductsSlice = createSlice({
      */
     upsertLocalProduct: (
       state,
-      action: PayloadAction<{
-        id?: number
-        data: Omit<Product, "id">
-        source: "local" | "api"
-      }>
+      action: PayloadAction<UpsertLocalProductPayload>
     ) => {
       const { id, data, source } = action.payload
 

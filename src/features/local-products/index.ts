@@ -16,7 +16,11 @@ export {
   getInitialLocalProductsState,
 } from "./model"
 
-export type { LocalProductsState, LocalProductEntry } from "./model"
+export type {
+  LocalProductsState,
+  LocalProductEntry,
+  UpsertLocalProductPayload,
+} from "./model"
 
 // Hooks exports
 export { useMergedProduct, useMergedProducts } from "./hooks"

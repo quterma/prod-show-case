@@ -22,17 +22,15 @@ export function toFormData(product: Product): ProductFormData {
 }
 
 /**
- * Maps form data to Product model
+ * Maps form data to Product model (without ID)
  * Combines rate and count into rating object
- * Note: ID should be provided separately (for create/edit logic)
+ * Use this to create product payload that can be used with ID assignment logic
  *
  * @param formData - Form data from user input
- * @param id - Product ID (for edit) or generated ID (for create)
- * @returns Domain Product model
+ * @returns Product model without ID
  */
-export function fromFormData(formData: ProductFormData, id: number): Product {
+export function fromFormData(formData: ProductFormData): Omit<Product, "id"> {
   return {
-    id,
     title: formData.title,
     price: formData.price,
     description: formData.description,

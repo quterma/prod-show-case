@@ -8,6 +8,7 @@ export {
   resetLocalProducts,
   type LocalProductsState,
   type LocalProductEntry,
+  type UpsertLocalProductPayload,
 } from "./localProductsSlice"
 
 export {

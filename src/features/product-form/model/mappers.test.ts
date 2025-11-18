@@ -56,14 +56,16 @@ describe("product-form mappers", () => {
   })
 
   describe("fromFormData", () => {
-    it("should convert ProductFormData to Product with provided ID", () => {
-      const result = fromFormData(mockFormData, 1)
+    it("should convert ProductFormData to Product without ID", () => {
+      const result = fromFormData(mockFormData)
+      const expected = { ...mockProduct }
+      delete (expected as Partial<Product>).id
 
-      expect(result).toEqual(mockProduct)
+      expect(result).toEqual(expected)
     })
 
     it("should combine rate and count into rating object", () => {
-      const result = fromFormData(mockFormData, 1)
+      const result = fromFormData(mockFormData)
 
       expect(result.rating).toEqual({
         rate: mockFormData.rate,
@@ -73,23 +75,14 @@ describe("product-form mappers", () => {
       expect(result).not.toHaveProperty("count")
     })
 
-    it("should use provided ID for the product", () => {
-      const customId = 999
-      const result = fromFormData(mockFormData, customId)
+    it("should not include ID in the result", () => {
+      const result = fromFormData(mockFormData)
 
-      expect(result.id).toBe(customId)
-    })
-
-    it("should handle negative IDs for local products", () => {
-      const negativeId = -Date.now()
-      const result = fromFormData(mockFormData, negativeId)
-
-      expect(result.id).toBe(negativeId)
-      expect(result.id).toBeLessThan(0)
+      expect(result).not.toHaveProperty("id")
     })
 
     it("should preserve all form fields in the product", () => {
-      const result = fromFormData(mockFormData, 1)
+      const result = fromFormData(mockFormData)
 
       expect(result.title).toBe(mockFormData.title)
       expect(result.price).toBe(mockFormData.price)
@@ -127,9 +120,13 @@ describe("product-form mappers", () => {
     it("should maintain data integrity when converting back and forth", () => {
       const originalProduct = mockProduct
 
-      // Product -> Form -> Product
+      // Product -> Form -> Product (without ID)
       const formData = toFormData(originalProduct)
-      const convertedProduct = fromFormData(formData, originalProduct.id)
+      const convertedProductData = fromFormData(formData)
+      const convertedProduct = {
+        ...convertedProductData,
+        id: originalProduct.id,
+      }
 
       expect(convertedProduct).toEqual(originalProduct)
     })
@@ -142,7 +139,8 @@ describe("product-form mappers", () => {
       }
 
       const formData = toFormData(zeroProduct)
-      const convertedProduct = fromFormData(formData, zeroProduct.id)
+      const convertedProductData = fromFormData(formData)
+      const convertedProduct = { ...convertedProductData, id: zeroProduct.id }
 
       expect(convertedProduct).toEqual(zeroProduct)
       expect(convertedProduct.price).toBe(0)
