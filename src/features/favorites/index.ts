@@ -1,3 +1,4 @@
+// Model exports
 export {
   toggleFavorite,
   addFavorite,
@@ -12,4 +13,8 @@ export {
   makeSelectFavoriteProducts,
 } from "./model"
 
+// Hooks exports
+export { useFavoriteProducts } from "./hooks"
+
+// UI exports
 export { FavoriteToggle, ShowOnlyFavoritesToggle } from "./ui"

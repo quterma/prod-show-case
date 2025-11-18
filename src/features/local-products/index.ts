@@ -12,11 +12,13 @@ export {
   selectIsLocalProduct,
   makeSelectIsRemoved,
   makeSelectMergedProducts,
-  useMergedProducts,
   getInitialLocalProductsState,
 } from "./model"
 
 export type { LocalProductsState, LocalProductEntry } from "./model"
+
+// Hooks exports
+export { useMergedProducts } from "./hooks"
 
 // Lib exports
 export {

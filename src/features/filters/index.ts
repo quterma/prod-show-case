@@ -14,10 +14,12 @@ export {
   selectMinRating,
   selectHasActiveFilters,
   makeSelectFilteredProducts,
-  useFilteredProducts,
 } from "./model"
 export { default as filtersReducer } from "./model/filtersSlice"
 export type { FiltersState } from "./model"
+
+// Hooks exports
+export { useFilteredProducts } from "./hooks"
 
 // UI exports
 export {

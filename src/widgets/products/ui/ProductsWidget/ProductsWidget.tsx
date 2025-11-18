@@ -1,18 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
-
-import {
-  useGetProductsQuery,
-  useDynamicCategories,
-  useDynamicPriceRange,
-} from "@/entities/product"
-import { selectSearchQuery, useFilteredProducts } from "@/features/filters"
-import { Pagination, resetPage } from "@/features/pagination"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { Pagination } from "@/features/pagination"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 
-import { usePagination } from "../../model/hooks"
+import { useProductsView } from "../../hooks"
 import { ProductsGrid } from "../ProductsGrid"
 import { ProductsGridSkeleton } from "../ProductsGridSkeleton"
 import { ProductsToolbar } from "../ProductsToolbar"
@@ -26,26 +17,17 @@ type ProductsWidgetProps = {
  * Handles data fetching, filtering, and composition of toolbar + grid
  */
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
-  const dispatch = useAppDispatch()
-  const { data, isLoading, error, refetch } = useGetProductsQuery()
-
-  // Filter products using selector-based hook (no debounce - handled in QueryFilter)
-  const filteredProducts = useFilteredProducts(data)
-
-  // Paginate filtered products
-  const { paginatedProducts, totalPages } = usePagination(filteredProducts)
-
-  // Reset pagination to page 1 when filters change (filteredProducts length changes)
-  useEffect(() => {
-    dispatch(resetPage())
-  }, [filteredProducts?.length, dispatch])
-
-  // Get search query for EmptyState message
-  const searchQuery = useAppSelector(selectSearchQuery)
-
-  // Extract dynamic categories and price range from products (memoized)
-  const categories = useDynamicCategories(data)
-  const priceRange = useDynamicPriceRange(data)
+  // Use aggregator hook for complete data pipeline
+  const {
+    paginatedProducts,
+    totalPages,
+    categories,
+    priceRange,
+    isLoading,
+    error,
+    emptyState,
+    refetch,
+  } = useProductsView()
 
   // Determine what to render in the grid area based on state
   let gridContent: React.ReactNode
@@ -59,22 +41,32 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
     )
   } else if (isLoading) {
     gridContent = <ProductsGridSkeleton />
-  } else if (!data || data.length === 0) {
+  } else if (emptyState === "emptyAPIData") {
     gridContent = (
       <EmptyState
         title="No products available"
         note="The server returned an empty product list. Please try again later or contact support."
       />
     )
-  } else if (!filteredProducts || filteredProducts.length === 0) {
+  } else if (emptyState === "emptyLocalData") {
+    gridContent = (
+      <EmptyState
+        title="No products available"
+        note="All products have been deleted. Try resetting your local data."
+      />
+    )
+  } else if (emptyState === "emptyFavoriteData") {
+    gridContent = (
+      <EmptyState
+        title="No favorite products"
+        note="You haven't added any products to favorites yet. Browse products and click the heart icon to add them."
+      />
+    )
+  } else if (emptyState === "emptyFilteredData") {
     gridContent = (
       <EmptyState
         title="No products match your filters"
-        note={
-          searchQuery.trim()
-            ? "Try adjusting your search query or reset filters."
-            : "Try adjusting your filters or reset them to see all products."
-        }
+        note="Try adjusting your filters or reset them to see all products."
       />
     )
   } else {

@@ -20,5 +20,3 @@ export {
   makeSelectIsRemoved,
   makeSelectMergedProducts,
 } from "./selectors"
-
-export { useMergedProducts } from "./useMergedProducts"

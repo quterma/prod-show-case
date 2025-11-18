@@ -19,5 +19,3 @@ export {
   selectHasActiveFilters,
   makeSelectFilteredProducts,
 } from "./selectors"
-
-export { useFilteredProducts } from "./useFilteredProducts"

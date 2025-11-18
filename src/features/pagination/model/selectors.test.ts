@@ -69,12 +69,7 @@ describe("pagination selectors", () => {
       expect(result.items).toHaveLength(10)
       expect(result.items[0].id).toBe(1)
       expect(result.items[9].id).toBe(10)
-      expect(result.totalCount).toBe(25)
       expect(result.totalPages).toBe(3)
-      expect(result.currentPage).toBe(1)
-      expect(result.pageSize).toBe(10)
-      expect(result.rangeStart).toBe(1)
-      expect(result.rangeEnd).toBe(10)
     })
 
     it("returns second page of products", () => {
@@ -86,11 +81,7 @@ describe("pagination selectors", () => {
       expect(result.items).toHaveLength(10)
       expect(result.items[0].id).toBe(11)
       expect(result.items[9].id).toBe(20)
-      expect(result.totalCount).toBe(25)
       expect(result.totalPages).toBe(3)
-      expect(result.currentPage).toBe(2)
-      expect(result.rangeStart).toBe(11)
-      expect(result.rangeEnd).toBe(20)
     })
 
     it("returns partial last page when products do not fill page", () => {
@@ -99,27 +90,19 @@ describe("pagination selectors", () => {
 
       const result = selectPaginatedProducts(state, mockProducts)
 
-      // Page 3: products 21-25 (only 5 products)
       expect(result.items).toHaveLength(5)
       expect(result.items[0].id).toBe(21)
       expect(result.items[4].id).toBe(25)
-      expect(result.totalCount).toBe(25)
       expect(result.totalPages).toBe(3)
-      expect(result.currentPage).toBe(3)
-      expect(result.rangeStart).toBe(21)
-      expect(result.rangeEnd).toBe(25)
     })
 
-    it("returns empty array when page exceeds total pages", () => {
+    it("clamps page to valid range when page exceeds total pages", () => {
       const state = createMockState(10, 10) as RootState
       const selectPaginatedProducts = makeSelectPaginatedProducts()
 
       const result = selectPaginatedProducts(state, mockProducts)
 
-      // Page 10 with 10 per page = products 91-100, but we only have 25 products
-      // Selector clamps to valid page (page 3), so returns last page
       expect(result.items).toHaveLength(5)
-      expect(result.currentPage).toBe(3) // Clamped to max valid page
       expect(result.totalPages).toBe(3)
     })
 
@@ -130,10 +113,7 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, [])
 
       expect(result.items).toEqual([])
-      expect(result.totalCount).toBe(0)
       expect(result.totalPages).toBe(0)
-      expect(result.rangeStart).toBe(0)
-      expect(result.rangeEnd).toBe(0)
     })
 
     it("returns empty result when products is undefined", () => {
@@ -143,10 +123,7 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, undefined)
 
       expect(result.items).toEqual([])
-      expect(result.totalCount).toBe(0)
       expect(result.totalPages).toBe(0)
-      expect(result.rangeStart).toBe(0)
-      expect(result.rangeEnd).toBe(0)
     })
 
     it("handles page size of 1 correctly", () => {
@@ -157,8 +134,7 @@ describe("pagination selectors", () => {
 
       expect(result.items).toHaveLength(1)
       expect(result.items[0].id).toBe(5)
-      expect(result.totalPages).toBe(25) // 25 products with page size 1
-      expect(result.currentPage).toBe(5)
+      expect(result.totalPages).toBe(25)
     })
   })
 

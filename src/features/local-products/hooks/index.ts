@@ -1,0 +1,1 @@
+export { useMergedProducts } from "./useMergedProducts"

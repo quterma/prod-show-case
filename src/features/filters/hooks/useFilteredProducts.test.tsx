@@ -11,7 +11,8 @@ import paginationReducer, {
   PAGE_SIZE,
 } from "@/features/pagination/model/paginationSlice"
 
-import filtersReducer from "./filtersSlice"
+import filtersReducer from "../model/filtersSlice"
+
 import { useFilteredProducts } from "./useFilteredProducts"
 
 function createTestStore(initialState = {}) {
@@ -25,6 +26,7 @@ function createTestStore(initialState = {}) {
     preloadedState: {
       favorites: {
         favoriteIds: [],
+        showOnlyFavorites: false,
       },
       localProducts: {
         localProductsById: {},
@@ -77,13 +79,13 @@ describe("useFilteredProducts", () => {
     },
   ]
 
-  it("returns undefined when products is undefined", () => {
+  it("returns empty array when products is empty", () => {
     const store = createTestStore()
-    const { result } = renderHook(() => useFilteredProducts(undefined), {
+    const { result } = renderHook(() => useFilteredProducts([]), {
       wrapper: createWrapper(store),
     })
 
-    expect(result.current).toBeUndefined()
+    expect(result.current).toEqual([])
   })
 
   it("returns all products when no filters active", () => {

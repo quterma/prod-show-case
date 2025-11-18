@@ -19,6 +19,7 @@ function createTestStore() {
     preloadedState: {
       favorites: {
         favoriteIds: [],
+        showOnlyFavorites: false,
       },
       localProducts: {
         localProductsById: {},

@@ -1,0 +1,1 @@
+export { useFilteredProducts } from "./useFilteredProducts"

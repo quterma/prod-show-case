@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import type { Product } from "@/entities/product"
 import { useAppSelector } from "@/shared/lib/store"
 
-import { makeSelectMergedProducts } from "./selectors"
+import { makeSelectMergedProducts } from "../model/selectors"
 
 /**
  * Thin hook for merging API products with local changes using Redux selectors
@@ -16,7 +16,7 @@ import { makeSelectMergedProducts } from "./selectors"
  * 4. Sort alphabetically by title
  *
  * @param products - Products to merge (from API or other source)
- * @returns Merged products array or undefined if no products
+ * @returns Merged products array (empty if no products)
  *
  * @example
  * ```ts
@@ -24,12 +24,15 @@ import { makeSelectMergedProducts } from "./selectors"
  * const mergedProducts = useMergedProducts(data)
  * ```
  */
-export function useMergedProducts(
-  products: Product[] | undefined
-): Product[] | undefined {
+export function useMergedProducts(products: Product[] | undefined): Product[] {
   // Create memoized selector instance (stable across re-renders)
   const selectMergedProducts = useMemo(() => makeSelectMergedProducts(), [])
 
   // Use selector with products argument
-  return useAppSelector((state) => selectMergedProducts(state, products))
+  const result = useAppSelector((state) =>
+    selectMergedProducts(state, products)
+  )
+
+  // Return empty array if undefined (standardize return type)
+  return result ?? []
 }

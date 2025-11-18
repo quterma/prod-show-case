@@ -1,8 +1,9 @@
 import { useMemo } from "react"
 
 import type { Product } from "@/entities/product"
-import { makeSelectPaginatedProducts } from "@/features/pagination"
 import { useAppSelector } from "@/shared/lib/store"
+
+import { makeSelectPaginatedProducts } from "../model/selectors"
 
 /**
  * Result interface for usePagination hook
@@ -10,18 +11,8 @@ import { useAppSelector } from "@/shared/lib/store"
 export interface UsePaginationResult {
   /** Paginated slice of products for current page */
   paginatedProducts: Product[]
-  /** Total number of products before pagination */
-  totalCount: number
   /** Total number of pages */
   totalPages: number
-  /** Range start (1-based index of first item on page) */
-  rangeStart: number
-  /** Range end (1-based index of last item on page) */
-  rangeEnd: number
-  /** Current page number */
-  currentPage: number
-  /** Items per page */
-  pageSize: number
 }
 
 /**
@@ -43,13 +34,11 @@ export interface UsePaginationResult {
  * // In widget: apply all filters first, then paginate
  * const merged = useMergedProducts(apiProducts)
  * const filtered = useFilteredProducts(merged)
- * const favoritesFiltered = useFavoritesFilter(filtered)
- * const pagination = usePagination(favoritesFiltered)
+ * const favorites = useFavoriteProducts(filtered)
+ * const pagination = usePagination(favorites)
  * ```
  */
-export function usePagination(
-  products: Product[] | undefined
-): UsePaginationResult {
+export function usePagination(products: Product[]): UsePaginationResult {
   // Create memoized pagination selector (stable across re-renders)
   const selectPaginatedProducts = useMemo(
     () => makeSelectPaginatedProducts(),
@@ -63,11 +52,6 @@ export function usePagination(
 
   return {
     paginatedProducts: result.items,
-    totalCount: result.totalCount,
     totalPages: result.totalPages,
-    rangeStart: result.rangeStart,
-    rangeEnd: result.rangeEnd,
-    currentPage: result.currentPage,
-    pageSize: result.pageSize,
   }
 }

@@ -17,7 +17,7 @@ export const selectPageSize = (state: RootState) => state.pagination.pageSize
  * NOTE: This selector is pure pagination logic - it doesn't know about filters or favorites.
  * The products array should be pre-processed by the widget layer.
  *
- * @returns Object with paginated items and metadata
+ * @returns Object with paginated items and total pages
  */
 export const makeSelectPaginatedProducts = () =>
   createSelector(
@@ -30,17 +30,11 @@ export const makeSelectPaginatedProducts = () =>
       if (!products || products.length === 0) {
         return {
           items: [],
-          totalCount: 0,
           totalPages: 0,
-          currentPage: 1,
-          pageSize,
-          rangeStart: 0,
-          rangeEnd: 0,
         }
       }
 
-      const totalCount = products.length
-      const totalPages = Math.ceil(totalCount / pageSize)
+      const totalPages = Math.ceil(products.length / pageSize)
 
       // Clamp currentPage to valid range
       const validPage = Math.max(1, Math.min(currentPage, totalPages))
@@ -49,17 +43,9 @@ export const makeSelectPaginatedProducts = () =>
       const end = start + pageSize
       const items = products.slice(start, end)
 
-      const rangeStart = totalCount > 0 ? start + 1 : 0
-      const rangeEnd = Math.min(end, totalCount)
-
       return {
         items,
-        totalCount,
         totalPages,
-        currentPage: validPage,
-        pageSize,
-        rangeStart,
-        rangeEnd,
       }
     }
   )
