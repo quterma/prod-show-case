@@ -8,13 +8,15 @@ import {
   RatingFilter,
   ResetFiltersButton,
 } from "@/features/filters"
-import { ResetLocalDataButton } from "@/shared/ui"
+import { Button, ResetLocalDataButton } from "@/shared/ui"
 
 type ProductsToolbarProps = {
   /** Available categories for filters (derived from products), undefined if no valid categories */
   categories?: string[]
   /** Available price range from products, undefined if no valid prices */
   priceRange?: { min: number; max: number }
+  /** Callback when create product button is clicked */
+  onCreateProduct?: () => void
 }
 
 /**
@@ -26,13 +28,19 @@ type ProductsToolbarProps = {
 export function ProductsToolbar({
   categories,
   priceRange,
+  onCreateProduct,
 }: ProductsToolbarProps) {
   return (
     <div className="flex flex-col gap-4 mb-6">
-      {/* Search and Reset row */}
+      {/* Search and Actions row */}
       <div className="flex items-center gap-4 justify-between">
         <QueryFilter />
         <div className="flex items-center gap-3">
+          {onCreateProduct && (
+            <Button onClick={onCreateProduct} variant="primary">
+              Create Product
+            </Button>
+          )}
           <ResetFiltersButton />
           <ShowOnlyFavoritesToggle />
           <ResetLocalDataButton />

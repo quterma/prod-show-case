@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
+
 import {
   ProductDetailCard,
   ProductDetailCardSkeleton,
 } from "@/entities/product"
-import { ErrorMessage, EmptyState } from "@/shared/ui"
+import { Button, ErrorMessage, EmptyState } from "@/shared/ui"
+import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
 
 import { useProductView } from "../../hooks"
 
@@ -13,6 +16,13 @@ type ProductDetailWidgetProps = {
 }
 
 export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {
+  // Local state for edit product dialog
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+
+  // Handlers for dialog control
+  const handleOpenModal = () => setIsEditDialogOpen(true)
+  const handleCloseModal = () => setIsEditDialogOpen(false)
+
   const { product, isLoading, error, emptyState, refetch } =
     useProductView(productId)
 
@@ -42,5 +52,30 @@ export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {
     return <EmptyState title="Product not found" />
   }
 
-  return <ProductDetailCard product={product!} />
+  // If product is null, don't render anything (shouldn't happen after checks above)
+  if (!product) {
+    return null
+  }
+
+  return (
+    <>
+      {/* Edit button */}
+      <div className="mb-4 flex justify-end">
+        <Button onClick={handleOpenModal} variant="secondary">
+          Edit Product
+        </Button>
+      </div>
+
+      {/* Product detail card */}
+      <ProductDetailCard product={product} />
+
+      {/* Edit product dialog */}
+      <ProductFormDialogWidget
+        mode="edit"
+        product={product}
+        open={isEditDialogOpen}
+        onCloseDialog={handleCloseModal}
+      />
+    </>
+  )
 }

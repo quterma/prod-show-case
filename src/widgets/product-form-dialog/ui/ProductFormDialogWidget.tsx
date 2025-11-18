@@ -3,7 +3,6 @@
 import { useMemo } from "react"
 
 import type { Product } from "@/entities/product"
-import { useDynamicCategories } from "@/entities/product"
 import { upsertLocalProduct } from "@/features/local-products"
 import {
   ProductForm,
@@ -15,6 +14,7 @@ import {
 import { useAppDispatch } from "@/shared/lib/store"
 import { Modal } from "@/shared/ui"
 
+import { useAvailableCategories } from "../hooks"
 import { createProductPayload, updateProductPayload } from "../lib/helpers"
 
 type ProductFormDialogWidgetProps = {
@@ -25,9 +25,7 @@ type ProductFormDialogWidgetProps = {
   /** Controls dialog visibility */
   open: boolean
   /** Called when dialog should close */
-  onOpenChange: (open: boolean) => void
-  /** Available products for extracting categories */
-  availableProducts?: Product[]
+  onCloseDialog: () => void
 }
 
 /**
@@ -41,13 +39,12 @@ export function ProductFormDialogWidget({
   mode,
   product,
   open,
-  onOpenChange,
-  availableProducts = [],
+  onCloseDialog,
 }: ProductFormDialogWidgetProps) {
   const dispatch = useAppDispatch()
 
-  // Extract categories from available products
-  const categories = useDynamicCategories(availableProducts)
+  // Get available categories from aggregator hook
+  const categories = useAvailableCategories()
 
   // Compute default values based on mode
   const defaultValues = useMemo<ProductFormData>(() => {
@@ -75,20 +72,20 @@ export function ProductFormDialogWidget({
     }
 
     // Close dialog after successful submit
-    onOpenChange(false)
+    onCloseDialog()
   }
 
   const handleCancel = () => {
-    onOpenChange(false)
+    onCloseDialog()
   }
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange} title={title}>
+    <Modal open={open} onCloseDialog={onCloseDialog} title={title}>
       <ProductForm
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
-        availableCategories={categories || []}
+        availableCategories={categories}
         submitLabel={mode === "create" ? "Create" : "Save"}
       />
     </Modal>

@@ -28,6 +28,9 @@ export function CategoryField({
 }: CategoryFieldProps) {
   const [isAddingNew, setIsAddingNew] = useState(false)
 
+  // If no categories available, always show input
+  const hasCategories = availableCategories.length > 0
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
 
@@ -50,7 +53,7 @@ export function CategoryField({
         Category <span className="text-red-500">*</span>
       </label>
 
-      {isAddingNew ? (
+      {!hasCategories || isAddingNew ? (
         <div className="space-y-2">
           <input
             {...register("category")}
@@ -58,19 +61,21 @@ export function CategoryField({
             type="text"
             onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter new category name"
-            autoFocus
+            placeholder="Enter category name"
+            autoFocus={isAddingNew}
           />
-          <button
-            type="button"
-            onClick={() => {
-              setIsAddingNew(false)
-              setValue("category", defaultValue || "")
-            }}
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            ← Back to list
-          </button>
+          {hasCategories && isAddingNew && (
+            <button
+              type="button"
+              onClick={() => {
+                setIsAddingNew(false)
+                setValue("category", defaultValue || "")
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              ← Back to list
+            </button>
+          )}
         </div>
       ) : (
         <select

@@ -6,7 +6,7 @@ type ModalProps = {
   /** Controls modal visibility */
   open: boolean
   /** Called when modal should close (ESC, backdrop click, close button) */
-  onOpenChange: (open: boolean) => void
+  onCloseDialog: () => void
   /** Optional modal title */
   title?: string
   /** Modal content */
@@ -20,18 +20,18 @@ type ModalProps = {
  * - Accessible (role="dialog", aria-modal)
  * - Portal rendering with backdrop overlay
  */
-export function Modal({ open, onOpenChange, title, children }: ModalProps) {
+export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
   // Handle ESC key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) {
-        onOpenChange(false)
+        onCloseDialog()
       }
     }
 
     document.addEventListener("keydown", handleEscape)
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [open, onOpenChange])
+  }, [open, onCloseDialog])
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -58,7 +58,7 @@ export function Modal({ open, onOpenChange, title, children }: ModalProps) {
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 transition-opacity"
-        onClick={() => onOpenChange(false)}
+        onClick={onCloseDialog}
         aria-hidden="true"
       />
 
@@ -78,7 +78,7 @@ export function Modal({ open, onOpenChange, title, children }: ModalProps) {
             </h2>
             <button
               type="button"
-              onClick={() => onOpenChange(false)}
+              onClick={onCloseDialog}
               className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="Close modal"
             >

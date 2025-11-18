@@ -1,7 +1,10 @@
 "use client"
 
+import { useState } from "react"
+
 import { Pagination } from "@/features/pagination"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
+import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
 
 import { useProductsView } from "../../hooks"
 import { ProductsGrid } from "../ProductsGrid"
@@ -17,6 +20,13 @@ type ProductsWidgetProps = {
  * Handles data fetching, filtering, and composition of toolbar + grid
  */
 export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
+  // Local state for create product dialog
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+
+  // Handlers for dialog control
+  const handleOpenModal = () => setIsCreateDialogOpen(true)
+  const handleCloseModal = () => setIsCreateDialogOpen(false)
+
   // Use aggregator hook for complete data pipeline
   const {
     paginatedProducts,
@@ -81,10 +91,21 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   return (
     <div>
       {/* Toolbar is always visible - provides search/filters access in all states */}
-      <ProductsToolbar categories={categories} priceRange={priceRange} />
+      <ProductsToolbar
+        categories={categories}
+        priceRange={priceRange}
+        onCreateProduct={handleOpenModal}
+      />
 
       {/* Grid area - conditionally rendered based on state */}
       {gridContent}
+
+      {/* Create product dialog */}
+      <ProductFormDialogWidget
+        mode="create"
+        open={isCreateDialogOpen}
+        onCloseDialog={handleCloseModal}
+      />
     </div>
   )
 }
