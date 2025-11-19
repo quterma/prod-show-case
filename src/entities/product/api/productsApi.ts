@@ -1,7 +1,12 @@
 import { baseApi } from "@/shared/api"
 
 import { mapProductDTO, mapProductsDTO } from "../model/mappers"
-import type { Product, ProductDTO, ProductsListDTO } from "../model/types"
+import type {
+  Product,
+  ProductDTO,
+  ProductId,
+  ProductsListDTO,
+} from "../model/types"
 
 /**
  * Products API endpoints
@@ -11,7 +16,7 @@ export const productsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /**
      * Get all products from FakeStore API
-     * Returns mapped domain models
+     * Returns mapped domain models with string-based IDs
      */
     getProducts: builder.query<Product[], void>({
       query: () => "/products",
@@ -28,9 +33,10 @@ export const productsApi = baseApi.injectEndpoints({
 
     /**
      * Get single product by ID from FakeStore API
+     * Accepts string ID (converted to number for API call)
      * Returns mapped domain model or undefined if not found
      */
-    getProductById: builder.query<Product | undefined, number>({
+    getProductById: builder.query<Product | undefined, ProductId>({
       query: (id) => `/products/${id}`,
       transformResponse: (response: ProductDTO | null) => {
         // Handle 404 or null response from API

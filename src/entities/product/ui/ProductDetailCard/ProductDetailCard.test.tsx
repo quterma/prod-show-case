@@ -23,8 +23,7 @@ function createTestStore() {
       },
       localProducts: {
         localProductsById: {},
-        removedApiIds: [],
-        nextLocalId: -1,
+        removedProductIds: [],
       },
     },
   })
@@ -33,7 +32,7 @@ function createTestStore() {
 describe("ProductDetailCard", () => {
   it("renders full product details", () => {
     const mockProduct: Product = {
-      id: 1,
+      id: "1",
       title: "Test Product",
       price: 99.99,
       category: "electronics",
@@ -59,7 +58,7 @@ describe("ProductDetailCard", () => {
 
   it("renders favorite button", () => {
     const mockProduct: Product = {
-      id: 1,
+      id: "1",
       title: "Test Product",
       price: 99.99,
       category: "electronics",

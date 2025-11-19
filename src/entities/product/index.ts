@@ -1,5 +1,6 @@
 // Model exports (types and mappers)
 export type {
+  ProductId,
   ProductRating,
   Product,
   ProductDTO,

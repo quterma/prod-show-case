@@ -8,7 +8,7 @@ import { useDynamicCategories } from "./useDynamicCategories"
 describe("useDynamicCategories", () => {
   const mockProducts: Product[] = [
     {
-      id: 1,
+      id: "1",
       title: "Product 1",
       price: 10.99,
       category: "electronics",
@@ -17,7 +17,7 @@ describe("useDynamicCategories", () => {
       rating: { rate: 4.5, count: 100 },
     },
     {
-      id: 2,
+      id: "2",
       title: "Product 2",
       price: 20.99,
       category: "clothing",
@@ -26,7 +26,7 @@ describe("useDynamicCategories", () => {
       rating: { rate: 4.0, count: 50 },
     },
     {
-      id: 3,
+      id: "3",
       title: "Product 3",
       price: 15.99,
       category: "electronics",
@@ -77,7 +77,7 @@ describe("useDynamicCategories", () => {
     // Rerender with different products
     const newProducts: Product[] = [
       {
-        id: 4,
+        id: "4",
         title: "Product 4",
         price: 30.99,
         category: "books",

@@ -1,0 +1,1 @@
+export { generateLocalProductId } from "./generateId"

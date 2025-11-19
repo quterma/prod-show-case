@@ -41,27 +41,22 @@ describe("resetLocalData thunk", () => {
         getDefaultMiddleware().concat(baseApi.middleware),
       preloadedState: {
         favorites: {
-          favoriteIds: [1, 2, 3],
+          favoriteIds: ["1", "2", "3"],
           showOnlyFavorites: true,
         },
         localProducts: {
           localProductsById: {
-            "-1": {
-              id: -1,
-              data: {
-                id: -1,
-                title: "Local Product",
-                price: 99.99,
-                description: "Test",
-                category: "test",
-                image: "test.jpg",
-                rating: { rate: 0, count: 0 },
-              },
-              source: "local" as const,
+            local_test123: {
+              id: "local_test123",
+              title: "Local Product",
+              price: 99.99,
+              description: "Test",
+              category: "test",
+              image: "test.jpg",
+              rating: { rate: 0, count: 0 },
             },
           },
-          removedApiIds: [4, 5],
-          nextLocalId: -2,
+          removedProductIds: ["4", "5"],
         },
         filters: {
           searchQuery: "test",
@@ -89,8 +84,7 @@ describe("resetLocalData thunk", () => {
     expect(state.favorites.favoriteIds).toEqual([])
     expect(state.favorites.showOnlyFavorites).toBe(false)
     expect(state.localProducts.localProductsById).toEqual({})
-    expect(state.localProducts.removedApiIds).toEqual([])
-    expect(state.localProducts.nextLocalId).toBe(-1)
+    expect(state.localProducts.removedProductIds).toEqual([])
     expect(state.filters).toEqual({
       searchQuery: "",
       categories: [],

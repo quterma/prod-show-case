@@ -1,4 +1,11 @@
 /**
+ * Product ID type (string-based for flexibility)
+ * - API products: numeric strings ("1", "123")
+ * - Local products: prefixed strings ("local_V1StGXR8_Z")
+ */
+export type ProductId = string
+
+/**
  * Product rating information
  */
 export type ProductRating = {
@@ -13,8 +20,8 @@ export type ProductRating = {
  * Represents a product in the application
  */
 export type Product = {
-  /** Unique product ID */
-  id: number
+  /** Unique product ID (string-based) */
+  id: ProductId
   /** Product title/name */
   title: string
   /** Price in USD */

@@ -1,5 +1,5 @@
 import { useGetProductByIdQuery } from "@/entities/product"
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 import { useMergedProduct } from "@/features/local-products"
 
 /**
@@ -15,7 +15,7 @@ export interface UseProductViewResult {
   product: Product | null
   /** Loading state from RTK Query */
   isLoading: boolean
-  /** Error from RTK Query (only for API products with positive IDs) */
+  /** Error from RTK Query (only for API products) */
   error: unknown
   /** Empty state reason (notFound, removed, or null if product exists) */
   emptyState: ProductViewEmptyState
@@ -31,20 +31,20 @@ export interface UseProductViewResult {
  * 2. Merge with local changes (handles local/patched/removed products)
  * 3. Determine empty state (notFound vs removed)
  *
- * For local products (id < 0):
+ * For local products (id starts with "local_"):
  * - API will return 404 error (expected, ignored)
  * - useMergedProduct returns local product from store
  *
- * For API products (id > 0):
+ * For API products (numeric string IDs):
  * - API returns product data or error
  * - useMergedProduct checks if removed or patched
  *
- * @param productId - Product ID (can be negative for local products)
+ * @param productId - Product ID (string-based, can be local or API)
  * @returns Complete product view state
  *
  * @example
  * ```ts
- * function ProductDetailWidget({ productId }: { productId: number }) {
+ * function ProductDetailWidget({ productId }: { productId: ProductId }) {
  *   const { product, isLoading, error, emptyState, refetch } = useProductView(productId)
  *
  *   if (error) return <ErrorMessage onRetry={refetch} />
@@ -55,7 +55,7 @@ export interface UseProductViewResult {
  * }
  * ```
  */
-export function useProductView(productId: number): UseProductViewResult {
+export function useProductView(productId: ProductId): UseProductViewResult {
   // Always fetch from API (will error for local products, which is expected)
   const {
     data: apiProduct,
@@ -76,8 +76,8 @@ export function useProductView(productId: number): UseProductViewResult {
     refetch,
   }
 
-  // For local products (negative ID), ignore API errors
-  const isLocalProduct = productId < 0
+  // For local products (ID starts with "local_"), ignore API errors
+  const isLocalProduct = productId.startsWith("local_")
 
   // Handle error state (only for API products)
   if (error && !isLocalProduct) {

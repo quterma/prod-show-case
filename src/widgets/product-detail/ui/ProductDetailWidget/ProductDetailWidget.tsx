@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import type { ProductId } from "@/entities/product"
 import {
   ProductDetailCard,
   ProductDetailCardSkeleton,
@@ -12,7 +13,7 @@ import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
 import { useProductView } from "../../hooks"
 
 type ProductDetailWidgetProps = {
-  productId: number
+  productId: ProductId
 }
 
 export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {

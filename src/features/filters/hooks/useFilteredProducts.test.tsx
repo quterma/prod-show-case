@@ -30,8 +30,7 @@ function createTestStore(initialState = {}) {
       },
       localProducts: {
         localProductsById: {},
-        removedApiIds: [],
-        nextLocalId: -1,
+        removedProductIds: [],
       },
       filters: {
         searchQuery: "",
@@ -60,7 +59,7 @@ function createWrapper(store: ReturnType<typeof createTestStore>) {
 describe("useFilteredProducts", () => {
   const mockProducts: Product[] = [
     {
-      id: 1,
+      id: "1",
       title: "iPhone",
       price: 999,
       category: "electronics",
@@ -69,7 +68,7 @@ describe("useFilteredProducts", () => {
       rating: { rate: 4.5, count: 100 },
     },
     {
-      id: 2,
+      id: "2",
       title: "Shoes",
       price: 50,
       category: "clothing",

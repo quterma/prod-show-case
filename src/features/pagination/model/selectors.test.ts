@@ -11,7 +11,7 @@ import {
 
 // Mock products for testing
 const createMockProduct = (id: number): Product => ({
-  id,
+  id: String(id),
   title: `Product ${id}`,
   price: id * 10,
   description: `Description ${id}`,
@@ -67,8 +67,8 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       expect(result.items).toHaveLength(10)
-      expect(result.items[0].id).toBe(1)
-      expect(result.items[9].id).toBe(10)
+      expect(result.items[0].id).toBe("1")
+      expect(result.items[9].id).toBe("10")
       expect(result.totalPages).toBe(3)
     })
 
@@ -79,8 +79,8 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       expect(result.items).toHaveLength(10)
-      expect(result.items[0].id).toBe(11)
-      expect(result.items[9].id).toBe(20)
+      expect(result.items[0].id).toBe("11")
+      expect(result.items[9].id).toBe("20")
       expect(result.totalPages).toBe(3)
     })
 
@@ -91,8 +91,8 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       expect(result.items).toHaveLength(5)
-      expect(result.items[0].id).toBe(21)
-      expect(result.items[4].id).toBe(25)
+      expect(result.items[0].id).toBe("21")
+      expect(result.items[4].id).toBe("25")
       expect(result.totalPages).toBe(3)
     })
 
@@ -133,7 +133,7 @@ describe("pagination selectors", () => {
       const result = selectPaginatedProducts(state, mockProducts)
 
       expect(result.items).toHaveLength(1)
-      expect(result.items[0].id).toBe(5)
+      expect(result.items[0].id).toBe("5")
       expect(result.totalPages).toBe(25)
     })
   })
@@ -165,8 +165,8 @@ describe("pagination selectors", () => {
       const result2 = selectPaginatedProducts(state2, mockProducts)
 
       expect(result1).not.toBe(result2) // Different references
-      expect(result1.items[0].id).toBe(1)
-      expect(result2.items[0].id).toBe(11)
+      expect(result1.items[0].id).toBe("1")
+      expect(result2.items[0].id).toBe("11")
     })
   })
 })

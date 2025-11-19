@@ -16,14 +16,14 @@ export type PersistItem<T = unknown> = {
 
 export const persistRegistry: readonly PersistItem[] = [
   {
-    lsKey: "app:favorites:v1",
+    lsKey: "app:favorites:v2",
     // Only persist favoriteIds, exclude showOnlyFavorites (runtime-only)
     select: (state) => ({ favoriteIds: state.favorites.favoriteIds }),
     sliceName: "favorites",
     hydrate: getInitialFavoritesState,
   },
   {
-    lsKey: "app:localProducts:v1",
+    lsKey: "app:localProducts:v2",
     select: (state) => state.localProducts,
     sliceName: "localProducts",
     hydrate: getInitialLocalProductsState,

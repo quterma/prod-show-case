@@ -7,7 +7,7 @@ import type { ProductFormData } from "./types"
 
 describe("product-form mappers", () => {
   const mockProduct: Product = {
-    id: 1,
+    id: "1",
     title: "Test Product",
     price: 99.99,
     description: "Test description",

@@ -16,7 +16,7 @@ describe("ProductDetailWidget", () => {
     const store = makeStore()
     const { container } = render(
       <Provider store={store}>
-        <ProductDetailWidget productId={1} />
+        <ProductDetailWidget productId="1" />
       </Provider>
     )
 

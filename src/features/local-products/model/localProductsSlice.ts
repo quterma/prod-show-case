@@ -1,47 +1,36 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 import { safeLoadFromStorage } from "@/shared/lib/persist"
+import { generateLocalProductId } from "@/shared/lib/utils"
 
 /**
- * Storage key for local products (versioned)
+ * Storage key for local products
  * Format: "app:{feature}:v{version}"
  */
-export const LOCAL_PRODUCTS_STORAGE_KEY = "app:localProducts:v1"
-
-/**
- * Local product entry: stores product data and source (local or API override)
- */
-export type LocalProductEntry = {
-  id: number
-  data: Product
-  source: "local" | "api"
-}
+export const LOCAL_PRODUCTS_STORAGE_KEY = "app:localProducts:v2"
 
 /**
  * Payload for upsertLocalProduct action
- * - id: optional, auto-assigned for new local products
+ * - id: optional, auto-generated for new local products using nanoid
  * - data: product data without ID
- * - source: "local" for created products, "api" for API overrides
  */
 export type UpsertLocalProductPayload = {
-  id?: number
+  id?: ProductId
   data: Omit<Product, "id">
-  source: "local" | "api"
 }
 
 /**
  * State for local products management
- * - localProductsById: stores created/modified products (local creations + API overrides)
- * - removedApiIds: tracks soft-deleted API products (local products are just removed from localProductsById)
+ * Simplified to 2 structures:
+ * - localProductsById: all created/patched products (local and API overrides)
+ * - removedProductIds: all deleted products (local and API)
  */
 export type LocalProductsState = {
-  /** Map of product ID to local product entry */
-  localProductsById: Record<number, LocalProductEntry>
-  /** IDs of removed API products (local products are deleted directly) */
-  removedApiIds: number[]
-  /** Next ID for locally created products (negative, auto-decrement) */
-  nextLocalId: number
+  /** Map of product ID to product data (both local creations and API patches) */
+  localProductsById: Record<ProductId, Product>
+  /** IDs of removed products (both local and API products) */
+  removedProductIds: ProductId[]
 }
 
 /**
@@ -49,8 +38,7 @@ export type LocalProductsState = {
  */
 const defaultLocalProductsState: LocalProductsState = {
   localProductsById: {},
-  removedApiIds: [],
-  nextLocalId: -1,
+  removedProductIds: [],
 }
 
 /**
@@ -58,7 +46,7 @@ const defaultLocalProductsState: LocalProductsState = {
  * Use this in store.ts preloadedState to load from localStorage
  */
 export function getInitialLocalProductsState(): LocalProductsState {
-  return safeLoadFromStorage(
+  return safeLoadFromStorage<LocalProductsState>(
     LOCAL_PRODUCTS_STORAGE_KEY,
     defaultLocalProductsState
   )
@@ -72,34 +60,34 @@ const initialState: LocalProductsState = defaultLocalProductsState
 
 /**
  * Local products slice - manages local products, API overrides, and soft-deletions
- * Replaces old removedSlice with unified product modification logic
+ * Simplified to use string-based IDs and unified storage
  *
  * Features:
- * - Create local products (negative IDs)
- * - Override API products (store modifications)
- * - Soft-delete products (local = remove from map, API = add to removedApiIds)
+ * - Create local products (auto-generated ID via nanoid)
+ * - Patch API products (store modifications)
+ * - Soft-delete products (add to removedProductIds, keep in localProductsById for transparency)
  * - Reset all local data
  *
- * NOTE: Persistence is not included in this version (will be added separately)
+ * NOTE: Persistence handled via middleware (persistMiddleware)
  */
 const localProductsSlice = createSlice({
   name: "localProducts",
   initialState,
   reducers: {
     /**
-     * Upsert a local product or API override
-     * - For new local products: provide id=undefined, auto-assign negative ID
-     * - For API overrides: provide existing positive ID
-     * - For updates: provide existing ID (positive or negative)
+     * Upsert a local product or API patch
+     * - For new local products: provide id=undefined, auto-generate ID via nanoid
+     * - For API patches: provide existing API product ID
+     * - For updates: provide existing ID (local or API)
      */
     upsertLocalProduct: (
       state,
       action: PayloadAction<UpsertLocalProductPayload>
     ) => {
-      const { id, data, source } = action.payload
+      const { id, data } = action.payload
 
-      // Auto-assign ID for new local products
-      const productId = id !== undefined ? id : state.nextLocalId
+      // Auto-generate ID for new local products
+      const productId = id !== undefined ? id : generateLocalProductId()
 
       // Create full product with ID
       const product: Product = {
@@ -107,57 +95,26 @@ const localProductsSlice = createSlice({
         id: productId,
       }
 
-      // Store entry
-      state.localProductsById[productId] = {
-        id: productId,
-        data: product,
-        source,
-      }
-
-      // Decrement nextLocalId only for new local products
-      if (id === undefined && source === "local") {
-        state.nextLocalId -= 1
-      }
-
-      // If updating a previously removed API product, restore it
-      if (source === "api" && productId > 0) {
-        const index = state.removedApiIds.indexOf(productId)
-        if (index !== -1) {
-          state.removedApiIds.splice(index, 1)
-        }
-      }
+      // Store product
+      state.localProductsById[productId] = product
     },
 
     /**
-     * Remove a product
-     * - If local product (id in localProductsById with source="local"): delete from map
-     * - If API product: add to removedApiIds + remove any override from map
-     * - If already in removedApiIds: remove from list (restore)
+     * Remove a product (universal deletion)
+     * - Delete from localProductsById if present (local products or API patches)
+     * - Add to removedProductIds to hide from UI
      */
-    removeProduct: (state, action: PayloadAction<number>) => {
+    removeProduct: (state, action: PayloadAction<ProductId>) => {
       const id = action.payload
-      const entry = state.localProductsById[id]
 
-      // Check if already removed (toggle restore)
-      const removedIndex = state.removedApiIds.indexOf(id)
-      if (removedIndex !== -1) {
-        // Restore: remove from removedApiIds
-        state.removedApiIds.splice(removedIndex, 1)
-        return
-      }
-
-      // Case 1: Local product → delete from map
-      if (entry?.source === "local") {
+      // Delete from localProductsById if exists
+      if (state.localProductsById[id]) {
         delete state.localProductsById[id]
-        return
       }
 
-      // Case 2: API product or override → add to removedApiIds and delete override
-      if (id > 0) {
-        state.removedApiIds.push(id)
-        if (entry) {
-          delete state.localProductsById[id]
-        }
+      // Add to removedProductIds (idempotent)
+      if (!state.removedProductIds.includes(id)) {
+        state.removedProductIds.push(id)
       }
     },
 
@@ -167,8 +124,7 @@ const localProductsSlice = createSlice({
      */
     resetLocalProducts: (state) => {
       state.localProductsById = {}
-      state.removedApiIds = []
-      state.nextLocalId = -1
+      state.removedProductIds = []
     },
   },
 })

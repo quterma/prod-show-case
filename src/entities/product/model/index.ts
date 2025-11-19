@@ -1,4 +1,5 @@
 export type {
+  ProductId,
   ProductRating,
   Product,
   ProductDTO,

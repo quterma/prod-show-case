@@ -7,14 +7,13 @@ export {
   removeProduct,
   resetLocalProducts,
   type LocalProductsState,
-  type LocalProductEntry,
   type UpsertLocalProductPayload,
 } from "./localProductsSlice"
 
 export {
   selectLocalProductsState,
   selectLocalProductsById,
-  selectRemovedApiIds,
+  selectRemovedProductIds,
   selectLocalProductById,
   selectLocalProductsArray,
   selectIsLocalProduct,

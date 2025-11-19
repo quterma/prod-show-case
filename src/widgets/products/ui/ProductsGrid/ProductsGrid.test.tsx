@@ -23,8 +23,7 @@ function createTestStore() {
       },
       localProducts: {
         localProductsById: {},
-        removedApiIds: [],
-        nextLocalId: -1,
+        removedProductIds: [],
       },
     },
   })
@@ -34,7 +33,7 @@ describe("ProductsGrid", () => {
   it("renders list of products", () => {
     const mockProducts: Product[] = [
       {
-        id: 1,
+        id: "1",
         title: "Product 1",
         price: 10.99,
         category: "electronics",
@@ -43,7 +42,7 @@ describe("ProductsGrid", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 2,
+        id: "2",
         title: "Product 2",
         price: 20.99,
         category: "jewelery",

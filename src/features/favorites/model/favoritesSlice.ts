@@ -1,16 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
+import type { ProductId } from "@/entities/product"
 import { safeLoadFromStorage } from "@/shared/lib/persist"
 
 /**
- * Storage key for favorites (versioned)
+ * Storage key for favorites
  * Format: "app:{feature}:v{version}"
  */
-export const FAVORITES_STORAGE_KEY = "app:favorites:v1"
+export const FAVORITES_STORAGE_KEY = "app:favorites:v2"
 
 export type FavoritesState = {
-  /** Array of favorite product IDs */
-  favoriteIds: number[]
+  /** Array of favorite product IDs (string-based) */
+  favoriteIds: ProductId[]
   /** Show only favorite products filter (runtime-only, not persisted) */
   showOnlyFavorites: boolean
 }
@@ -58,7 +59,7 @@ const favoritesSlice = createSlice({
      * Toggle favorite status for a product
      * Adds if not present, removes if already favorited
      */
-    toggleFavorite: (state, action: PayloadAction<number>) => {
+    toggleFavorite: (state, action: PayloadAction<ProductId>) => {
       const id = action.payload
       const index = state.favoriteIds.indexOf(id)
 
@@ -74,7 +75,7 @@ const favoritesSlice = createSlice({
     /**
      * Add product to favorites (idempotent - does nothing if already favorited)
      */
-    addFavorite: (state, action: PayloadAction<number>) => {
+    addFavorite: (state, action: PayloadAction<ProductId>) => {
       const id = action.payload
       if (!state.favoriteIds.includes(id)) {
         state.favoriteIds.push(id)
@@ -84,7 +85,7 @@ const favoritesSlice = createSlice({
     /**
      * Remove product from favorites (idempotent - does nothing if not favorited)
      */
-    removeFavorite: (state, action: PayloadAction<number>) => {
+    removeFavorite: (state, action: PayloadAction<ProductId>) => {
       const id = action.payload
       const index = state.favoriteIds.indexOf(id)
 

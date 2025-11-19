@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 import { useAppSelector } from "@/shared/lib/store"
 
 import { makeSelectMergedProduct } from "../model"
@@ -10,12 +10,11 @@ import { makeSelectMergedProduct } from "../model"
  * Creates a memoized selector instance and returns merged product or null
  *
  * Logic:
- * - If productId < 0: returns local product (ignores apiProduct)
- * - If productId > 0 and soft-deleted: returns null
- * - If productId > 0 and has patch: returns patched product
+ * - If product in removedProductIds: returns null (soft-deleted)
+ * - If product in localProductsById: returns local version (created or patched)
  * - Otherwise: returns apiProduct or null
  *
- * @param productId - Product ID (can be negative for local products)
+ * @param productId - Product ID (string-based, can be local or API)
  * @param apiProduct - Product from API (undefined if not fetched or error)
  * @returns Merged product or null
  *
@@ -26,7 +25,7 @@ import { makeSelectMergedProduct } from "../model"
  * ```
  */
 export function useMergedProduct(
-  productId: number,
+  productId: ProductId,
   apiProduct: Product | undefined
 ): Product | null {
   // Create memoized selector instance (stable across re-renders)

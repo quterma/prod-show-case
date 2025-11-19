@@ -5,7 +5,7 @@
  * Usage:
  * ```ts
  * const preloadedState = {
- *   favorites: safeLoadFromStorage('app:favorites:v1', { favoriteIds: [] }),
+ *   favorites: safeLoadFromStorage('app:favorites:v2', { favoriteIds: [] }),
  * }
  * ```
  */
@@ -15,7 +15,7 @@ import { getFromLS } from "./ls"
 /**
  * Safely load state from localStorage with fallback
  *
- * @param storageKey - Versioned localStorage key (e.g., "app:favorites:v1")
+ * @param storageKey - Versioned localStorage key (e.g., "app:favorites:v2")
  * @param fallback - Fallback value if loading fails or key doesn't exist
  * @returns Loaded state or fallback
  */

@@ -6,7 +6,7 @@ export {
   resetLocalProducts,
   selectLocalProductsState,
   selectLocalProductsById,
-  selectRemovedApiIds,
+  selectRemovedProductIds,
   selectLocalProductById,
   selectLocalProductsArray,
   selectIsLocalProduct,
@@ -16,11 +16,7 @@ export {
   getInitialLocalProductsState,
 } from "./model"
 
-export type {
-  LocalProductsState,
-  LocalProductEntry,
-  UpsertLocalProductPayload,
-} from "./model"
+export type { LocalProductsState, UpsertLocalProductPayload } from "./model"
 
 // Hooks exports
 export { useMergedProduct, useMergedProducts } from "./hooks"

@@ -1,9 +1,9 @@
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 import { ProductCard } from "@/entities/product"
 
 type ProductsGridProps = {
   products: Product[]
-  onItemClick?: (id: number) => void
+  onItemClick?: (id: ProductId) => void
 }
 
 export function ProductsGrid({ products, onItemClick }: ProductsGridProps) {

@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit"
 
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 import type { RootState } from "@/shared/lib/store"
 
 /**
@@ -20,7 +20,7 @@ export const selectShowOnlyFavorites = (state: RootState) =>
  */
 export const makeSelectIsFavorite = () =>
   createSelector(
-    [selectFavoriteIds, (_state: RootState, productId: number) => productId],
+    [selectFavoriteIds, (_state: RootState, productId: ProductId) => productId],
     (favoriteIds, productId) => favoriteIds.includes(productId)
   )
 

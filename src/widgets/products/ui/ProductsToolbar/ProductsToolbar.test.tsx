@@ -30,8 +30,7 @@ function createTestStore(initialFilters = {}) {
       },
       localProducts: {
         localProductsById: {},
-        removedApiIds: [],
-        nextLocalId: -1,
+        removedProductIds: [],
       },
       filters: {
         searchQuery: "",

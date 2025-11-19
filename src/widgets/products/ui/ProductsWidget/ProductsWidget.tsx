@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import type { ProductId } from "@/entities/product"
 import { Pagination } from "@/features/pagination"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
@@ -12,7 +13,7 @@ import { ProductsGridSkeleton } from "../ProductsGridSkeleton"
 import { ProductsToolbar } from "../ProductsToolbar"
 
 type ProductsWidgetProps = {
-  onItemClick?: (id: number) => void
+  onItemClick?: (id: ProductId) => void
 }
 
 /**

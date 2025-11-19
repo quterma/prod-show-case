@@ -7,14 +7,14 @@ import type {
 
 /**
  * Maps a single ProductDTO from API to domain Product model
- * Currently 1:1 mapping, but allows for future transformations
+ * Converts numeric ID to string for unified ID handling
  *
  * @param dto - Product data from FakeStore API
- * @returns Domain Product model
+ * @returns Domain Product model with string-based ID
  */
 export function mapProductDTO(dto: ProductDTO): Product {
   return {
-    id: dto.id,
+    id: String(dto.id), // Convert API numeric ID to string
     title: dto.title,
     price: dto.price,
     description: dto.description,

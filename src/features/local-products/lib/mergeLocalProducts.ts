@@ -1,54 +1,52 @@
-import type { Product } from "@/entities/product"
+import type { Product, ProductId } from "@/entities/product"
 
-import type { LocalProductEntry, LocalProductsState } from "../model"
+import type { LocalProductsState } from "../model"
 
 /**
- * Remove soft-deleted API products
- * Filters out products whose IDs are in the removedApiIds list
- * Should be applied FIRST in the merge chain
+ * Remove soft-deleted products (both API and local)
+ * Filters out products whose IDs are in the removedProductIds list
+ * Should be applied AFTER addLocalProducts to catch deleted local products
  */
 export function removeDeletedProducts(
   products: Product[],
-  removedApiIds: number[]
+  removedProductIds: ProductId[]
 ): Product[] {
-  if (removedApiIds.length === 0) return products
+  if (removedProductIds.length === 0) return products
 
-  const removedIdsSet = new Set(removedApiIds)
+  const removedIdsSet = new Set(removedProductIds)
   return products.filter((product) => !removedIdsSet.has(product.id))
 }
 
 /**
  * Apply patches from localProductsById to API products
  * Overwrites API product data with local edits
- * Note: API products have positive IDs, so any entry is guaranteed to be a patch
+ * Works for both API product patches and local product overrides
  */
 export function applyProductPatches(
   products: Product[],
   localProductsById: LocalProductsState["localProductsById"]
 ): Product[] {
   return products.map((product) => {
-    const localEntry = localProductsById[product.id]
-    // If there's a local entry for this API product, use the patched data
-    if (localEntry) {
-      return localEntry.data
+    const localProduct = localProductsById[product.id]
+    // If there's a local version for this product, use it
+    if (localProduct) {
+      return localProduct
     }
     return product
   })
 }
 
 /**
- * Add locally created products (source="local") to the products list
- * Extracts products with source="local" from localProductsById and adds them
+ * Add locally created products (ID starts with "local_") to the products list
+ * Extracts products with local_ prefix from localProductsById and adds them
  */
 export function addLocalProducts(
   products: Product[],
   localProductsById: LocalProductsState["localProductsById"]
 ): Product[] {
-  const localProducts = (
-    Object.values(localProductsById) as LocalProductEntry[]
+  const localProducts = Object.values(localProductsById).filter((product) =>
+    product.id.startsWith("local_")
   )
-    .filter((entry) => entry.source === "local")
-    .map((entry) => entry.data)
 
   return [...products, ...localProducts]
 }
@@ -66,24 +64,27 @@ export function sortProductsByTitle(products: Product[]): Product[] {
 /**
  * Merge API products with local changes
  * Applies all transformations in sequence:
- * 1. Remove soft-deleted products
- * 2. Apply local patches
- * 3. Add locally created products
+ * 1. Apply local patches to API products
+ * 2. Add locally created products
+ * 3. Remove soft-deleted products (both API and local)
  * 4. Sort alphabetically by title
  *
+ * Note: removeDeletedProducts runs AFTER addLocalProducts to ensure
+ * deleted local products are filtered out correctly
+ *
  * @param apiProducts - Raw products list from API
- * @param localProductsById - Map of local product entries (edits + creations)
- * @param removedApiIds - List of soft-deleted API product IDs
+ * @param localProductsById - Map of local products (both created and patched)
+ * @param removedProductIds - List of soft-deleted product IDs (both local and API)
  * @returns Merged and sorted products list
  */
 export function mergeLocalProducts(
   apiProducts: Product[],
   localProductsById: LocalProductsState["localProductsById"],
-  removedApiIds: number[]
+  removedProductIds: ProductId[]
 ): Product[] {
-  let result = removeDeletedProducts(apiProducts, removedApiIds)
-  result = applyProductPatches(result, localProductsById)
+  let result = applyProductPatches(apiProducts, localProductsById)
   result = addLocalProducts(result, localProductsById)
+  result = removeDeletedProducts(result, removedProductIds)
   result = sortProductsByTitle(result)
   return result
 }

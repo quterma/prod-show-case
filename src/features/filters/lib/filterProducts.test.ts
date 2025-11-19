@@ -7,7 +7,7 @@ import { filterBySearch } from "./filterProducts"
 describe("filterBySearch", () => {
   const mockProducts: Product[] = [
     {
-      id: 1,
+      id: "1",
       title: "iPhone 14 Pro",
       price: 999,
       category: "electronics",
@@ -16,7 +16,7 @@ describe("filterBySearch", () => {
       rating: { rate: 4.8, count: 200 },
     },
     {
-      id: 2,
+      id: "2",
       title: "Samsung Galaxy S23",
       price: 899,
       category: "electronics",
@@ -25,7 +25,7 @@ describe("filterBySearch", () => {
       rating: { rate: 4.5, count: 150 },
     },
     {
-      id: 3,
+      id: "3",
       title: "Nike Air Max",
       price: 120,
       category: "clothing",

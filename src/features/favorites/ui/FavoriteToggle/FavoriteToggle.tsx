@@ -2,13 +2,14 @@
 
 import { useMemo } from "react"
 
+import type { ProductId } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 
 import { toggleFavorite, makeSelectIsFavorite } from "../../model"
 
 type FavoriteToggleProps = {
   /** Product ID to toggle favorite status */
-  productId: number
+  productId: ProductId
   /** Optional additional CSS classes */
   className?: string
 }

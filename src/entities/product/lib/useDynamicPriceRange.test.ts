@@ -8,7 +8,7 @@ import { useDynamicPriceRange } from "./useDynamicPriceRange"
 describe("useDynamicPriceRange", () => {
   const mockProducts: Product[] = [
     {
-      id: 1,
+      id: "1",
       title: "Product 1",
       price: 10.99,
       category: "electronics",
@@ -17,7 +17,7 @@ describe("useDynamicPriceRange", () => {
       rating: { rate: 4.5, count: 100 },
     },
     {
-      id: 2,
+      id: "2",
       title: "Product 2",
       price: 25.5,
       category: "clothing",
@@ -26,7 +26,7 @@ describe("useDynamicPriceRange", () => {
       rating: { rate: 4.0, count: 50 },
     },
     {
-      id: 3,
+      id: "3",
       title: "Product 3",
       price: 15.0,
       category: "electronics",
@@ -60,7 +60,7 @@ describe("useDynamicPriceRange", () => {
   it("filters out invalid prices (NaN, Infinity, negative)", () => {
     const invalidProducts: Product[] = [
       {
-        id: 1,
+        id: "1",
         title: "Valid 1",
         price: 50,
         category: "test",
@@ -69,7 +69,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 2,
+        id: "2",
         title: "Valid 2",
         price: 100,
         category: "test",
@@ -78,7 +78,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 3,
+        id: "3",
         title: "Invalid NaN",
         price: NaN,
         category: "test",
@@ -87,7 +87,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 4,
+        id: "4",
         title: "Invalid Infinity",
         price: Infinity,
         category: "test",
@@ -96,7 +96,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 5,
+        id: "5",
         title: "Invalid Negative",
         price: -10,
         category: "test",
@@ -118,7 +118,7 @@ describe("useDynamicPriceRange", () => {
   it("returns undefined when all products have the same price", () => {
     const samePriceProducts: Product[] = [
       {
-        id: 1,
+        id: "1",
         title: "Product 1",
         price: 50,
         category: "test",
@@ -127,7 +127,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 4.5, count: 100 },
       },
       {
-        id: 2,
+        id: "2",
         title: "Product 2",
         price: 50,
         category: "test",
@@ -146,7 +146,7 @@ describe("useDynamicPriceRange", () => {
   it("returns undefined when all prices are invalid", () => {
     const invalidProducts: Product[] = [
       {
-        id: 1,
+        id: "1",
         title: "Invalid",
         price: NaN,
         category: "test",
@@ -185,7 +185,7 @@ describe("useDynamicPriceRange", () => {
 
     const newProducts: Product[] = [
       {
-        id: 4,
+        id: "4",
         title: "Product 4",
         price: 100,
         category: "books",
@@ -194,7 +194,7 @@ describe("useDynamicPriceRange", () => {
         rating: { rate: 5.0, count: 300 },
       },
       {
-        id: 5,
+        id: "5",
         title: "Product 5",
         price: 200,
         category: "books",
