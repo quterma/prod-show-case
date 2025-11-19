@@ -7,7 +7,12 @@ import {
   ProductDetailCard,
   ProductDetailCardSkeleton,
 } from "@/entities/product"
-import { Button, ErrorMessage, EmptyState } from "@/shared/ui"
+import {
+  BackToProductsButton,
+  Button,
+  ErrorMessage,
+  EmptyState,
+} from "@/shared/ui"
 import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
 
 import { useProductView } from "../../hooks"
@@ -45,12 +50,19 @@ export function ProductDetailWidget({ productId }: ProductDetailWidgetProps) {
       <EmptyState
         title="Product was removed"
         note="This product has been deleted. It may have been removed from the catalog."
+        action={<BackToProductsButton />}
       />
     )
   }
 
   if (emptyState === "notFound") {
-    return <EmptyState title="Product not found" />
+    return (
+      <EmptyState
+        title="Product not found"
+        note="The product you are looking for does not exist or has been removed."
+        action={<BackToProductsButton />}
+      />
+    )
   }
 
   // If product is null, don't render anything (shouldn't happen after checks above)

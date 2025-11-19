@@ -1,4 +1,5 @@
 // UI component exports
+export { BackToProductsButton } from "./BackToProductsButton"
 export { Button } from "./Button"
 export { EmptyState } from "./EmptyState"
 export { ErrorMessage } from "./ErrorMessage"

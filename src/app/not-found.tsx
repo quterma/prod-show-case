@@ -1,4 +1,4 @@
-import { EmptyState } from "@/shared/ui"
+import { BackToProductsButton, EmptyState } from "@/shared/ui"
 
 /**
  * Global 404 page - shown when route is not found
@@ -10,6 +10,7 @@ export default function NotFound() {
       <EmptyState
         title="404 - Page Not Found"
         note="The page you're looking for doesn't exist or has been moved."
+        action={<BackToProductsButton />}
       />
     </div>
   )

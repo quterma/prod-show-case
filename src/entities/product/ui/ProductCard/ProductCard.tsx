@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 import { FavoriteToggle } from "@/features/favorites"
 import { RemoveButton } from "@/features/local-products"
 
@@ -7,13 +9,18 @@ import type { Product } from "../../model"
 
 type ProductCardProps = {
   product: Product
-  onClick?: () => void
 }
 
-export function ProductCard({ product, onClick }: ProductCardProps) {
+export function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push(`/products/${product.id}`)
+  }
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className="relative border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
     >
       {/* Action buttons in top-right corner */}

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 
-import type { ProductId } from "@/entities/product"
 import { Pagination } from "@/features/pagination"
 import { ErrorMessage, EmptyState } from "@/shared/ui"
 import { ProductFormDialogWidget } from "@/widgets/product-form-dialog"
@@ -12,15 +11,11 @@ import { ProductsGrid } from "../ProductsGrid"
 import { ProductsGridSkeleton } from "../ProductsGridSkeleton"
 import { ProductsToolbar } from "../ProductsToolbar"
 
-type ProductsWidgetProps = {
-  onItemClick?: (id: ProductId) => void
-}
-
 /**
  * ProductsWidget - Smart widget for products list
  * Handles data fetching, filtering, and composition of toolbar + grid
  */
-export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
+export function ProductsWidget() {
   // Local state for create product dialog
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
@@ -83,7 +78,7 @@ export function ProductsWidget({ onItemClick }: ProductsWidgetProps) {
   } else {
     gridContent = (
       <>
-        <ProductsGrid products={paginatedProducts} onItemClick={onItemClick} />
+        <ProductsGrid products={paginatedProducts} />
         <Pagination totalPages={totalPages} />
       </>
     )

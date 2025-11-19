@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { render, screen } from "@testing-library/react"
 import { Provider } from "react-redux"
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import { localProductsReducer } from "@/features/local-products"
@@ -9,6 +9,14 @@ import { localProductsReducer } from "@/features/local-products"
 import type { Product } from "../../model"
 
 import { ProductCard } from "./ProductCard"
+
+// Mock next/navigation
+const mockPush = vi.fn()
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}))
 
 // Helper to create test store
 function createTestStore() {
