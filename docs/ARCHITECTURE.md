@@ -86,54 +86,90 @@ ProductDetailWidget → render detail card + actions
 
 ---
 
+## API Integration
+
+**Base URL:** `https://fakestoreapi.com`
+
+**Endpoints:**
+
+- `GET /products` - all products
+- `GET /products/:id` - single product
+
+**Product Shape:**
+
+```typescript
+{
+  id: string        // "1", "2", "-1" (negative for local)
+  title: string
+  price: number
+  description: string
+  category: "men's clothing" | "women's clothing" | "jewelery" | "electronics"
+  image: string     // URL
+  rating: { rate: number, count: number }
+}
+```
+
+**Note:** Original API uses numeric IDs; we migrated to string-based IDs for consistency with local products (negative IDs).
+
+---
+
 ## Key Features
 
 ### Pagination
 
 **Location:** `features/pagination`
 
-- **Model:** `paginationSlice.ts` - Redux state (`currentPage`, `pageSize`)
-- **Selector:** `selectors.ts` - `makeSelectPaginatedProducts()` (factory selector)
-- **Hook:** `usePagination.ts` - auto-corrects `currentPage` when `totalPages` decreases
-- **UI:** `Pagination.tsx` - prev/next buttons, page info
+- Front-end pagination (10 items per page)
+- Auto-corrects `currentPage` when `totalPages` decreases (via `usePagination` hook)
+- Resets to page 1 when filters change (listener middleware)
 
-**Auto-correction logic:**
-
-- When products are deleted/filtered → `totalPages` decreases
-- Hook detects `currentPage > totalPages` → dispatches `setPage(totalPages)`
-- Ensures consistent state without manual intervention
+**Components:** `Pagination` (prev/next buttons, page info)
 
 ### Filters
 
 **Location:** `features/filters`
 
-- **Model:** `filtersSlice.ts` - Redux state (category, search, price, rating)
-- **Lib:** `filterProducts.ts` - pure filter function
-- **Hook:** `useFilteredProducts.ts` - applies filters to products array
-- **UI:** CategoryFilter, QueryFilter, PriceFilter, RatingFilter, ResetFiltersButton
+- Search by title/description (debounced 300ms)
+- Multi-select categories
+- Price range (min/max)
+- Rating threshold
+- Show only favorites toggle
 
-**Debounced search:** 300ms delay via `useDebounce` from `shared/lib/debounce`
+**Filter cascade order:**
+
+1. Removed products (hidden)
+2. Search query
+3. Categories
+4. Rating
+5. Favorites
+6. Price range
+
+**Components:** `QueryFilter`, `CategoryFilter`, `PriceFilter`, `RatingFilter`, `ShowOnlyFavoritesToggle`, `ResetFiltersButton`
 
 ### Favorites
 
 **Location:** `features/favorites`
 
-- **Model:** `favoritesSlice.ts` - Redux state (array of IDs), persisted
-- **Hook:** `useFavoriteProducts.ts` - filters by favorites (if toggle enabled)
-- **UI:** ToggleFavoriteButton, ShowOnlyFavoritesToggle
+- Add/remove products to favorites
+- Persisted in localStorage
+- Filter view to show only favorites
+- Auto-cleanup when product deleted
+
+**Components:** `FavoriteToggle`, `ShowOnlyFavoritesToggle`
 
 ### Local Products
 
 **Location:** `features/local-products`
 
-- **Model:** `localProductsSlice.ts` - tracks created/deleted/patched products, persisted
-- **Hook:** `useMergedProducts.ts` - merges API products with local changes
-- **Lib:** `mergeLocalProducts.ts` - pure merge function
+- Create new products (stored locally with negative IDs)
+- Edit API products (patches stored locally)
+- Soft delete (API products hidden, local products removed)
+- Persisted in localStorage
 
 **ID System:**
 
-- API products: positive integers (1, 2, 3...)
-- Local products: negative integers (-1, -2, -3...)
+- API products: positive strings ("1", "2", "3")
+- Local products: negative strings ("-1", "-2", "-3")
 
 ---
 
@@ -163,19 +199,13 @@ ProductDetailWidget → render detail card + actions
 
 ## Forms
 
-**Stack:** React Hook Form + Zod + @hookform/resolvers
+**Stack:** React Hook Form + Zod
 
 **Location:** `features/product-form`
 
-- **Schema:** `schema.ts` - Zod validation (title, price, category, description)
-- **Components:** FormField, FormError (from `shared/lib/forms`)
-- **Widget:** `ProductFormDialogWidget` - modal with create/edit modes
-
-**Validators:**
-
-- `requiredString` - non-empty string
-- `positiveNumber` - number > 0
-- `price` - number with 2 decimal places
+- Modal dialog with create/edit modes
+- Validation: title (required), price (positive number), category (enum), description (optional)
+- Reusable form components from `shared/lib/forms`
 
 ---
 
@@ -193,57 +223,48 @@ ProductDetailWidget → render detail card + actions
 
 ## Testing
 
-**Stack:** Vitest + happy-dom + @testing-library/react
+**Stack:** Vitest + happy-dom + @testing-library/react + Playwright (E2E)
 
-**Coverage:**
+**Coverage:** 161+ tests across entities, features, widgets, and shared utils
 
-- 161 tests (32 test files)
-- Unit tests: entities, features, shared
-- Component tests: UI components, widgets
-- Integration tests: hooks, data pipeline
-
-**Setup:** `tests/setup.ts` - mocks Next.js Router, Image, Link, browser APIs
-
-**Run:**
+**Commands:**
 
 ```bash
-pnpm test          # watch mode
-pnpm test:run      # CI mode
-pnpm test:coverage # with coverage
+pnpm test              # unit/component tests (watch)
+pnpm test:run          # unit/component tests (CI)
+pnpm test:e2e          # E2E tests (Playwright)
+pnpm test:coverage     # coverage report
 ```
 
 ---
 
 ## Code Quality
 
-**Pre-commit hooks:** Husky + lint-staged
-
-1. Prettier - format
-2. ESLint - lint + auto-fix
-3. Vitest - run tests (if test files modified)
+**Pre-commit hooks:** Husky runs Prettier, ESLint, and Vitest on staged files
 
 **Commands:**
 
 ```bash
-pnpm lint          # ESLint with auto-fix
-pnpm lint:check    # ESLint without auto-fix (CI)
-pnpm format        # Prettier format
-pnpm format:check  # Prettier check (CI)
+pnpm lint              # ESLint with auto-fix
+pnpm format            # Prettier format
+pnpm lint:check        # CI check (no auto-fix)
+pnpm format:check      # CI check (no format)
 ```
 
 ---
 
-## Current Status
+## Project Status
 
-**Completed:**
+**Completed (MVP):**
 
-- ✅ Stage 1: Project setup, FSD structure, basic routing
-- ✅ Stage 2A: RTK Query, API integration
-- ✅ Stage 2B: Filters, search, pagination
-- ✅ Stage 2C: Local products (create/edit/delete), favorites, persistence
-- ✅ Stage 2D (partial): Pagination auto-correction, hydration fixes
+- ✅ Products list & detail pages
+- ✅ Filters, search, pagination
+- ✅ Favorites & local products (create/edit/delete)
+- ✅ localStorage persistence
+- ✅ Error boundaries & 404 handling
+- ✅ Comprehensive test coverage
 
-**Remaining:** See [TODO.md](TODO.md)
+**Remaining:** See [TODO.md](TODO.md) for UI polish, E2E tests, and deployment tasks
 
 ---
 
@@ -275,32 +296,13 @@ pnpm format:check  # Prettier check (CI)
 
 ---
 
-## File Naming Conventions
+## Naming Conventions
 
-- Components: PascalCase (`ProductCard.tsx`)
-- Hooks: camelCase with `use` prefix (`useProductsView.ts`)
-- Types: PascalCase (`Product.ts`)
-- Utils: camelCase (`filterProducts.ts`)
-- Constants: UPPER_SNAKE_CASE in code, kebab-case files (`api-config.ts`)
-
----
-
-## Migration Notes
-
-### ID System Migration (Completed)
-
-- **Before:** Numeric IDs (1, 2, 3...)
-- **After:** String IDs ("1", "2", "-1"...)
-- **Reason:** Type consistency, negative IDs for local products
-- **Impact:** All ID comparisons now use strings
-
-### Pagination Refactoring (Completed)
-
-- **Before:** Validation logic in `ProductsWidget` (useEffect)
-- **After:** Validation logic in `usePagination` hook
-- **Reason:** Encapsulation, reusability, FSD compliance
-- **Impact:** Any widget using `usePagination` gets auto-correction for free
+- Components: `PascalCase.tsx`
+- Hooks: `useCamelCase.ts`
+- Types: `PascalCase.ts`
+- Utils: `camelCase.ts`
 
 ---
 
-**Last updated:** 20.11.2025
+**Last updated:** 2025-11-20
