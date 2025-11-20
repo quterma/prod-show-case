@@ -6,6 +6,70 @@
 
 ## [Unreleased]
 
+### Documentation Cleanup
+
+**Дата:** 2025-11-20
+
+**Описание:** Радикальное сокращение документации с фокусом на актуальную информацию.
+
+**Изменения:**
+
+**Удалено (устаревшее/выполненное):**
+
+- `pagination-bug-fix.md`, `pagination-refactoring-proposal.md` - реализовано
+- `stage-2d-gap-analysis.md`, `stage-2d-refactoring-plan.md`, `stage-2d-report.md` - отчеты завершенных работ
+- `completion-report.md`, `id-refactoring-completed.md` - дубликаты
+- `audit-plan.md`, `audit-report.md` - устаревшие аудиты
+- `current-architecture.md`, `fsd-architecture.md`, `roadmap.md`, `stage-2d-todo.md` - объединены
+
+**Создано:**
+
+- `ARCHITECTURE.md` (292 строк) - единый файл с описанием архитектуры, стека, FSD, data flow, ключевых решений
+- `TODO.md` (235 строк) - только незавершенные задачи (Stage 2D остатки + планы Stage 3/4)
+
+**Результат:** 6491 → 1490 строк (сокращение на 77%)
+
+---
+
+### Refactored - Pagination Auto-Correction
+
+**Дата:** 2025-11-20
+
+**Описание:** Перенос логики валидации пагинации из виджета в `usePagination` hook для лучшей архитектуры.
+
+**Изменения:**
+
+- `src/features/pagination/hooks/usePagination.ts`
+  - Добавлен `useEffect` с auto-correction логикой
+  - Hook теперь сам следит за `currentPage` и корректирует его при `currentPage > totalPages`
+- `src/widgets/products/ui/ProductsWidget/ProductsWidget.tsx`
+  - Удален `useEffect` с валидацией (было 11 строк)
+  - Виджет больше не знает о внутренней логике пагинации
+- `src/features/pagination/hooks/usePagination.test.tsx` (новый файл)
+  - 8 unit тестов для auto-correction логики
+
+**Преимущества:**
+
+- Инкапсуляция: логика внутри фичи, не в UI
+- Переиспользуемость: работает автоматически для любого виджета
+- FSD compliance: features layer владеет своей бизнес-логикой
+
+**Тесты:** ✅ 161/161 passed (было 153)
+
+---
+
+### Fixed - Pagination Auto-Reset Bug
+
+**Дата:** 2025-11-19
+
+**Описание:** Исправлен баг с пагинацией при удалении продуктов.
+
+**Проблема:** Page 3 of 2 после удаления продуктов на последней странице
+
+**Решение:** Добавлен auto-reset в виджет (позже перенесен в hook, см. выше)
+
+---
+
 ### Improved - Reset Local Data now resets filters
 
 **Дата:** 2025-01-13
