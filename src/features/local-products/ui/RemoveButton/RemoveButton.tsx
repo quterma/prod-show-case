@@ -43,9 +43,15 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
     if (confirmed) {
       dispatch(removeProduct(productId))
       if (isRemoved) {
-        toast.success("Product restored")
+        toast.success("Product restored", {
+          position: "bottom-right",
+          className: "bg-background text-foreground border border-border",
+        })
       } else {
-        toast.success("Product moved to trash")
+        toast.success("Product removed", {
+          position: "bottom-right",
+          className: "bg-background text-foreground border border-border",
+        })
       }
     }
   }

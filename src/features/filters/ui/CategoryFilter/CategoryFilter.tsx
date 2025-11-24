@@ -26,7 +26,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
           return (
             <label
               key={category}
-              className="flex items-center gap-1.5 text-sm cursor-pointer hover:text-primary transition-colors"
+              className="flex items-center gap-1.5 text-sm cursor-pointer hover:text-primary transition-colors duration-150"
             >
               <input
                 type="checkbox"

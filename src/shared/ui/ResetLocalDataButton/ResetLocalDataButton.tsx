@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import toast from "react-hot-toast"
 
 import { resetLocalData, useAppDispatch } from "@/shared/lib/store"
 import { Button, Modal } from "@/shared/ui"
@@ -27,6 +28,10 @@ export function ResetLocalDataButton() {
 
   const handleConfirm = () => {
     dispatch(resetLocalData())
+    toast.success("Local data cleared", {
+      position: "bottom-right",
+      className: "bg-background text-foreground border border-border",
+    })
     setShowConfirm(false)
   }
 

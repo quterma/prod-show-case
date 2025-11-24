@@ -8,6 +8,7 @@ import {
   RatingFilter,
   ResetFiltersButton,
 } from "@/features/filters"
+import { ThemeToggle } from "@/features/theme-toggle"
 import { Button, ResetLocalDataButton } from "@/shared/ui"
 
 type ProductsToolbarProps = {
@@ -48,6 +49,7 @@ export function ProductsToolbar({
           <ResetFiltersButton />
           <ShowOnlyFavoritesToggle />
           <ResetLocalDataButton />
+          <ThemeToggle />
         </div>
       </div>
 

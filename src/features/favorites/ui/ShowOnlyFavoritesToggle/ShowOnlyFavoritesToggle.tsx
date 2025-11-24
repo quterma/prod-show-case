@@ -25,7 +25,7 @@ export function ShowOnlyFavoritesToggle() {
     <div className="flex border border-input rounded-lg overflow-hidden">
       <button
         onClick={() => handleToggle("all")}
-        className={`px-4 py-2 text-sm font-medium transition-colors ${
+        className={`px-4 py-2 text-sm font-medium transition-colors duration-150 ${
           !showOnlyFavorites
             ? "bg-primary text-primary-foreground"
             : "bg-background text-foreground hover:bg-accent"
@@ -36,7 +36,7 @@ export function ShowOnlyFavoritesToggle() {
       </button>
       <button
         onClick={() => handleToggle("favorites")}
-        className={`px-4 py-2 text-sm font-medium transition-colors border-l border-input ${
+        className={`px-4 py-2 text-sm font-medium transition-colors duration-150 border-l border-input ${
           showOnlyFavorites
             ? "bg-primary text-primary-foreground"
             : "bg-background text-foreground hover:bg-accent"

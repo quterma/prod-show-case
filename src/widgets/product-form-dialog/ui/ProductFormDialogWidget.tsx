@@ -66,12 +66,18 @@ export function ProductFormDialogWidget({
       // Create new local product (ID will be auto-assigned)
       const payload = createProductPayload(productData)
       dispatch(upsertLocalProduct(payload))
-      toast.success("Product created successfully")
+      toast.success("Product created successfully", {
+        position: "bottom-right",
+        className: "bg-background text-foreground border border-border",
+      })
     } else if (mode === "edit" && product) {
       // Update existing product
       const payload = updateProductPayload(productData, product.id)
       dispatch(upsertLocalProduct(payload))
-      toast.success("Product updated successfully")
+      toast.success("Changes saved", {
+        position: "bottom-right",
+        className: "bg-background text-foreground border border-border",
+      })
     }
 
     // Close dialog after successful submit
