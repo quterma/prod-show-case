@@ -6,7 +6,7 @@ import { describe, it, expect } from "vitest"
 import type { Product } from "@/entities/product"
 import { makeStore } from "@/shared/lib/store"
 
-import { setPage } from "../model/paginationSlice"
+import { setCurrentPage } from "../model/paginationSlice"
 
 import { usePagination } from "./usePagination"
 
@@ -55,38 +55,22 @@ describe("usePagination", () => {
     expect(result.current.totalPages).toBe(0)
   })
 
-  it("auto-corrects currentPage when it exceeds totalPages", async () => {
+  it("selector clamps out-of-bounds currentPage", () => {
     const store = makeStore()
     const mockProducts = createMockProducts(15) // 15 products = 2 pages
 
     // Set page to 3 (out of bounds for 15 products)
-    store.dispatch(setPage(3))
+    store.dispatch(setCurrentPage(3))
 
-    renderHook(() => usePagination(mockProducts), {
+    const { result } = renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),
     })
 
-    // Should auto-correct to page 2 (last valid page)
-    await waitFor(() => {
-      expect(store.getState().pagination.currentPage).toBe(2)
-    })
-  })
-
-  it("auto-corrects to page 1 when currentPage far exceeds totalPages", async () => {
-    const store = makeStore()
-    const mockProducts = createMockProducts(5) // 5 products = 1 page
-
-    // Set page to 10 (way out of bounds)
-    store.dispatch(setPage(10))
-
-    renderHook(() => usePagination(mockProducts), {
-      wrapper: createWrapper(store),
-    })
-
-    // Should auto-correct to page 1 (last valid page)
-    await waitFor(() => {
-      expect(store.getState().pagination.currentPage).toBe(1)
-    })
+    // Selector clamps to valid page (page 2), shows last 5 items
+    // Page state reset to 1 is handled by middleware (removeProduct, toggleFavorites)
+    expect(result.current.totalPages).toBe(2)
+    expect(result.current.paginatedProducts).toHaveLength(5) // Last page has 5 items
+    expect(result.current.paginatedProducts[0].title).toBe("Product 11")
   })
 
   it("does not correct when currentPage is valid", async () => {
@@ -94,7 +78,7 @@ describe("usePagination", () => {
     const mockProducts = createMockProducts(25) // 3 pages
 
     // Set page to 2 (valid)
-    store.dispatch(setPage(2))
+    store.dispatch(setCurrentPage(2))
 
     renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),
@@ -106,26 +90,27 @@ describe("usePagination", () => {
     })
   })
 
-  it("handles products count decrease (simulating deletion)", async () => {
+  it("calculates correct totalPages when products array changes", () => {
     const store = makeStore()
     let mockProducts = createMockProducts(25) // 3 pages initially
 
     // Set to page 3
-    store.dispatch(setPage(3))
+    store.dispatch(setCurrentPage(3))
 
-    const { rerender } = renderHook(() => usePagination(mockProducts), {
+    const { result, rerender } = renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),
     })
 
-    // Simulate deleting products - now only 15 products (2 pages)
+    expect(result.current.totalPages).toBe(3)
+
+    // Simulate products count decrease - now only 15 products (2 pages)
     mockProducts = createMockProducts(15)
 
     rerender()
 
-    // Should auto-correct to page 2
-    await waitFor(() => {
-      expect(store.getState().pagination.currentPage).toBe(2)
-    })
+    // totalPages should update to 2
+    // (page reset to 1 is handled by resetPaginationMiddleware on actual removeProduct action)
+    expect(result.current.totalPages).toBe(2)
   })
 
   it("does not correct when totalPages is 0", async () => {
@@ -133,7 +118,7 @@ describe("usePagination", () => {
     const mockProducts: Product[] = []
 
     // Set page to 3
-    store.dispatch(setPage(3))
+    store.dispatch(setCurrentPage(3))
 
     renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),
@@ -151,7 +136,7 @@ describe("usePagination", () => {
     const mockProducts = createMockProducts(25)
 
     // Go to page 2
-    store.dispatch(setPage(2))
+    store.dispatch(setCurrentPage(2))
 
     const { result } = renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),

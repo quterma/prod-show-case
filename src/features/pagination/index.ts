@@ -1,7 +1,7 @@
 // Model exports
 export {
   PAGE_SIZE,
-  setPage,
+  setCurrentPage,
   setPageSize,
   resetPage,
   paginationReducer,

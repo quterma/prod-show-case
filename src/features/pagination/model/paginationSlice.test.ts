@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 
 import paginationReducer, {
-  setPage,
+  setCurrentPage,
   setPageSize,
   resetPage,
   PAGE_SIZE,
@@ -13,9 +13,9 @@ describe("paginationSlice", () => {
     pageSize: PAGE_SIZE,
   }
 
-  describe("setPage", () => {
+  describe("setCurrentPage", () => {
     it("sets the current page to the provided value", () => {
-      const state = paginationReducer(initialState, setPage(3))
+      const state = paginationReducer(initialState, setCurrentPage(3))
 
       expect(state.currentPage).toBe(3)
       expect(state.pageSize).toBe(PAGE_SIZE) // pageSize unchanged
@@ -24,26 +24,26 @@ describe("paginationSlice", () => {
     it("allows setting page to 1", () => {
       const state = paginationReducer(
         { currentPage: 5, pageSize: PAGE_SIZE },
-        setPage(1)
+        setCurrentPage(1)
       )
 
       expect(state.currentPage).toBe(1)
     })
 
     it("clamps negative page numbers to 1", () => {
-      const state = paginationReducer(initialState, setPage(-5))
+      const state = paginationReducer(initialState, setCurrentPage(-5))
 
       expect(state.currentPage).toBe(1)
     })
 
     it("clamps zero to 1", () => {
-      const state = paginationReducer(initialState, setPage(0))
+      const state = paginationReducer(initialState, setCurrentPage(0))
 
       expect(state.currentPage).toBe(1)
     })
 
     it("allows large page numbers", () => {
-      const state = paginationReducer(initialState, setPage(999))
+      const state = paginationReducer(initialState, setCurrentPage(999))
 
       expect(state.currentPage).toBe(999)
     })

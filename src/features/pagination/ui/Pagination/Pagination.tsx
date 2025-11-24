@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 
-import { selectCurrentPage, setPage } from "../../model"
+import { selectCurrentPage, setCurrentPage } from "../../model"
 
 type PaginationProps = {
   /** Total number of pages */
@@ -23,13 +23,13 @@ export function Pagination({ totalPages }: PaginationProps) {
 
   const handlePrev = () => {
     if (canGoPrev) {
-      dispatch(setPage(currentPage - 1))
+      dispatch(setCurrentPage(currentPage - 1))
     }
   }
 
   const handleNext = () => {
     if (canGoNext) {
-      dispatch(setPage(currentPage + 1))
+      dispatch(setCurrentPage(currentPage + 1))
     }
   }
 

@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react"
 import type { Product } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
 
-import { setPage } from "../model/paginationSlice"
+import { setCurrentPage } from "../model/paginationSlice"
 import { makeSelectPaginatedProducts } from "../model/selectors"
 
 /**
@@ -30,8 +30,8 @@ export interface UsePaginationResult {
  *
  * Auto-correction logic:
  * When totalPages decreases (due to deletion, filters, etc.) and currentPage
- * becomes invalid, the hook automatically resets to the last valid page.
- * This ensures pagination state is always consistent.
+ * becomes invalid, the hook automatically clamps to the last valid page.
+ * This ensures pagination state stays consistent without unnecessary jumps to page 1.
  *
  * @param products - Products array to paginate (after all filters applied)
  * @returns Pagination result with paginated products and metadata
@@ -43,7 +43,6 @@ export interface UsePaginationResult {
  * const filtered = useFilteredProducts(merged)
  * const favorites = useFavoriteProducts(filtered)
  * const pagination = usePagination(favorites)
- * // Auto-correction happens automatically inside usePagination
  * ```
  */
 export function usePagination(products: Product[]): UsePaginationResult {
@@ -74,7 +73,8 @@ export function usePagination(products: Product[]): UsePaginationResult {
     // 1. We have data (totalPages > 0)
     // 2. Current page is out of bounds
     if (totalPages > 0 && currentPage > totalPages) {
-      dispatch(setPage(totalPages))
+      // Clamp to last valid page (not page 1) to avoid unnecessary jumps
+      dispatch(setCurrentPage(totalPages))
     }
   }, [dispatch, currentPage, result])
 

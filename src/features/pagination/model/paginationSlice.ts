@@ -20,7 +20,7 @@ const paginationSlice = createSlice({
      * Set current page
      * Note: Bounds validation should be done in UI layer with totalPages
      */
-    setPage: (state, action: PayloadAction<number>) => {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = Math.max(1, action.payload)
     },
     /**
@@ -39,5 +39,6 @@ const paginationSlice = createSlice({
   },
 })
 
-export const { setPage, setPageSize, resetPage } = paginationSlice.actions
+export const { setCurrentPage, setPageSize, resetPage } =
+  paginationSlice.actions
 export default paginationSlice.reducer
