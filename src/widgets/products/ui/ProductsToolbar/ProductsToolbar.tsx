@@ -31,13 +31,17 @@ export function ProductsToolbar({
   onCreateProduct,
 }: ProductsToolbarProps) {
   return (
-    <div className="flex flex-col gap-4 mb-6">
+    <div className="flex flex-col gap-6 mb-8">
       {/* Search and Actions row */}
-      <div className="flex items-center gap-4 justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
         <QueryFilter />
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {onCreateProduct && (
-            <Button onClick={onCreateProduct} variant="primary">
+            <Button
+              onClick={onCreateProduct}
+              variant="primary"
+              className="flex-1 sm:flex-none"
+            >
               Create Product
             </Button>
           )}
@@ -48,9 +52,11 @@ export function ProductsToolbar({
       </div>
 
       {/* Filters row */}
-      <div className="flex flex-wrap items-center gap-6">
+      <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 sm:gap-6 p-4 bg-card border border-border rounded-lg">
         <RatingFilter />
+        <div className="h-px w-full sm:h-8 sm:w-px bg-border" />
         {categories && <CategoryFilter categories={categories} />}
+        <div className="h-px w-full sm:h-8 sm:w-px bg-border" />
         {priceRange && <PriceRangeFilter priceRange={priceRange} />}
       </div>
     </div>

@@ -96,7 +96,7 @@ export function CategoryField({
         </select>
       )}
 
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
     </div>
   )
 }

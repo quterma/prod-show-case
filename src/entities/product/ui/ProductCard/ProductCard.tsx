@@ -1,5 +1,4 @@
-"use client"
-
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 import { FavoriteToggle } from "@/features/favorites"
@@ -22,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card
       onClick={handleClick}
-      className="relative p-4 hover:shadow-md transition-shadow cursor-pointer group"
+      className="relative p-4 hover:shadow-md transition-shadow cursor-pointer group h-full flex flex-col"
     >
       {/* Action buttons in top-right corner */}
       <div className="absolute top-2 right-2 flex gap-1 z-10">
@@ -30,15 +29,18 @@ export function ProductCard({ product }: ProductCardProps) {
         <FavoriteToggle productId={product.id} />
       </div>
 
-      <div className="aspect-square bg-muted rounded-md mb-3 overflow-hidden">
-        {/* Image placeholder - will be replaced in 3C */}
-        <div className="w-full h-full bg-secondary/20 flex items-center justify-center text-muted-foreground text-xs">
-          Image
-        </div>
+      <div className="aspect-square relative bg-muted rounded-md mb-3 overflow-hidden">
+        <Image
+          src={product.image}
+          alt={product.title}
+          fill
+          className="object-contain p-4 mix-blend-multiply dark:mix-blend-normal"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       </div>
 
       <h3
-        className="text-lg font-semibold mb-2 pr-8 line-clamp-1"
+        className="text-lg font-semibold mb-2 pr-8 line-clamp-1 text-foreground"
         title={product.title}
       >
         {product.title}
