@@ -11,7 +11,7 @@ export function CountField({ register, error }: CountFieldProps) {
   return (
     <div className="space-y-1">
       <label htmlFor="count" className="block text-sm font-medium">
-        Review Count <span className="text-red-500">*</span>
+        Count
       </label>
       <input
         {...register("count", { valueAsNumber: true })}
@@ -19,10 +19,10 @@ export function CountField({ register, error }: CountFieldProps) {
         type="number"
         min="0"
         step="1"
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         placeholder="0"
       />
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
     </div>
   )
 }

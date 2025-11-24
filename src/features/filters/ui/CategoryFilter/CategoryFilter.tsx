@@ -19,7 +19,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-medium text-gray-700">Categories:</span>
+      <span className="text-sm font-medium text-foreground">Categories:</span>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => {
           const isSelected = selectedCategories.includes(category)

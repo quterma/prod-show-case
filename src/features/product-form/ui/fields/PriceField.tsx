@@ -27,7 +27,7 @@ export function PriceField({ register, setValue, error }: PriceFieldProps) {
   return (
     <div className="space-y-1">
       <label htmlFor="price" className="block text-sm font-medium">
-        Price ($) <span className="text-red-500">*</span>
+        Price ($) <span className="text-destructive">*</span>
       </label>
       <input
         {...register("price", { valueAsNumber: true })}
@@ -35,10 +35,10 @@ export function PriceField({ register, setValue, error }: PriceFieldProps) {
         type="number"
         step="0.01"
         onBlur={handleBlur}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         placeholder="0.00"
       />
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { resetFavorites } from "@/features/favorites/model/favoritesSlice"
 import { resetFilters } from "@/features/filters/model/filtersSlice"
 import { resetLocalProducts } from "@/features/local-products/model/localProductsSlice"
+import { resetCurrentPage } from "@/features/pagination/model/paginationSlice"
 
 import { baseApi } from "../../api/baseApi"
 
@@ -13,6 +14,7 @@ import type { AppThunk } from "./store"
  * - Clears favorites from Redux + localStorage
  * - Clears local products and removed items from Redux + localStorage
  * - Resets all active filters to initial state
+ * - Resets pagination to first page
  * - Invalidates RTK Query cache to trigger refetch
  *
  * This is an infrastructure-level operation (not a feature) since it
@@ -24,6 +26,7 @@ export const resetLocalData = (): AppThunk => (dispatch) => {
   dispatch(resetFavorites())
   dispatch(resetLocalProducts())
   dispatch(resetFilters())
+  dispatch(resetCurrentPage())
 
   // Invalidate RTK Query cache to trigger refetch
   dispatch(baseApi.util.invalidateTags(["Product"]))

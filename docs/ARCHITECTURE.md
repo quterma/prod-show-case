@@ -255,16 +255,16 @@ pnpm format:check      # CI check (no format)
 
 ## Project Status
 
-**Completed (MVP):**
+**Stage 2 Complete - MVP Ready:**
 
-- ✅ Products list & detail pages
-- ✅ Filters, search, pagination
+- ✅ Products list & detail pages with routing
+- ✅ Filters, search, pagination (front-end)
 - ✅ Favorites & local products (create/edit/delete)
-- ✅ localStorage persistence
-- ✅ Error boundaries & 404 handling
-- ✅ Comprehensive test coverage
+- ✅ localStorage persistence with SSR-safe hydration
+- ✅ Error boundaries, 404 pages, empty states
+- ✅ 161+ unit/component tests
 
-**Remaining:** See [TODO.md](TODO.md) for UI polish, E2E tests, and deployment tasks
+**Next Steps:** See [TODO.md](TODO.md) for Stage 3 (UI polish) and Stage 4 (production deployment)
 
 ---
 

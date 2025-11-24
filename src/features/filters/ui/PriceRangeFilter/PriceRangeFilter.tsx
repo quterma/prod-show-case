@@ -31,7 +31,7 @@ export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-medium text-gray-700">Price:</span>
+      <span className="text-sm font-medium text-foreground">Price:</span>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -40,9 +40,9 @@ export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
           onChange={(e) => handleMinChange(e.target.value)}
           min={priceRange.min}
           max={priceRange.max}
-          className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-24 px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
-        <span className="text-gray-500">-</span>
+        <span className="text-muted-foreground">-</span>
         <input
           type="number"
           placeholder={`Max (${priceRange.max})`}
@@ -50,7 +50,7 @@ export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
           onChange={(e) => handleMaxChange(e.target.value)}
           min={priceRange.min}
           max={priceRange.max}
-          className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-24 px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
     </div>

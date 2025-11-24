@@ -2,7 +2,7 @@ export {
   PAGE_SIZE,
   setCurrentPage,
   setPageSize,
-  resetPage,
+  resetCurrentPage,
 } from "./paginationSlice"
 export { default as paginationReducer } from "./paginationSlice"
 export type { PaginationState } from "./paginationSlice"

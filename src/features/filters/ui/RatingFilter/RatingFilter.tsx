@@ -20,13 +20,13 @@ export function RatingFilter() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-medium text-gray-700">Rating:</span>
+      <span className="text-sm font-medium text-foreground">Rating:</span>
       <select
         value={minRating ?? ""}
         onChange={(e) =>
           handleChange(e.target.value === "" ? null : Number(e.target.value))
         }
-        className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+        className="px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
       >
         <option value="">All ratings</option>
         {RATING_OPTIONS.map((option) => (

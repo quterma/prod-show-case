@@ -11,7 +11,7 @@ export function RatingField({ register, error }: RatingFieldProps) {
   return (
     <div className="space-y-1">
       <label htmlFor="rate" className="block text-sm font-medium">
-        Rating (0-5) <span className="text-red-500">*</span>
+        Rating (0-5)
       </label>
       <input
         {...register("rate", { valueAsNumber: true })}
@@ -20,10 +20,10 @@ export function RatingField({ register, error }: RatingFieldProps) {
         step="0.1"
         min="0"
         max="5"
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         placeholder="0.0"
       />
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
     </div>
   )
 }

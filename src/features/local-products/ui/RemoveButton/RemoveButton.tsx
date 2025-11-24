@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import toast from "react-hot-toast"
 
 import type { ProductId } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
@@ -41,13 +42,18 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
 
     if (confirmed) {
       dispatch(removeProduct(productId))
+      if (isRemoved) {
+        toast.success("Product restored")
+      } else {
+        toast.success("Product moved to trash")
+      }
     }
   }
 
   return (
     <button
       onClick={handleClick}
-      className={`group p-2 rounded-full transition-colors hover:bg-gray-100 ${className}`}
+      className={`group p-2 rounded-full transition-colors hover:bg-accent ${className}`}
       aria-label={isRemoved ? "Restore product" : "Remove product"}
       title={isRemoved ? "Restore product" : "Remove product"}
     >
@@ -59,8 +65,8 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
         strokeWidth="2"
         className={`w-5 h-5 transition-colors ${
           isRemoved
-            ? "text-gray-500 group-hover:text-green-600"
-            : "text-gray-400 group-hover:text-red-600"
+            ? "text-muted-foreground group-hover:text-success"
+            : "text-muted-foreground group-hover:text-destructive"
         }`}
       >
         <path

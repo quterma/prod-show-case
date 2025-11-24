@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest"
 import paginationReducer, {
   setCurrentPage,
   setPageSize,
-  resetPage,
+  resetCurrentPage,
   PAGE_SIZE,
 } from "./paginationSlice"
 
@@ -68,11 +68,11 @@ describe("paginationSlice", () => {
     })
   })
 
-  describe("resetPage", () => {
+  describe("resetCurrentPage", () => {
     it("resets current page to 1", () => {
       const state = paginationReducer(
         { currentPage: 10, pageSize: PAGE_SIZE },
-        resetPage()
+        resetCurrentPage()
       )
 
       expect(state.currentPage).toBe(1)
@@ -80,7 +80,7 @@ describe("paginationSlice", () => {
     })
 
     it("does nothing when already on page 1", () => {
-      const state = paginationReducer(initialState, resetPage())
+      const state = paginationReducer(initialState, resetCurrentPage())
 
       expect(state.currentPage).toBe(1)
       expect(state.pageSize).toBe(PAGE_SIZE)

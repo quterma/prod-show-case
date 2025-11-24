@@ -64,22 +64,22 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
 
       {/* Modal content */}
       <div
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-xl mx-4"
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-foreground rounded-lg shadow-xl border border-border mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <h2
               id="modal-title"
-              className="text-xl font-semibold text-gray-900"
+              className="text-xl font-semibold text-foreground"
             >
               {title}
             </h2>
             <button
               type="button"
               onClick={onCloseDialog}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Close modal"
             >
               <svg

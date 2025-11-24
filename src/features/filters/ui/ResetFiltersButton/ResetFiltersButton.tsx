@@ -20,7 +20,7 @@ export function ResetFiltersButton() {
     <button
       onClick={handleReset}
       disabled={!hasActiveFilters}
-      className="px-4 py-2 text-base font-medium rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-60 transition-colors duration-150"
+      className="px-4 py-2 text-base font-medium rounded-md bg-background text-foreground border border-input hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-60 transition-colors duration-150"
     >
       Reset filters
     </button>

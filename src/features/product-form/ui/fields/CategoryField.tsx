@@ -50,7 +50,7 @@ export function CategoryField({
   return (
     <div className="space-y-1">
       <label htmlFor="category" className="block text-sm font-medium">
-        Category <span className="text-red-500">*</span>
+        Category <span className="text-destructive">*</span>
       </label>
 
       {!hasCategories || isAddingNew ? (
@@ -60,7 +60,7 @@ export function CategoryField({
             id="category"
             type="text"
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter category name"
             autoFocus={isAddingNew}
           />
@@ -71,7 +71,7 @@ export function CategoryField({
                 setIsAddingNew(false)
                 setValue("category", defaultValue || "")
               }}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm text-primary hover:text-primary/80"
             >
               ← Back to list
             </button>
@@ -82,7 +82,7 @@ export function CategoryField({
           {...register("category")}
           id="category"
           onChange={handleSelectChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
           <option value="">Select a category</option>
           {availableCategories.map((category) => (

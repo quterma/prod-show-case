@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import toast from "react-hot-toast"
 
 import type { Product } from "@/entities/product"
 import { upsertLocalProduct } from "@/features/local-products"
@@ -65,10 +66,12 @@ export function ProductFormDialogWidget({
       // Create new local product (ID will be auto-assigned)
       const payload = createProductPayload(productData)
       dispatch(upsertLocalProduct(payload))
+      toast.success("Product created successfully")
     } else if (mode === "edit" && product) {
       // Update existing product
       const payload = updateProductPayload(productData, product.id)
       dispatch(upsertLocalProduct(payload))
+      toast.success("Product updated successfully")
     }
 
     // Close dialog after successful submit

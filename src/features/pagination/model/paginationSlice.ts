@@ -33,12 +33,12 @@ const paginationSlice = createSlice({
     /**
      * Reset to first page
      */
-    resetPage: (state) => {
+    resetCurrentPage: (state) => {
       state.currentPage = 1
     },
   },
 })
 
-export const { setCurrentPage, setPageSize, resetPage } =
+export const { setCurrentPage, setPageSize, resetCurrentPage } =
   paginationSlice.actions
 export default paginationSlice.reducer

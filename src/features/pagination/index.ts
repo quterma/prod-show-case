@@ -3,7 +3,7 @@ export {
   PAGE_SIZE,
   setCurrentPage,
   setPageSize,
-  resetPage,
+  resetCurrentPage,
   paginationReducer,
   selectCurrentPage,
   selectPageSize,

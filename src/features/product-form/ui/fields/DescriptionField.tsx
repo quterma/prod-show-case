@@ -11,16 +11,16 @@ export function DescriptionField({ register, error }: DescriptionFieldProps) {
   return (
     <div className="space-y-1">
       <label htmlFor="description" className="block text-sm font-medium">
-        Description <span className="text-red-500">*</span>
+        Description <span className="text-destructive">*</span>
       </label>
       <textarea
         {...register("description")}
         id="description"
         rows={4}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         placeholder="Enter product description"
       />
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
     </div>
   )
 }

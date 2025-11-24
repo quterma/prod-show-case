@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import toast from "react-hot-toast"
 
 import type { ProductId } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
@@ -34,12 +35,18 @@ export function FavoriteToggle({
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click when clicking favorite button
     dispatch(toggleFavorite(productId))
+
+    if (isFavorite) {
+      toast.success("Removed from favorites")
+    } else {
+      toast.success("Added to favorites")
+    }
   }
 
   return (
     <button
       onClick={handleClick}
-      className={`group p-2 rounded-full transition-colors hover:bg-gray-100 ${className}`}
+      className={`group p-2 rounded-full transition-colors hover:bg-accent ${className}`}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
       title={isFavorite ? "Remove from favorites" : "Add to favorites"}
     >
@@ -51,8 +58,8 @@ export function FavoriteToggle({
         strokeWidth="2"
         className={`w-5 h-5 transition-colors ${
           isFavorite
-            ? "text-red-500 group-hover:text-red-600"
-            : "text-gray-400 group-hover:text-red-500"
+            ? "text-destructive group-hover:text-destructive/90"
+            : "text-muted-foreground group-hover:text-destructive"
         }`}
       >
         <path

@@ -2,7 +2,7 @@ import { render } from "@testing-library/react"
 import { Provider } from "react-redux"
 import { describe, it, expect, vi } from "vitest"
 
-import { setPage } from "@/features/pagination"
+import { setCurrentPage } from "@/features/pagination"
 import { makeStore } from "@/shared/lib/store"
 
 import { ProductsWidget } from "./ProductsWidget"
@@ -13,9 +13,13 @@ vi.mock("@/widgets/product-form-dialog", () => ({
 }))
 
 // Mock ProductsToolbar components
-vi.mock("@/features/favorites", () => ({
-  ShowOnlyFavoritesToggle: () => null,
-}))
+vi.mock("@/features/favorites", async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>
+  return {
+    ...actual,
+    ShowOnlyFavoritesToggle: () => null,
+  }
+})
 
 vi.mock("@/shared/ui", () => ({
   Button: ({
@@ -44,7 +48,7 @@ describe("ProductsWidget", () => {
     const store = makeStore()
 
     // Set currentPage to 3
-    store.dispatch(setPage(3))
+    store.dispatch(setCurrentPage(3))
 
     // Render widget - totalPages will be calculated based on data
     // In this test, totalPages will be 0 (no data), so page should reset to 1 when data arrives
