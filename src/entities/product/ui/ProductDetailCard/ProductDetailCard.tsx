@@ -14,7 +14,7 @@ type ProductDetailCardProps = {
 export function ProductDetailCard({ product }: ProductDetailCardProps) {
   return (
     <Card className="overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
+      <div className="grid grid-cols-1 md:grid-cols-[350px_1fr] gap-8 p-6 md:p-8">
         {/* Image Section */}
         <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
           <Image

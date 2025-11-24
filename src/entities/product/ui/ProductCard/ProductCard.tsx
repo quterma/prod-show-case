@@ -9,9 +9,10 @@ import type { Product } from "../../model"
 
 type ProductCardProps = {
   product: Product
+  priority?: boolean
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const router = useRouter()
 
   const handleClick = () => {
@@ -36,6 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
           fill
           className="object-contain p-4 mix-blend-multiply dark:mix-blend-normal"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={priority}
         />
       </div>
 
