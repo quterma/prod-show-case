@@ -1,8 +1,10 @@
 // UI component exports
 export { BackToProductsButton } from "./BackToProductsButton"
 export { Button } from "./Button"
+export { Card, type CardProps } from "./Card"
 export { EmptyState } from "./EmptyState"
 export { ErrorMessage } from "./ErrorMessage"
+export { Input, type InputProps } from "./Input"
 export { Modal } from "./Modal"
 export { ResetLocalDataButton } from "./ResetLocalDataButton"
 export { Skeleton } from "./Skeleton"

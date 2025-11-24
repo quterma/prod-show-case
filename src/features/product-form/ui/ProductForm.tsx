@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-import { Button } from "@/shared/ui/Button"
+import { Button } from "@/shared/ui"
 
 import { productFormSchema } from "../model/schema"
 import type { ProductFormData } from "../model/types"

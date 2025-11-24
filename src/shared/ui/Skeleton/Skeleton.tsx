@@ -1,13 +1,16 @@
-type SkeletonProps = {
-  lines?: number
-}
+import { cn } from "@/shared/lib/utils"
 
-export function Skeleton({ lines = 3 }: SkeletonProps) {
+type SkeletonProps = React.HTMLAttributes<HTMLDivElement>
+
+/**
+ * Skeleton component for loading states
+ * Shows a pulsing gray block
+ */
+export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
-    <div>
-      {Array.from({ length: lines }).map((_, index) => (
-        <div key={index}>Loading line {index + 1}</div>
-      ))}
-    </div>
+    <div
+      className={cn("animate-pulse rounded-md bg-muted", className)}
+      {...props}
+    />
   )
 }

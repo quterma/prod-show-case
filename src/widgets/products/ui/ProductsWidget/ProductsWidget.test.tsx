@@ -29,6 +29,17 @@ vi.mock("@/shared/ui", () => ({
     children: React.ReactNode
     [key: string]: unknown
   }) => <button {...props}>{children}</button>,
+  Card: ({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode
+    [key: string]: unknown
+  }) => <div {...props}>{children}</div>,
+  Input: (props: { [key: string]: unknown }) => <input {...props} />,
+  Skeleton: (props: { [key: string]: unknown }) => (
+    <div className="animate-pulse" {...props} />
+  ),
   ResetLocalDataButton: () => null,
 }))
 

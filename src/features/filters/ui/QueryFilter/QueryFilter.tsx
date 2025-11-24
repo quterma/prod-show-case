@@ -1,9 +1,11 @@
 "use client"
 
+import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { useDebounce } from "@/shared/lib/debounce"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { Input } from "@/shared/ui"
 
 import { selectSearchQuery, setSearchQuery } from "../../model"
 
@@ -36,12 +38,15 @@ export function QueryFilter() {
   }
 
   return (
-    <input
-      type="search"
-      value={localQuery}
-      onChange={handleChange}
-      placeholder="Search products..."
-      className="search-input"
-    />
+    <div className="w-full sm:w-64">
+      <Input
+        type="search"
+        placeholder="Search products..."
+        value={localQuery}
+        onChange={handleChange}
+        iconLeft={<Search className="w-4 h-4" />}
+        fullWidth
+      />
+    </div>
   )
 }

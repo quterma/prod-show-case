@@ -335,7 +335,6 @@ hover:shadow-lg transition-shadow cursor-pointer
 
    ```tsx
    import Image from "next/image"
-
    ;<div className="relative aspect-square w-full overflow-hidden rounded-md bg-muted">
      <Image
        src={product.image}
@@ -350,7 +349,6 @@ hover:shadow-lg transition-shadow cursor-pointer
 
    ```tsx
    import { Card } from "@/shared/ui/Card"
-
    ;<Card hover onClick={handleClick}>
      {/* content */}
    </Card>
