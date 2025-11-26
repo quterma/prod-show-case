@@ -1,6 +1,7 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { Select } from "@/shared/ui"
 
 import { selectMinRating, setMinRating } from "../../model"
 
@@ -21,20 +22,18 @@ export function RatingFilter() {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm font-medium text-foreground">Rating:</span>
-      <select
+      <Select
         value={minRating ?? ""}
-        onChange={(e) =>
-          handleChange(e.target.value === "" ? null : Number(e.target.value))
-        }
-        className="px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
-      >
-        <option value="">All ratings</option>
-        {RATING_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        onChange={(val) => handleChange(val === "" ? null : Number(val))}
+        options={[
+          { value: "", label: "All ratings" },
+          ...RATING_OPTIONS.map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+          })),
+        ]}
+        className="w-40"
+      />
     </div>
   )
 }

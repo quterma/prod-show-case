@@ -50,6 +50,7 @@ export function ProductForm({
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
@@ -74,6 +75,7 @@ export function ProductForm({
 
       <CategoryField
         register={register}
+        control={control}
         setValue={setValue}
         error={errors.category}
         availableCategories={availableCategories}

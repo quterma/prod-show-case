@@ -2,10 +2,14 @@
 
 import { useState } from "react"
 import type {
+  Control,
   FieldError,
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form"
+import { Controller } from "react-hook-form"
+
+import { Select } from "@/shared/ui"
 
 import type { ProductFormData } from "../../model/types"
 
@@ -13,6 +17,7 @@ const ADD_NEW_VALUE = "__ADD_NEW__"
 
 type CategoryFieldProps = {
   register: UseFormRegister<ProductFormData>
+  control: Control<ProductFormData>
   setValue: UseFormSetValue<ProductFormData>
   error?: FieldError
   availableCategories: string[]
@@ -21,6 +26,7 @@ type CategoryFieldProps = {
 
 export function CategoryField({
   register,
+  control,
   setValue,
   error,
   availableCategories,
@@ -31,15 +37,13 @@ export function CategoryField({
   // If no categories available, always show input
   const hasCategories = availableCategories.length > 0
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value
-
+  const handleSelectChange = (value: string | number) => {
     if (value === ADD_NEW_VALUE) {
       setIsAddingNew(true)
       setValue("category", "")
     } else {
       setIsAddingNew(false)
-      setValue("category", value)
+      setValue("category", String(value))
     }
   }
 
@@ -78,22 +82,32 @@ export function CategoryField({
           )}
         </div>
       ) : (
-        <select
-          {...register("category")}
-          id="category"
-          onChange={handleSelectChange}
-          className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          <option value="">Select a category</option>
-          {availableCategories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-          <option value={ADD_NEW_VALUE} className="font-semibold">
-            + Add new category
-          </option>
-        </select>
+        <Controller
+          control={control}
+          name="category"
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onChange={(val) => {
+                field.onChange(val)
+                handleSelectChange(val)
+              }}
+              options={[
+                { value: "", label: "Select a category" },
+                ...availableCategories.map((cat) => ({
+                  value: cat,
+                  label: cat,
+                })),
+                {
+                  value: ADD_NEW_VALUE,
+                  label: "+ Add new category",
+                  className: "font-semibold text-primary",
+                },
+              ]}
+              error={!!error}
+            />
+          )}
+        />
       )}
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}

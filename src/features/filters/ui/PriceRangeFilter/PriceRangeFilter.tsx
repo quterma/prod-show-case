@@ -1,6 +1,7 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { RangeSlider } from "@/shared/ui"
 
 import {
   selectMinPrice,
@@ -19,40 +20,36 @@ export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
   const minPrice = useAppSelector(selectMinPrice)
   const maxPrice = useAppSelector(selectMaxPrice)
 
-  const handleMinChange = (value: string) => {
-    const numValue = value === "" ? null : Number(value)
-    dispatch(setMinPrice(numValue))
+  // Use priceRange as default values if filters are null
+  const currentMin = minPrice ?? priceRange.min
+  const currentMax = maxPrice ?? priceRange.max
+
+  const handleValueChange = (value: [number, number]) => {
+    const [newMin, newMax] = value
+
+    // Only dispatch if values differ from the priceRange defaults
+    // This prevents setting filters when they match the full range
+    dispatch(setMinPrice(newMin === priceRange.min ? null : newMin))
+    dispatch(setMaxPrice(newMax === priceRange.max ? null : newMax))
   }
 
-  const handleMaxChange = (value: string) => {
-    const numValue = value === "" ? null : Number(value)
-    dispatch(setMaxPrice(numValue))
+  const formatValue = (value: number) => {
+    return `$${value.toFixed(2)}`
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-2">
       <span className="text-sm font-medium text-foreground">Price:</span>
-      <div className="flex items-center gap-2">
-        <input
-          type="number"
-          placeholder={`Min (${priceRange.min})`}
-          value={minPrice ?? ""}
-          onChange={(e) => handleMinChange(e.target.value)}
-          min={priceRange.min}
-          max={priceRange.max}
-          className="w-24 px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-        <span className="text-muted-foreground">-</span>
-        <input
-          type="number"
-          placeholder={`Max (${priceRange.max})`}
-          value={maxPrice ?? ""}
-          onChange={(e) => handleMaxChange(e.target.value)}
-          min={priceRange.min}
-          max={priceRange.max}
-          className="w-24 px-2 py-1 text-sm border border-input rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-      </div>
+      <RangeSlider
+        min={priceRange.min}
+        max={priceRange.max}
+        step={1}
+        value={[currentMin, currentMax]}
+        onValueChange={handleValueChange}
+        formatValue={formatValue}
+        showValues
+        className="w-full"
+      />
     </div>
   )
 }

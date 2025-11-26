@@ -93,8 +93,7 @@ describe("ProductsToolbar", () => {
       </Provider>
     )
 
-    expect(screen.getByPlaceholderText(/min/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/max/i)).toBeInTheDocument()
+    expect(screen.getByText(/price:/i)).toBeInTheDocument()
   })
 
   it("renders rating filter", () => {

@@ -41,6 +41,14 @@ vi.mock("@/shared/ui", () => ({
     <div className="animate-pulse" {...props} />
   ),
   ResetLocalDataButton: () => null,
+  Select: ({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode
+    [key: string]: unknown
+  }) => <select {...props}>{children}</select>,
+  RangeSlider: () => null,
 }))
 
 describe("ProductsWidget", () => {
