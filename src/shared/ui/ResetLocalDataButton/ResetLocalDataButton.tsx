@@ -4,7 +4,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 
 import { resetLocalData, useAppDispatch } from "@/shared/lib/store"
-import { Button, Modal } from "@/shared/ui"
+import { Button, ConfirmationModal } from "@/shared/ui"
 
 /**
  * ResetLocalDataButton - infrastructure UI component for clearing all local data
@@ -50,26 +50,15 @@ export function ResetLocalDataButton() {
         Reset Local Data
       </Button>
 
-      <Modal
+      <ConfirmationModal
         open={showConfirm}
-        onCloseDialog={handleCancel}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
         title="Reset Local Data?"
-      >
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            This will clear all favorites, local products, and filters. This
-            action cannot be undone.
-          </p>
-          <div className="flex gap-3 justify-end">
-            <Button onClick={handleCancel} variant="outline">
-              Cancel
-            </Button>
-            <Button onClick={handleConfirm} variant="destructive">
-              Reset
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        description="This will clear all favorites, local products, and filters. This action cannot be undone."
+        confirmText="Reset"
+        variant="destructive"
+      />
     </>
   )
 }

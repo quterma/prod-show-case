@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 
 import { useDebounce } from "@/shared/lib/debounce"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
-import { Input } from "@/shared/ui"
+import { Button, Input } from "@/shared/ui"
 
 import { selectSearchQuery, setSearchQuery } from "../../model"
 
@@ -37,6 +37,10 @@ export function QueryFilter() {
     setLocalQuery(e.target.value) // Update UI instantly
   }
 
+  const handleClear = () => {
+    setLocalQuery("")
+  }
+
   return (
     <div className="w-full sm:w-64">
       <Input
@@ -45,6 +49,32 @@ export function QueryFilter() {
         value={localQuery}
         onChange={handleChange}
         iconLeft={<Search className="w-4 h-4" />}
+        iconRight={
+          localQuery ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClear}
+              className="h-6 w-6 text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </Button>
+          ) : undefined
+        }
         fullWidth
       />
     </div>
