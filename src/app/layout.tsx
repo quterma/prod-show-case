@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
+import { Header } from "@/widgets/header"
+
 import StoreProvider from "./StoreProvider"
 import { ThemeProvider } from "./ThemeProvider"
 import { ToastProvider } from "./ToastProvider"
@@ -39,7 +41,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <StoreProvider>{children}</StoreProvider>
+          <Header />
+          <StoreProvider>
+            <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+          </StoreProvider>
           <ToastProvider />
         </ThemeProvider>
       </body>

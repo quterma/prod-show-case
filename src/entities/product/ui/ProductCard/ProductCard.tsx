@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 
 import { FavoriteToggle } from "@/features/favorites"
 import { RemoveButton } from "@/features/local-products"
+import { ROUTES } from "@/shared/config"
 import { Card } from "@/shared/ui"
 
 import type { Product } from "../../model"
@@ -16,7 +17,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const router = useRouter()
 
   const handleClick = () => {
-    router.push(`/products/${product.id}`)
+    router.push(ROUTES.products.detail(product.id))
   }
 
   return (

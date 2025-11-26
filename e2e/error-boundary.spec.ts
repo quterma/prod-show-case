@@ -57,13 +57,8 @@ test.describe("Global Error Boundary", () => {
     // Navigate to products page
     await page.goto("/products")
 
-    // Check if there's a way to go back to home
+    // Navigation should exist - check if there's a way to go back to home
     // This could be a "Go Home" button or a navigation link
-    const homeLink =
-      page.locator('a[href="/"]').first() ||
-      page.locator('button:has-text("Go Home")').first()
-
-    // Navigation should exist
     const linkCount =
       (await page.locator('a[href="/"]').count()) +
       (await page.locator('button:has-text("Go Home")').count())

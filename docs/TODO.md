@@ -132,4 +132,38 @@
 
 ---
 
-**Last updated:** 2025-11-20
+## 💡 Future Improvements (Backlog)
+
+### Logger Centralization
+
+**Current state:** `console.error/warn` scattered across persist utilities and error handlers, with `eslint-disable-next-line no-console` comments.
+
+**Proposal:** Create centralized logger utility (`shared/lib/logger.ts`):
+
+```ts
+/* eslint-disable no-console */
+export const logger = {
+  error: console.error,
+  warn: console.warn,
+  info: console.info,
+  debug: console.debug,
+}
+```
+
+**Benefits:**
+
+- Single place to disable ESLint rule
+- Easy to switch to external service (Sentry, LogRocket) in production
+- Consistent logging interface across codebase
+
+**Affected files:**
+
+- `src/app/error.tsx`
+- `src/shared/lib/persist/safeLoadFromStorage.ts`
+- `src/shared/lib/persist/ls.ts`
+
+**Priority:** Low (current implementation is acceptable for MVP)
+
+---
+
+**Last updated:** 2025-11-25
