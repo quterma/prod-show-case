@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 
 import type { ProductId } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { cn } from "@/shared/lib/utils"
 
 import { removeProduct, makeSelectIsRemoved } from "../../model"
 
@@ -59,7 +60,10 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
   return (
     <button
       onClick={handleClick}
-      className={`group p-2 rounded-full transition-colors hover:bg-accent ${className}`}
+      className={cn(
+        "group p-2 rounded-full transition-colors hover:bg-accent cursor-pointer",
+        className
+      )}
       aria-label={isRemoved ? "Restore product" : "Remove product"}
       title={isRemoved ? "Restore product" : "Remove product"}
     >
@@ -69,11 +73,12 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className={`w-5 h-5 transition-colors ${
+        className={cn(
+          "w-5 h-5 transition-colors",
           isRemoved
             ? "text-muted-foreground group-hover:text-success"
             : "text-muted-foreground group-hover:text-destructive"
-        }`}
+        )}
       >
         <path
           strokeLinecap="round"

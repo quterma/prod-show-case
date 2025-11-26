@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 
 import type { ProductId } from "@/entities/product"
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { cn } from "@/shared/lib/utils"
 
 import { toggleFavorite, makeSelectIsFavorite } from "../../model"
 
@@ -46,7 +47,10 @@ export function FavoriteToggle({
   return (
     <button
       onClick={handleClick}
-      className={`group p-2 rounded-full transition-colors hover:bg-accent ${className}`}
+      className={cn(
+        "group p-2 rounded-full transition-colors hover:bg-accent cursor-pointer",
+        className
+      )}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
       title={isFavorite ? "Remove from favorites" : "Add to favorites"}
     >
@@ -56,11 +60,12 @@ export function FavoriteToggle({
         fill={isFavorite ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="2"
-        className={`w-5 h-5 transition-colors ${
+        className={cn(
+          "w-5 h-5 transition-colors",
           isFavorite
             ? "text-destructive group-hover:text-destructive/90"
             : "text-muted-foreground group-hover:text-destructive"
-        }`}
+        )}
       >
         <path
           strokeLinecap="round"

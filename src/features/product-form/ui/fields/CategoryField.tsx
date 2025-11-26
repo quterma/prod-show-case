@@ -71,7 +71,7 @@ export function CategoryField({
                 setIsAddingNew(false)
                 setValue("category", defaultValue || "")
               }}
-              className="text-sm text-primary hover:text-primary/80"
+              className="text-sm text-primary hover:text-primary/80 cursor-pointer"
             >
               ← Back to list
             </button>

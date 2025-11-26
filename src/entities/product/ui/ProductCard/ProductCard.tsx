@@ -23,10 +23,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <Card
       onClick={handleClick}
-      className="relative p-4 hover:shadow-md transition-shadow cursor-pointer group h-full flex flex-col"
+      className="relative p-4 hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col"
     >
-      {/* Action buttons in top-right corner */}
-      <div className="absolute top-2 right-2 flex gap-1 z-10">
+      {/* Action buttons in top-right corner, outside image */}
+      <div className="flex justify-end gap-2 mb-2 z-10">
         <RemoveButton productId={product.id} />
         <FavoriteToggle productId={product.id} />
       </div>

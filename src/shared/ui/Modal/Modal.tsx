@@ -2,6 +2,8 @@
 
 import { useEffect, type ReactNode } from "react"
 
+import { Button } from "@/shared/ui"
+
 type ModalProps = {
   /** Controls modal visibility */
   open: boolean
@@ -34,15 +36,21 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
   }, [open, onCloseDialog])
 
   // Prevent body scroll when modal is open
+  // Prevent body scroll when modal is open
   useEffect(() => {
     if (open) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth
+      document.body.style.paddingRight = `${scrollbarWidth}px`
       document.body.style.overflow = "hidden"
     } else {
       document.body.style.overflow = ""
+      document.body.style.paddingRight = ""
     }
 
     return () => {
       document.body.style.overflow = ""
+      document.body.style.paddingRight = ""
     }
   }, [open])
 
@@ -76,10 +84,11 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
             >
               {title}
             </h2>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onCloseDialog}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground"
               aria-label="Close modal"
             >
               <svg
@@ -95,7 +104,7 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
         )}
 

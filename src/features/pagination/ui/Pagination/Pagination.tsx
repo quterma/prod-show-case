@@ -1,6 +1,7 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { Button } from "@/shared/ui"
 
 import { selectCurrentPage, setCurrentPage } from "../../model"
 
@@ -35,27 +36,29 @@ export function Pagination({ totalPages }: PaginationProps) {
 
   return (
     <div className="flex items-center justify-center gap-4 mt-6">
-      <button
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handlePrev}
         disabled={!canGoPrev}
-        className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-input rounded hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-background transition-colors"
         aria-label="Previous page"
       >
         Previous
-      </button>
+      </Button>
 
       <span className="text-sm text-muted-foreground">
         Page {currentPage} of {totalPages}
       </span>
 
-      <button
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handleNext}
         disabled={!canGoNext}
-        className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-input rounded hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-background transition-colors"
         aria-label="Next page"
       >
         Next
-      </button>
+      </Button>
     </div>
   )
 }

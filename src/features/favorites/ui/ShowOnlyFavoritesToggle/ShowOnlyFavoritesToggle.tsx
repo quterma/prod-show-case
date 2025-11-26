@@ -1,6 +1,7 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { cn } from "@/shared/lib/utils"
 
 import { toggleShowOnlyFavorites, selectShowOnlyFavorites } from "../../model"
 
@@ -25,22 +26,24 @@ export function ShowOnlyFavoritesToggle() {
     <div className="flex border border-input rounded-lg overflow-hidden">
       <button
         onClick={() => handleToggle("all")}
-        className={`px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+        className={cn(
+          "px-4 py-2 text-sm font-medium transition-colors duration-150 cursor-pointer",
           !showOnlyFavorites
             ? "bg-primary text-primary-foreground"
-            : "bg-background text-foreground hover:bg-accent"
-        }`}
+            : "bg-background dark:bg-secondary/10 text-foreground hover:bg-accent"
+        )}
         aria-label="Show all products"
       >
         All
       </button>
       <button
         onClick={() => handleToggle("favorites")}
-        className={`px-4 py-2 text-sm font-medium transition-colors duration-150 border-l border-input ${
+        className={cn(
+          "px-4 py-2 text-sm font-medium transition-colors duration-150 border-l border-input cursor-pointer",
           showOnlyFavorites
             ? "bg-primary text-primary-foreground"
-            : "bg-background text-foreground hover:bg-accent"
-        }`}
+            : "bg-background dark:bg-secondary/10 text-foreground hover:bg-accent"
+        )}
         aria-label="Show only favorites"
       >
         Favorites
