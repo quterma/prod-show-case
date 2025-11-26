@@ -10,6 +10,8 @@
  * ```
  */
 
+import { logger } from "../logger"
+
 import { getFromLS } from "./ls"
 
 /**
@@ -29,8 +31,7 @@ export function safeLoadFromStorage<T>(storageKey: string, fallback: T): T {
 
     // Basic sanity check: ensure loaded data has same structure type as fallback
     if (typeof loaded !== typeof fallback) {
-      // eslint-disable-next-line no-console
-      console.warn(
+      logger.warn(
         `Type mismatch for storage key "${storageKey}": expected ${typeof fallback}, got ${typeof loaded}. Using fallback.`
       )
       return fallback
@@ -38,8 +39,7 @@ export function safeLoadFromStorage<T>(storageKey: string, fallback: T): T {
 
     // Additional check for arrays
     if (Array.isArray(fallback) && !Array.isArray(loaded)) {
-      // eslint-disable-next-line no-console
-      console.warn(
+      logger.warn(
         `Type mismatch for storage key "${storageKey}": expected array, got non-array. Using fallback.`
       )
       return fallback
@@ -47,8 +47,7 @@ export function safeLoadFromStorage<T>(storageKey: string, fallback: T): T {
 
     return loaded
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Failed to load from storage (key: "${storageKey}"):`, error)
+    logger.error(`Failed to load from storage (key: "${storageKey}"):`, error)
     return fallback
   }
 }

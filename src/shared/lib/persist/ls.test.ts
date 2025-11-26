@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 
+import * as loggerModule from "../logger"
+
 import { getFromLS, setToLS, removeFromLS } from "./ls"
 
 describe("localStorage utilities", () => {
@@ -27,8 +29,8 @@ describe("localStorage utilities", () => {
     })
 
     it("returns null when JSON parsing fails", () => {
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
+      const loggerErrorSpy = vi
+        .spyOn(loggerModule.logger, "error")
         .mockImplementation(() => {
           // suppress error output
         })
@@ -37,9 +39,9 @@ describe("localStorage utilities", () => {
 
       const result = getFromLS("broken")
       expect(result).toBeNull()
-      expect(consoleErrorSpy).toHaveBeenCalled()
+      expect(loggerErrorSpy).toHaveBeenCalled()
 
-      consoleErrorSpy.mockRestore()
+      loggerErrorSpy.mockRestore()
     })
 
     it("handles primitive values", () => {
@@ -72,8 +74,8 @@ describe("localStorage utilities", () => {
     })
 
     it("warns when data is large (> 1MB)", () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
+      const loggerWarnSpy = vi
+        .spyOn(loggerModule.logger, "warn")
         .mockImplementation(() => {
           // suppress warning output
         })
@@ -82,11 +84,11 @@ describe("localStorage utilities", () => {
       const largeData = "x".repeat(1024 * 1024 + 1)
       setToLS("large", largeData)
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Large localStorage write")
       )
 
-      consoleWarnSpy.mockRestore()
+      loggerWarnSpy.mockRestore()
     })
 
     // Note: Quota exceeded error test skipped due to difficulty mocking DOMException in happy-dom

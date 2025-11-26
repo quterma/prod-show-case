@@ -12,9 +12,6 @@ const ProductsWidget = dynamic(
 export default function ProductsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Products List</h1>
-      </div>
       <ProductsWidget />
     </div>
   )

@@ -16,9 +16,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Product Detail</h1>
-      </div>
       <ProductDetailWidget productId={params.id} />
     </div>
   )

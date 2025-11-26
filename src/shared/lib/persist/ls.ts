@@ -3,6 +3,8 @@
  * Provides type-safe localStorage operations with error handling
  */
 
+import { logger } from "../logger"
+
 /**
  * Get value from localStorage with JSON parsing
  * Returns null if key doesn't exist or parsing fails
@@ -25,8 +27,7 @@ export function getFromLS<T>(key: string): T | null {
 
     return JSON.parse(item) as T
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error reading from localStorage (key: ${key}):`, error)
+    logger.error(`Error reading from localStorage (key: ${key}):`, error)
     return null
   }
 }
@@ -50,8 +51,7 @@ export function setToLS<T>(key: string, value: T): void {
 
     // Warn if data is large (> 1MB)
     if (sizeInKB > 1024) {
-      // eslint-disable-next-line no-console
-      console.warn(
+      logger.warn(
         `Large localStorage write (${key}): ${sizeInKB.toFixed(2)}KB. Consider data optimization.`
       )
     }
@@ -64,13 +64,11 @@ export function setToLS<T>(key: string, value: T): void {
       (error.name === "QuotaExceededError" ||
         error.name === "NS_ERROR_DOM_QUOTA_REACHED")
     ) {
-      // eslint-disable-next-line no-console
-      console.error(
+      logger.error(
         `localStorage quota exceeded (${key}). Consider clearing old data or reducing data size.`
       )
     } else {
-      // eslint-disable-next-line no-console
-      console.error(`Error writing to localStorage (key: ${key}):`, error)
+      logger.error(`Error writing to localStorage (key: ${key}):`, error)
     }
   }
 }
@@ -90,7 +88,6 @@ export function removeFromLS(key: string): void {
 
     window.localStorage.removeItem(key)
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error removing from localStorage (key: ${key}):`, error)
+    logger.error(`Error removing from localStorage (key: ${key}):`, error)
   }
 }

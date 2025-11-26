@@ -1,5 +1,6 @@
 "use client"
 
+import { logger } from "@/shared/lib/logger"
 import { Button, EmptyState } from "@/shared/ui"
 
 /**
@@ -16,11 +17,9 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  // Log error to console in development
-  // In production, this could send to error tracking service (Sentry, etc.)
+  // Log error in development, can be switched to external service in production
   if (typeof window !== "undefined") {
-    // eslint-disable-next-line no-console
-    console.error("Global error caught:", error)
+    logger.error("Global error caught:", error)
   }
 
   return (

@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 
+import * as loggerModule from "../logger"
+
 import { safeLoadFromStorage } from "./safeLoadFromStorage"
 
 describe("safeLoadFromStorage", () => {
@@ -30,8 +32,8 @@ describe("safeLoadFromStorage", () => {
   })
 
   it("returns fallback when JSON is corrupted", () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
+    const loggerErrorSpy = vi
+      .spyOn(loggerModule.logger, "error")
       .mockImplementation(() => {
         // suppress error output
       })
@@ -41,32 +43,36 @@ describe("safeLoadFromStorage", () => {
 
     const result = safeLoadFromStorage(mockKey, mockFallback)
     expect(result).toEqual(mockFallback)
-    expect(consoleErrorSpy).toHaveBeenCalled()
+    expect(loggerErrorSpy).toHaveBeenCalled()
 
-    consoleErrorSpy.mockRestore()
+    loggerErrorSpy.mockRestore()
   })
 
   it("returns fallback when type mismatch (object vs primitive)", () => {
-    const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
-      // suppress warning output
-    })
+    const loggerWarnSpy = vi
+      .spyOn(loggerModule.logger, "warn")
+      .mockImplementation(() => {
+        // suppress warning output
+      })
 
     // Store string instead of object
     localStorage.setItem(mockKey, JSON.stringify("wrong type"))
 
     const result = safeLoadFromStorage(mockKey, mockFallback)
     expect(result).toEqual(mockFallback)
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
+    expect(loggerWarnSpy).toHaveBeenCalledWith(
       expect.stringContaining("Type mismatch")
     )
 
-    consoleWarnSpy.mockRestore()
+    loggerWarnSpy.mockRestore()
   })
 
   it("returns fallback when expecting array but got object", () => {
-    const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
-      // suppress warning output
-    })
+    const loggerWarnSpy = vi
+      .spyOn(loggerModule.logger, "warn")
+      .mockImplementation(() => {
+        // suppress warning output
+      })
 
     const arrayFallback: string[] = []
     // Store object instead of array
@@ -74,11 +80,11 @@ describe("safeLoadFromStorage", () => {
 
     const result = safeLoadFromStorage(mockKey, arrayFallback)
     expect(result).toEqual(arrayFallback)
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
+    expect(loggerWarnSpy).toHaveBeenCalledWith(
       expect.stringContaining("expected array")
     )
 
-    consoleWarnSpy.mockRestore()
+    loggerWarnSpy.mockRestore()
   })
 
   it("handles null localStorage value", () => {
