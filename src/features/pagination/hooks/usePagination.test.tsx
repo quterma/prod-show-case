@@ -33,13 +33,13 @@ describe("usePagination", () => {
 
   it("returns paginated products and totalPages", () => {
     const store = makeStore()
-    const mockProducts = createMockProducts(25) // 25 products = 3 pages (10 per page)
+    const mockProducts = createMockProducts(25) // 25 products = 3 pages (12 per page: 12+12+1)
 
     const { result } = renderHook(() => usePagination(mockProducts), {
       wrapper: createWrapper(store),
     })
 
-    expect(result.current.paginatedProducts).toHaveLength(10) // First page has 10 items
+    expect(result.current.paginatedProducts).toHaveLength(12) // First page has 12 items
     expect(result.current.totalPages).toBe(3)
   })
 
@@ -57,7 +57,7 @@ describe("usePagination", () => {
 
   it("selector clamps out-of-bounds currentPage", () => {
     const store = makeStore()
-    const mockProducts = createMockProducts(15) // 15 products = 2 pages
+    const mockProducts = createMockProducts(15) // 15 products = 2 pages (12 per page: 12+3)
 
     // Set page to 3 (out of bounds for 15 products)
     store.dispatch(setCurrentPage(3))
@@ -66,11 +66,11 @@ describe("usePagination", () => {
       wrapper: createWrapper(store),
     })
 
-    // Selector clamps to valid page (page 2), shows last 5 items
+    // Selector clamps to valid page (page 2), shows last 3 items
     // Page state reset to 1 is handled by middleware (removeProduct, toggleFavorites)
     expect(result.current.totalPages).toBe(2)
-    expect(result.current.paginatedProducts).toHaveLength(5) // Last page has 5 items
-    expect(result.current.paginatedProducts[0].title).toBe("Product 11")
+    expect(result.current.paginatedProducts).toHaveLength(3) // Last page has 3 items
+    expect(result.current.paginatedProducts[0].title).toBe("Product 13")
   })
 
   it("does not correct when currentPage is valid", async () => {
@@ -142,8 +142,8 @@ describe("usePagination", () => {
       wrapper: createWrapper(store),
     })
 
-    // Page 2 should have products 11-20
-    expect(result.current.paginatedProducts[0].title).toBe("Product 11")
-    expect(result.current.paginatedProducts[9].title).toBe("Product 20")
+    // Page 2 should have products 13-24 (12 items per page)
+    expect(result.current.paginatedProducts[0].title).toBe("Product 13")
+    expect(result.current.paginatedProducts[11].title).toBe("Product 24")
   })
 })

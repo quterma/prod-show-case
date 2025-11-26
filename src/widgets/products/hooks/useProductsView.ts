@@ -8,6 +8,7 @@ import { useFavoriteProducts } from "@/features/favorites/hooks"
 import { useFilteredProducts } from "@/features/filters/hooks"
 import { useMergedProducts } from "@/features/local-products/hooks"
 import { usePagination } from "@/features/pagination/hooks"
+import { useIsMobile } from "@/shared/lib/hooks"
 
 /**
  * Empty state types for different stages of product processing
@@ -26,6 +27,8 @@ export interface UseProductsViewResult {
   paginatedProducts: Product[]
   /** Total number of pages */
   totalPages: number
+  /** Whether pagination is enabled (false on mobile) */
+  isPaginationEnabled: boolean
   /** Dynamic categories extracted from current products (undefined if no data) */
   categories: string[] | undefined
   /** Dynamic price range extracted from current products (undefined if no data) */
@@ -75,6 +78,10 @@ export interface UseProductsViewResult {
  * ```
  */
 export function useProductsView(): UseProductsViewResult {
+  // 0. Check if viewport is mobile (disable pagination on mobile)
+  const isMobile = useIsMobile()
+  const isPaginationEnabled = !isMobile
+
   // 1. Fetch products from API
   const { data: apiProducts, isLoading, error, refetch } = useGetProductsQuery()
 
@@ -87,7 +94,7 @@ export function useProductsView(): UseProductsViewResult {
   // 4. Apply filters (category, search, etc.)
   const filteredProducts = useFilteredProducts(favoriteProducts)
 
-  // 5. Paginate final results
+  // 5. Paginate final results (only if pagination is enabled)
   const pagination = usePagination(filteredProducts)
 
   // 6. Extract dynamic categories and price range from favoriteProducts
@@ -97,8 +104,12 @@ export function useProductsView(): UseProductsViewResult {
 
   // Build result object with default values
   const result: UseProductsViewResult = {
-    paginatedProducts: pagination.paginatedProducts,
-    totalPages: pagination.totalPages,
+    // Use pagination only if enabled, otherwise show all filtered products
+    paginatedProducts: isPaginationEnabled
+      ? pagination.paginatedProducts
+      : filteredProducts,
+    totalPages: isPaginationEnabled ? pagination.totalPages : 1,
+    isPaginationEnabled,
     categories,
     priceRange,
     isLoading,

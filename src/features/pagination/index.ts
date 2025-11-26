@@ -1,6 +1,5 @@
 // Model exports
 export {
-  PAGE_SIZE,
   setCurrentPage,
   setPageSize,
   resetCurrentPage,

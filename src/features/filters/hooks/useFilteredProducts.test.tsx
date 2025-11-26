@@ -7,13 +7,14 @@ import { describe, it, expect } from "vitest"
 import type { Product } from "@/entities/product/model"
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import { localProductsReducer } from "@/features/local-products"
-import paginationReducer, {
-  PAGE_SIZE,
-} from "@/features/pagination/model/paginationSlice"
+import paginationReducer from "@/features/pagination/model/paginationSlice"
 
 import filtersReducer from "../model/filtersSlice"
 
 import { useFilteredProducts } from "./useFilteredProducts"
+
+// Default page size for tests (matches paginationSlice)
+const DEFAULT_PAGE_SIZE = 12
 
 function createTestStore(initialState = {}) {
   return configureStore({
@@ -43,7 +44,7 @@ function createTestStore(initialState = {}) {
       },
       pagination: {
         currentPage: 1,
-        pageSize: PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE,
         maxPage: null,
       },
     },

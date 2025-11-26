@@ -27,6 +27,7 @@ export function ProductsWidget() {
   const {
     paginatedProducts,
     totalPages,
+    isPaginationEnabled,
     categories,
     priceRange,
     isLoading,
@@ -79,7 +80,8 @@ export function ProductsWidget() {
     gridContent = (
       <>
         <ProductsGrid products={paginatedProducts} />
-        <Pagination totalPages={totalPages} />
+        {/* Conditionally render pagination - hidden on mobile */}
+        {isPaginationEnabled && <Pagination totalPages={totalPages} />}
       </>
     )
   }

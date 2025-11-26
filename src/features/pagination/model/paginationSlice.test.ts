@@ -4,13 +4,15 @@ import paginationReducer, {
   setCurrentPage,
   setPageSize,
   resetCurrentPage,
-  PAGE_SIZE,
 } from "./paginationSlice"
+
+// Default page size for desktop (matches paginationSlice)
+const DEFAULT_PAGE_SIZE = 12
 
 describe("paginationSlice", () => {
   const initialState = {
     currentPage: 1,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   }
 
   describe("setCurrentPage", () => {
@@ -18,12 +20,12 @@ describe("paginationSlice", () => {
       const state = paginationReducer(initialState, setCurrentPage(3))
 
       expect(state.currentPage).toBe(3)
-      expect(state.pageSize).toBe(PAGE_SIZE) // pageSize unchanged
+      expect(state.pageSize).toBe(DEFAULT_PAGE_SIZE) // pageSize unchanged
     })
 
     it("allows setting page to 1", () => {
       const state = paginationReducer(
-        { currentPage: 5, pageSize: PAGE_SIZE },
+        { currentPage: 5, pageSize: DEFAULT_PAGE_SIZE },
         setCurrentPage(1)
       )
 
@@ -52,7 +54,7 @@ describe("paginationSlice", () => {
   describe("setPageSize", () => {
     it("updates page size and resets to page 1", () => {
       const state = paginationReducer(
-        { currentPage: 5, pageSize: PAGE_SIZE },
+        { currentPage: 5, pageSize: DEFAULT_PAGE_SIZE },
         setPageSize(20)
       )
 
@@ -71,19 +73,19 @@ describe("paginationSlice", () => {
   describe("resetCurrentPage", () => {
     it("resets current page to 1", () => {
       const state = paginationReducer(
-        { currentPage: 10, pageSize: PAGE_SIZE },
+        { currentPage: 10, pageSize: DEFAULT_PAGE_SIZE },
         resetCurrentPage()
       )
 
       expect(state.currentPage).toBe(1)
-      expect(state.pageSize).toBe(PAGE_SIZE) // pageSize unchanged
+      expect(state.pageSize).toBe(DEFAULT_PAGE_SIZE) // pageSize unchanged
     })
 
     it("does nothing when already on page 1", () => {
       const state = paginationReducer(initialState, resetCurrentPage())
 
       expect(state.currentPage).toBe(1)
-      expect(state.pageSize).toBe(PAGE_SIZE)
+      expect(state.pageSize).toBe(DEFAULT_PAGE_SIZE)
     })
   })
 
@@ -93,7 +95,7 @@ describe("paginationSlice", () => {
 
       expect(state).toEqual({
         currentPage: 1,
-        pageSize: PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE,
       })
     })
   })

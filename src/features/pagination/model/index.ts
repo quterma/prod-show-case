@@ -1,5 +1,5 @@
 export {
-  PAGE_SIZE,
+  DEFAULT_PAGE_SIZE,
   setCurrentPage,
   setPageSize,
   resetCurrentPage,

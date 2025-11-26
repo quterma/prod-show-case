@@ -6,12 +6,13 @@ import { describe, it, expect } from "vitest"
 import favoritesReducer from "@/features/favorites/model/favoritesSlice"
 import filtersReducer from "@/features/filters/model/filtersSlice"
 import { localProductsReducer } from "@/features/local-products"
-import paginationReducer, {
-  PAGE_SIZE,
-} from "@/features/pagination/model/paginationSlice"
+import paginationReducer from "@/features/pagination/model/paginationSlice"
 import { baseApi } from "@/shared/api/baseApi"
 
 import { ProductsToolbar } from "./ProductsToolbar"
+
+// Default page size for tests (matches paginationSlice)
+const DEFAULT_PAGE_SIZE = 12
 
 // Helper to create test store
 function createTestStore(initialFilters = {}) {
@@ -42,7 +43,7 @@ function createTestStore(initialFilters = {}) {
       },
       pagination: {
         currentPage: 1,
-        pageSize: PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE,
       },
     },
     middleware: (getDefaultMiddleware) =>

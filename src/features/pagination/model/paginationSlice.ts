@@ -1,6 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-export const PAGE_SIZE = 10
+/**
+ * Default page size for product grid pagination
+ * Desktop (≥ 768px): 12 items (4 cols × 3 rows on desktop, 3 cols × 4 rows on tablet)
+ * Mobile (< 768px): pagination disabled, shows all items
+ */
+export const DEFAULT_PAGE_SIZE = 12
 
 export type PaginationState = {
   currentPage: number
@@ -9,7 +14,7 @@ export type PaginationState = {
 
 const initialState: PaginationState = {
   currentPage: 1,
-  pageSize: PAGE_SIZE,
+  pageSize: DEFAULT_PAGE_SIZE,
 }
 
 const paginationSlice = createSlice({
