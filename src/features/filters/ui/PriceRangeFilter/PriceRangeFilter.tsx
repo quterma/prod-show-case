@@ -38,7 +38,7 @@ export function PriceRangeFilter({ priceRange }: PriceRangeFilterProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 min-w-[200px] max-w-[400px] flex-1">
       <span className="text-sm font-medium text-foreground">Price:</span>
       <RangeSlider
         min={priceRange.min}

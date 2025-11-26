@@ -73,7 +73,7 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
         )}
         <Slider.Root
           className={cn(
-            "relative flex h-5 w-full touch-none select-none items-center",
+            "relative flex h-5 w-full touch-none select-none items-center group",
             disabled && "opacity-50 cursor-not-allowed"
           )}
           value={value}
@@ -84,24 +84,24 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
           disabled={disabled}
           minStepsBetweenThumbs={1}
         >
-          <Slider.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
+          <Slider.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-secondary/50 transition-colors group-hover:bg-secondary">
             <Slider.Range className="absolute h-full bg-primary" />
           </Slider.Track>
           <Slider.Thumb
             className={cn(
-              "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors",
+              "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all hover:scale-110",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               "disabled:pointer-events-none disabled:opacity-50",
-              "hover:bg-primary/10",
+              "shadow-md",
               !disabled && "cursor-grab active:cursor-grabbing"
             )}
           />
           <Slider.Thumb
             className={cn(
-              "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors",
+              "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all hover:scale-110",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               "disabled:pointer-events-none disabled:opacity-50",
-              "hover:bg-primary/10",
+              "shadow-md",
               !disabled && "cursor-grab active:cursor-grabbing"
             )}
           />
