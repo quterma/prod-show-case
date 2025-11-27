@@ -21,13 +21,9 @@ type ProductsToolbarProps = {
 
 /**
  * ProductsToolbar - Composition of filter components
- * Organized into three groups:
- * 1. Filters group (Search, Favorites, Rating, Categories, Price, Reset)
- * 2. Primary action (Create Product)
- * 3. Danger zone (Reset Local Data)
- *
- * Mobile: vertical stack (Filters → Create → Reset)
- * Desktop: horizontal layout (Filters left/center, actions right)
+ * Organized into two groups:
+ * 1. Actions group (Create Product, Reset Local Data) - top row, full width
+ * 2. Filters group (Search, Favorites, Rating, Categories, Price, Reset) - bottom card, full width
  */
 export function ProductsToolbar({
   categories,
@@ -36,50 +32,39 @@ export function ProductsToolbar({
 }: ProductsToolbarProps) {
   return (
     <div className="flex flex-col gap-4 mb-8">
-      {/* Mobile: vertical stack, Desktop: horizontal with actions on right */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
-        {/* Filters Group */}
-        <Card className="flex-1 p-4">
-          <div className="flex flex-col gap-4">
-            {/* Search row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="flex-1">
-                <QueryFilter />
-              </div>
-              <div className="flex items-center gap-2 sm:shrink-0">
-                <ShowOnlyFavoritesToggle />
-                <ResetFiltersButton />
-              </div>
-            </div>
+      {/* Actions Group */}
+      <div className="flex flex-row gap-3 justify-between">
+        {onCreateProduct && (
+          <Button onClick={onCreateProduct} variant="primary">
+            Create Product
+          </Button>
+        )}
 
-            {/* Filter controls row */}
-            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+        <ResetLocalDataButton />
+      </div>
+
+      {/* Filters Group */}
+      <Card className="p-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <QueryFilter />
+            <div className="flex items-center gap-2 sm:shrink-0 justify-between flex-1">
+              <ShowOnlyFavoritesToggle />
+              <ResetFiltersButton />
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 min-h-[72px]">
+            <div className="flex items-center gap-3 min-h-[72px]">
               <RatingFilter />
               {categories && <CategoryFilter categories={categories} />}
+            </div>
+            <div className="flex-1 justify-start sm:justify-end flex items-center">
               {priceRange && <PriceRangeFilter priceRange={priceRange} />}
             </div>
           </div>
-        </Card>
-
-        {/* Actions Group - right side on desktop, bottom on mobile */}
-        <div className="flex flex-col sm:flex-row lg:flex-col gap-3 lg:w-48">
-          {/* Primary Action */}
-          {onCreateProduct && (
-            <Button
-              onClick={onCreateProduct}
-              variant="primary"
-              className="flex-1 lg:w-full"
-            >
-              Create Product
-            </Button>
-          )}
-
-          {/* Danger Zone */}
-          <div className="flex-1 lg:w-full">
-            <ResetLocalDataButton />
-          </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
