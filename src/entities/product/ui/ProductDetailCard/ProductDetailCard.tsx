@@ -1,9 +1,8 @@
 import { Star } from "lucide-react"
-import Image from "next/image"
 
 import { FavoriteToggle } from "@/features/favorites"
 import { RemoveButton } from "@/features/local-products"
-import { Card } from "@/shared/ui"
+import { Card, ProductImage } from "@/shared/ui"
 
 import type { Product } from "../../model"
 
@@ -16,16 +15,12 @@ export function ProductDetailCard({ product }: ProductDetailCardProps) {
     <Card className="overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-[350px_1fr] gap-8 p-6 md:p-8">
         {/* Image Section */}
-        <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className="object-contain p-8 mix-blend-multiply dark:mix-blend-normal"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority
-          />
-        </div>
+        <ProductImage
+          src={product.image}
+          alt={product.title}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          priority
+        />
 
         {/* Info Section */}
         <div className="flex flex-col space-y-6">
