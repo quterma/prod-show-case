@@ -73,8 +73,12 @@ beforeAll(() => {
 
   // Mock IntersectionObserver
   global.IntersectionObserver = class IntersectionObserver {
+    readonly root = null
+    readonly rootMargin = ""
+    readonly thresholds = []
     observe = vi.fn()
     unobserve = vi.fn()
     disconnect = vi.fn()
-  }
+    takeRecords = vi.fn(() => [])
+  } as unknown as typeof IntersectionObserver
 })
