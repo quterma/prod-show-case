@@ -80,8 +80,10 @@ describe("ProductsToolbar", () => {
       </Provider>
     )
 
-    expect(screen.getByText(/electronics/i)).toBeInTheDocument()
-    expect(screen.getByText(/clothing/i)).toBeInTheDocument()
+    // Categories filter should be present (label)
+    expect(screen.getByText(/categories:/i)).toBeInTheDocument()
+    // Should show category dropdown button with "All selected"
+    expect(screen.getByText("All selected")).toBeInTheDocument()
   })
 
   it("renders price range filter when priceRange provided", () => {

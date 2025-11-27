@@ -32,7 +32,7 @@ function createTestStore(initialFilters = {}) {
 }
 
 describe("CategoryFilter", () => {
-  it("renders category checkboxes", () => {
+  it("renders category multi-select dropdown", () => {
     const store = createTestStore()
     render(
       <Provider store={store}>
@@ -40,8 +40,9 @@ describe("CategoryFilter", () => {
       </Provider>
     )
 
-    expect(screen.getByText("electronics")).toBeInTheDocument()
-    expect(screen.getByText("clothing")).toBeInTheDocument()
+    // Should show "All selected" when no categories selected (ALL state)
+    expect(screen.getByText("All selected")).toBeInTheDocument()
+    expect(screen.getByText("Categories:")).toBeInTheDocument()
   })
 
   it("toggles category selection on click", async () => {
@@ -50,17 +51,94 @@ describe("CategoryFilter", () => {
 
     render(
       <Provider store={store}>
-        <CategoryFilter categories={["electronics"]} />
+        <CategoryFilter categories={["electronics", "clothing"]} />
       </Provider>
     )
 
-    const checkbox = screen.getByRole("checkbox")
-    expect(checkbox).not.toBeChecked()
+    // Open dropdown
+    const button = screen.getByRole("button", { name: /All selected/i })
+    await user.click(button)
 
-    await user.click(checkbox)
-    expect(checkbox).toBeChecked()
+    // Find and click electronics option (second occurrence - first is "All" option)
+    const electronicsOptions = screen.getAllByText("electronics")
+    await user.click(electronicsOptions[0])
 
-    await user.click(checkbox)
-    expect(checkbox).not.toBeChecked()
+    // Button should now show "1 selected"
+    expect(screen.getByText("1 selected")).toBeInTheDocument()
+  })
+
+  it("displays count when multiple categories selected", async () => {
+    const user = userEvent.setup()
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <CategoryFilter categories={["electronics", "clothing", "books"]} />
+      </Provider>
+    )
+
+    // Open dropdown
+    const button = screen.getByRole("button", { name: /All selected/i })
+    await user.click(button)
+
+    // Select two categories by clicking on text
+    await user.click(screen.getByText("electronics"))
+    await user.click(screen.getByText("clothing"))
+
+    // Should show "2 selected"
+    expect(screen.getByText("2 selected")).toBeInTheDocument()
+  })
+
+  it("resets to All selected when clicking All option", async () => {
+    const user = userEvent.setup()
+    const store = createTestStore()
+
+    render(
+      <Provider store={store}>
+        <CategoryFilter categories={["electronics", "clothing"]} />
+      </Provider>
+    )
+
+    // Open dropdown
+    const button = screen.getByRole("button", { name: /All selected/i })
+    await user.click(button)
+
+    // Click the "All" option in dropdown
+    const allOption = screen.getByText("All")
+    await user.click(allOption)
+
+    // Button should show "All selected" (reset to ALL state)
+    expect(
+      screen.getByRole("button", { name: /All selected/i })
+    ).toBeInTheDocument()
+  })
+
+  it("keeps All selected when clicking All option while categories in store", async () => {
+    const user = userEvent.setup()
+    const store = createTestStore({
+      categories: ["electronics", "clothing"],
+    })
+
+    render(
+      <Provider store={store}>
+        <CategoryFilter categories={["electronics", "clothing"]} />
+      </Provider>
+    )
+
+    // Should show "All selected" when all categories are selected in store
+    expect(screen.getByText("All selected")).toBeInTheDocument()
+
+    // Open dropdown
+    const button = screen.getByRole("button", { name: /All selected/i })
+    await user.click(button)
+
+    // Click the "All" option in dropdown to reset to ALL state (empty array)
+    const allOption = screen.getByText("All")
+    await user.click(allOption)
+
+    // Button should still show "All selected" (empty state = ALL = no filter)
+    expect(
+      screen.getByRole("button", { name: /All selected/i })
+    ).toBeInTheDocument()
   })
 })

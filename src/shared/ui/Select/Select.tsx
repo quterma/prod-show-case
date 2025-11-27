@@ -70,7 +70,12 @@ export function Select({
           className
         )}
       >
-        <span className={cn(!selectedOption && "text-muted-foreground")}>
+        <span
+          className={cn(
+            (!selectedOption || value === "" || value === null) &&
+              "text-muted-foreground"
+          )}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
