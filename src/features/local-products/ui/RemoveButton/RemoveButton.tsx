@@ -1,39 +1,30 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 
 import type { ProductId } from "@/entities/product"
-import { useAppDispatch, useAppSelector } from "@/shared/lib/store"
+import { useAppDispatch } from "@/shared/lib/store"
 import { cn } from "@/shared/lib/utils"
 import { ConfirmationModal } from "@/shared/ui"
 
-import { removeProduct, makeSelectIsRemoved } from "../../model"
+import { removeProduct } from "../../model"
 
 type RemoveButtonProps = {
-  /** Product ID to toggle removed status */
+  /** Product ID to remove */
   productId: ProductId
   /** Optional additional CSS classes */
   className?: string
 }
 
 /**
- * RemoveButton - soft-deletes/restores a product
- * Shows trash icon, uses browser confirm() for MVP
+ * RemoveButton - soft-deletes a product
+ * Shows trash icon with confirmation modal
  * Integrates with local-products slice
- *
- * Logic:
- * - Soft-delete: add to removedProductIds (both local and API products)
- * - Already removed: restore by removing from removedProductIds
  */
 export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
   const dispatch = useAppDispatch()
-
   const [showConfirm, setShowConfirm] = useState(false)
-
-  // Create memoized selector instance for this product
-  const selectIsRemoved = useMemo(() => makeSelectIsRemoved(), [])
-  const isRemoved = useAppSelector((state) => selectIsRemoved(state, productId))
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click when clicking remove button
@@ -42,17 +33,10 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
 
   const handleConfirm = () => {
     dispatch(removeProduct(productId))
-    if (isRemoved) {
-      toast.success("Product restored", {
-        position: "bottom-right",
-        className: "bg-background text-foreground border border-border",
-      })
-    } else {
-      toast.success("Product removed", {
-        position: "bottom-right",
-        className: "bg-background text-foreground border border-border",
-      })
-    }
+    toast.success("Product removed", {
+      position: "bottom-right",
+      className: "bg-background text-foreground border border-border",
+    })
     setShowConfirm(false)
   }
 
@@ -68,8 +52,8 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
           "group p-2 rounded-full transition-colors hover:bg-accent cursor-pointer",
           className
         )}
-        aria-label={isRemoved ? "Restore product" : "Remove product"}
-        title={isRemoved ? "Restore product" : "Remove product"}
+        aria-label="Remove product"
+        title="Remove product"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -77,12 +61,7 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          className={cn(
-            "w-5 h-5 transition-colors",
-            isRemoved
-              ? "text-muted-foreground group-hover:text-success"
-              : "text-muted-foreground group-hover:text-destructive"
-          )}
+          className="w-5 h-5 text-muted-foreground transition-colors group-hover:text-destructive"
         >
           <path
             strokeLinecap="round"
@@ -96,14 +75,10 @@ export function RemoveButton({ productId, className = "" }: RemoveButtonProps) {
         open={showConfirm}
         onClose={handleCancel}
         onConfirm={handleConfirm}
-        title={isRemoved ? "Restore Product?" : "Remove Product?"}
-        description={
-          isRemoved
-            ? "Are you sure you want to restore this product?"
-            : "Are you sure you want to remove this product? It will be hidden from the list."
-        }
-        confirmText={isRemoved ? "Restore" : "Remove"}
-        variant={isRemoved ? "primary" : "destructive"}
+        title="Remove Product?"
+        description="Are you sure you want to remove this product? It will be hidden from the list."
+        confirmText="Remove"
+        variant="destructive"
       />
     </>
   )
