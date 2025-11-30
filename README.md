@@ -16,24 +16,9 @@ This application demonstrates a production-ready approach to building scalable f
 
 ## 📚 Documentation
 
-### Core Documentation
-
 - **[CLAUDE.md](CLAUDE.md)** - Development guidelines for Claude Code
-- **[Current Architecture](docs/current-architecture.md)** - Подробное описание текущей архитектуры
-- **[FSD Architecture](docs/fsd-architecture.md)** - Полная документация FSD
-- **[FSD Quick Reference](docs/fsd-readme.md)** - Краткая справка по FSD слоям
-
-### Progress & Planning
-
-- **[Completion Report](docs/completion-report.md)** - Отчёт по Stage 1-2C
-- **[Roadmap](docs/roadmap.md)** - План Stage 2D, 3, 4
-- **[Features Overview](docs/features-overview.md)** - Обзор всех фич
-- **[Changelog](docs/changelog.md)** - История изменений
-
-### Technical Details
-
-- **[API Contracts](docs/api-contracts.md)** - FakeStore API спецификация
-- **[Pre-commit Hooks](docs/pre-commit-hooks.md)** - Настройка хуков
+- **[Architecture](docs/ARCHITECTURE.md)** - FSD architecture overview
+- **[TODO](docs/TODO.md)** - Portfolio improvements roadmap
 
 ## 🏗️ Project Status
 
@@ -81,7 +66,7 @@ This application demonstrates a production-ready approach to building scalable f
 
 ### Planned (Stage 3-4)
 
-См. [docs/roadmap.md](docs/roadmap.md)
+См. [docs/TODO.md](docs/TODO.md)
 
 ## 🛠️ Quick Start
 
@@ -149,7 +134,7 @@ src/
 - **Isolation:** `shared/` layer cannot import from other layers
 - **Single responsibility:** Each slice has a clear purpose
 
-See [docs/fsd-architecture.md](docs/fsd-architecture.md) for detailed guidelines.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed guidelines.
 
 ## 🔧 Tech Stack
 

@@ -1,169 +1,151 @@
-# TODO: Remaining Tasks
+# Portfolio Improvements TODO
 
-**Status:** Stage 2 Complete (MVP Done)
-**Next:** Stage 3 (UI Polish) or Stage 4 (Production)
-
----
-
-## 📋 Stage 3: UI Polish & UX (Planned)
-
-### 3.1 Visual Design (Must Have)
-
-- [ ] Tailwind theme (colors, typography, spacing)
-- [ ] Responsive grid (mobile, tablet, desktop)
-- [ ] Icons library (heroicons / lucide-react)
-- [ ] Consistent spacing and alignment
-
-### 3.2 UI States (Must Have)
-
-- [ ] Improved Skeleton components (shimmer effects)
-- [ ] Better error visuals (illustrations, friendly messages)
-- [ ] Enhanced empty states (call-to-action buttons)
-
-### 3.3 UX Components (Should Have)
-
-- [ ] Toast notifications (create/delete success)
-- [ ] Tooltips (button hints, filter info)
-- [ ] Modal improvements (animations, backdrop blur, focus trap)
-
-### 3.4 Animations (Optional)
-
-- [ ] Framer Motion for page transitions
-- [ ] Hover effects on product cards
-- [ ] Skeleton fade-in
-- [ ] Stagger animations for lists
-
-### 3.5 Light/Dark Mode (Optional)
-
-- [ ] Theme toggle button
-- [ ] Persist theme in localStorage
-- [ ] Tailwind dark: mode
-- [ ] CSS variables for colors
-
-### 3.6 Accessibility (Must Have)
-
-- [ ] ARIA labels for all interactive elements
-- [ ] Keyboard navigation (Tab, Enter, Esc)
-- [ ] Focus indicators
-- [ ] Lighthouse Accessibility score > 90
+**Current Status:** MVP Complete + UI Polish ✅ + Deployed to Vercel ✅
 
 ---
 
-## 🧪 Stage 4: Testing & Production (Planned)
+## 🚀 Priority 1: Essential (Week 1, 3-5 hours)
 
-### 4.1 Test Coverage (Must Have)
+### 1. Add Screenshots to README (1-2 hours)
 
-**Targets:**
+- [ ] Create `docs/screenshots/` directory
+- [ ] Capture screenshots:
+  - Products list (light/dark mode)
+  - Product detail page
+  - Filters + search in action
+  - Mobile responsive view
+  - Form dialog (create/edit)
+- [ ] Optimize images (WebP, max 800px width)
+- [ ] Add to README
 
-- Features: 80%+
-- Widgets: 70%+
-- Entities: 80%+
-
-**Priority:**
-
-- [ ] Filters (all combinations)
-- [ ] Pagination (edge cases)
-- [ ] LocalProducts (create/edit/delete)
-- [ ] Favorites (toggle, cleanup)
-
-### 4.2 E2E Tests (Should Have)
-
-**Playwright tests:**
-
-- [ ] Browse list → details → back
-- [ ] Search → filter → paginate
-- [ ] Create product → edit → delete
-- [ ] Add to favorites → filter "only favorites"
-- [ ] Reset local data → verify cleanup
-- [ ] Invalid product ID → 404
-- [ ] API error → fallback UI
-
-### 4.3 SEO Metadata (Should Have)
-
-- [ ] Dynamic title/description for product pages
-- [ ] Open Graph tags
-- [ ] Twitter cards
-- [ ] Canonical URLs
-
-### 4.4 Performance (Should Have)
-
-**Lighthouse targets:**
-
-- Performance: > 90
-- Accessibility: > 90
-- Best Practices: > 90
-- SEO: > 90
-
-**Optimizations:**
-
-- [ ] next/image for all images
-- [ ] Code splitting (React.lazy)
-- [ ] Bundle analysis
-- [ ] Prefetch critical routes
-
-### 4.5 Deployment (Should Have)
-
-- [ ] Vercel/GitHub Pages setup
-- [ ] CI/CD pipeline
-- [ ] Environment variables
-- [ ] Preview deployments
+**Why:** Visual proof is mandatory for portfolio. Hiring managers scan portfolios in 30 seconds.
 
 ---
 
-## 🚀 Quick Wins
+### 2. Add Dynamic SEO Metadata (2 hours)
 
-**Low-effort, high-impact tasks for Stage 3:**
+- [ ] Add `generateMetadata()` to `app/products/[id]/page.tsx`
+- [ ] Update page title: `"Browse Products | Product Showcase"`
+- [ ] Update root layout title: `"Product Showcase | Modern Next.js App"`
+- [ ] Add Open Graph tags for social sharing
 
-1. Icons library setup (heroicons/lucide) - 20 min
-2. Toast notifications (success/error) - 1 hour
-3. Improved skeleton shimmer effects - 30 min
-4. Better empty state illustrations - 1 hour
-5. Responsive grid improvements - 1 hour
-
----
-
-## 📝 Notes
-
-- **Stage 2:** ✅ Complete (MVP done)
-- **Stage 3 (must-have):** ~3-5 days
-- **Stage 4 (must-have):** ~2-3 days
-
-**Next priority:** Stage 3 (UI Polish) or Stage 4 (Production Ready)
+**Why:** SEO shows full-stack awareness. Open Graph makes portfolio shareable on LinkedIn/Twitter.
 
 ---
 
-## 💡 Future Improvements (Backlog)
+### 3. Run Lighthouse Audit (1 hour)
 
-### Logger Centralization
+- [ ] Run Lighthouse (desktop + mobile)
+- [ ] Document scores in README (Performance, Accessibility, Best Practices, SEO)
+- [ ] Fix critical issues if scores < 90
 
-**Current state:** `console.error/warn` scattered across persist utilities and error handlers, with `eslint-disable-next-line no-console` comments.
-
-**Proposal:** Create centralized logger utility (`shared/lib/logger.ts`):
-
-```ts
-/* eslint-disable no-console */
-export const logger = {
-  error: console.error,
-  warn: console.warn,
-  info: console.info,
-  debug: console.debug,
-}
-```
-
-**Benefits:**
-
-- Single place to disable ESLint rule
-- Easy to switch to external service (Sentry, LogRocket) in production
-- Consistent logging interface across codebase
-
-**Affected files:**
-
-- `src/app/error.tsx`
-- `src/shared/lib/persist/safeLoadFromStorage.ts`
-- `src/shared/lib/persist/ls.ts`
-
-**Priority:** Low (current implementation is acceptable for MVP)
+**Why:** Performance metrics demonstrate optimization skills.
 
 ---
 
-**Last updated:** 2025-11-25
+## ⭐ Priority 2: Recommended (Week 2, 6-10 hours)
+
+### 4. Comprehensive E2E Tests (4-6 hours)
+
+- [ ] Product CRUD flow (`e2e/product-crud.spec.ts`)
+- [ ] Filters flow (`e2e/filters.spec.ts`)
+- [ ] Favorites flow (`e2e/favorites.spec.ts`)
+- [ ] Theme persistence (`e2e/theme.spec.ts`)
+- [ ] Mobile responsive (`e2e/mobile.spec.ts`)
+- [ ] Accessibility (`e2e/accessibility.spec.ts`)
+
+**Why:** E2E tests show understanding of user journeys. Strong differentiator.
+
+---
+
+### 5. Analytics Integration (1-2 hours)
+
+- [ ] Add Vercel Analytics or Google Analytics 4
+- [ ] Track events: `product_view`, `favorite_added`, `product_created`, `filter_used`
+
+**Why:** Shows data-driven thinking.
+
+---
+
+### 6. Architecture Diagram (2 hours)
+
+- [ ] Create FSD layer + data flow diagram (Mermaid/draw.io)
+- [ ] Add to `docs/ARCHITECTURE.md`
+
+**Why:** Visuals help non-technical recruiters understand architecture.
+
+---
+
+### 7. Test Coverage (1 hour)
+
+- [ ] Run `pnpm test:coverage`
+- [ ] Add coverage badge to README
+- [ ] Target: 80%+ for features/entities
+
+**Why:** Coverage metrics show testing discipline.
+
+---
+
+## 🌟 Priority 3: Advanced (Optional, 8+ hours)
+
+### 8. Accessibility Improvements (3-4 hours)
+
+- [ ] Add `aria-describedby` to form inputs
+- [ ] Add "Skip to content" link
+- [ ] Improve focus indicators
+- [ ] Test with screen reader
+- [ ] Target: Lighthouse Accessibility > 95
+
+---
+
+### 9. Storybook (4-6 hours)
+
+- [ ] Install Storybook
+- [ ] Create stories for shared UI (Button, Input, Card, Modal, Skeleton)
+- [ ] Deploy to Chromatic or GitHub Pages
+
+**Why:** Shows design system thinking.
+
+---
+
+### 10. Internationalization (3-4 hours)
+
+- [ ] Install `next-intl`
+- [ ] Add English + 1 language
+- [ ] Add language switcher
+
+**Why:** Shows scalability thinking.
+
+---
+
+### 11. Web Vitals Tracking (2 hours)
+
+- [ ] Track LCP, FID, CLS
+- [ ] Use Vercel Analytics or custom dashboard
+
+---
+
+### 12. API Mocking with MSW (2 hours)
+
+- [ ] Install MSW
+- [ ] Create handlers for FakeStore API
+- [ ] Use in E2E tests
+
+---
+
+## 🎯 Portfolio Enhancements
+
+### README
+
+- [ ] Add "Why I Built This" section
+- [ ] Add "Tech Highlights" (FSD, Smart Widgets, RTK Query)
+- [ ] Add "Challenges & Solutions" (SSR hydration, localStorage)
+
+### GitHub Repository
+
+- [ ] Add topics: `nextjs`, `react`, `typescript`, `redux-toolkit`, `fsd`, `portfolio`
+- [ ] Pin repository to profile
+
+---
+
+**Last Updated:** 2025-11-30

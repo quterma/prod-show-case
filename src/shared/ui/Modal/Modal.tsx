@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 
 import { Button } from "@/shared/ui"
 
@@ -25,8 +26,10 @@ type ModalProps = {
 export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
   // Handle ESC key
   useEffect(() => {
+    if (!open) return
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) {
+      if (e.key === "Escape") {
         onCloseDialog()
       }
     }
@@ -36,17 +39,13 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
   }, [open, onCloseDialog])
 
   // Prevent body scroll when modal is open
-  // Prevent body scroll when modal is open
   useEffect(() => {
-    if (open) {
-      const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth
-      document.body.style.paddingRight = `${scrollbarWidth}px`
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-      document.body.style.paddingRight = ""
-    }
+    if (!open) return
+
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth
+    document.body.style.paddingRight = `${scrollbarWidth}px`
+    document.body.style.overflow = "hidden"
 
     return () => {
       document.body.style.overflow = ""
@@ -56,9 +55,9 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
 
   if (!open) return null
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center cursor-default"
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "modal-title" : undefined}
@@ -111,6 +110,7 @@ export function Modal({ open, onCloseDialog, title, children }: ModalProps) {
         {/* Body */}
         <div className="px-6 py-4">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
