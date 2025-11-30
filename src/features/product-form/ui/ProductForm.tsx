@@ -65,14 +65,6 @@ export function ProductForm({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <TitleField register={register} error={errors.title} />
 
-      <PriceField
-        register={register}
-        setValue={setValue}
-        error={errors.price}
-      />
-
-      <DescriptionField register={register} error={errors.description} />
-
       <CategoryField
         register={register}
         control={control}
@@ -82,11 +74,21 @@ export function ProductForm({
         defaultValue={defaultValues.category}
       />
 
+      <DescriptionField register={register} error={errors.description} />
+
       <ImageField register={register} error={errors.image} />
 
-      <RatingField register={register} error={errors.rate} />
+      <div className="flex flex-col gap-5 md:flex-row [&>*]:flex-1">
+        <PriceField
+          register={register}
+          setValue={setValue}
+          error={errors.price}
+        />
 
-      <CountField register={register} error={errors.count} />
+        <RatingField register={register} error={errors.rate} />
+
+        <CountField register={register} error={errors.count} />
+      </div>
 
       {/* Form Actions */}
       <div className="flex gap-3 pt-4">

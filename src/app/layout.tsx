@@ -43,7 +43,7 @@ export default function RootLayout({
         >
           <Header />
           <StoreProvider>
-            <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+            <main>{children}</main>
           </StoreProvider>
           <ToastProvider />
         </ThemeProvider>
