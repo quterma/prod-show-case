@@ -12,8 +12,8 @@ export default function HomePage() {
             Product Showcase
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Modern e-commerce SPA with advanced filtering, CRUD operations, and
-            responsive design — built to demonstrate frontend architecture and
+            Modern e-commerce demo with advanced filtering, CRUD, pagination and
+            responsive UI — built to demonstrate frontend architecture and
             development skills
           </p>
         </div>
