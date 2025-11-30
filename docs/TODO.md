@@ -6,19 +6,7 @@
 
 ## 🚀 Priority 1: Essential (Week 1, 3-5 hours)
 
-### 1. Add Screenshots to README (1-2 hours)
-
-- [ ] Create `docs/screenshots/` directory
-- [ ] Capture screenshots:
-  - Products list (light/dark mode)
-  - Product detail page
-  - Filters + search in action
-  - Mobile responsive view
-  - Form dialog (create/edit)
-- [ ] Optimize images (WebP, max 800px width)
-- [ ] Add to README
-
-**Why:** Visual proof is mandatory for portfolio. Hiring managers scan portfolios in 30 seconds.
+### 1. Add Screenshots to README (1-2 hours) - DONE
 
 ---
 

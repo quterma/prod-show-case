@@ -2,227 +2,129 @@
 
 **Live Demo:** [https://prod-show-case.vercel.app/](https://prod-show-case.vercel.app/)
 
-A modern, production-ready product showcase application built with Next.js 16, React 19, and Feature-Sliced Design (FSD) architecture. This project demonstrates scalable frontend architecture, advanced state management, and comprehensive testing practices.
+Modern product showcase built with Next.js 16, React 19, and Feature-Sliced Design architecture. Demonstrates scalable frontend patterns, advanced state management, and production-ready UI/UX.
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/products-list-light.png" alt="Products List (Light Mode)" />
+      <p align="center"><strong>Products List (Light Mode)</strong></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/products-list-dark.png" alt="Products List (Dark Mode)" />
+      <p align="center"><strong>Products List (Dark Mode)</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/product-detail.png" alt="Product Detail Page" />
+      <p align="center"><strong>Product Detail Page</strong></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/filters-search.png" alt="Filters & Search" />
+      <p align="center"><strong>Filters & Search in Action</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/mobile-responsive.png" alt="Mobile View" />
+      <p align="center"><strong>Mobile Responsive</strong></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/form-dialog.png" alt="Create/Edit Form" />
+      <p align="center"><strong>Create/Edit Product Form</strong></p>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## 🚀 Tech Stack
 
-### Core
-
-- **Next.js 16** (App Router)
-- **React 19** with modern features
-- **TypeScript** strict mode
-- **Tailwind CSS v4** with semantic design tokens
-
-### Architecture & State
-
-- **Feature-Sliced Design (FSD)** for maintainable architecture
-- **Redux Toolkit + RTK Query** for state management & API
-- Custom localStorage persistence with SSR-safe hydration
-
-### Forms & Validation
-
-- **React Hook Form** + **Zod** schemas
-- Real-time validation with custom field components
-
-### Testing
-
-- **Vitest** (174+ unit/component tests)
-- **Playwright** (E2E tests)
-- **Pre-commit hooks** (Husky + lint-staged)
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Feature-Sliced Design (FSD)** architecture
+- **Redux Toolkit + RTK Query** (state & API)
+- **React Hook Form + Zod** (forms & validation)
+- **Tailwind CSS v4** (semantic design tokens)
+- **Vitest + Playwright** (174+ tests)
 
 ---
 
 ## 📋 Features
 
-### Product Management
-
-- Browse products from FakeStore API
-- Create/edit local products with form validation
-- Soft-delete API products, hard-delete local products
-- Product detail pages with full CRUD operations
-
-### Advanced Filtering & Search
-
-- Debounced search (300ms) - title/description
-- Multi-select category filter
-- Price range slider (dynamic min/max)
-- Rating threshold filter
-- "Show only favorites" toggle
-- Reset all filters
-
-### Favorites & Persistence
-
-- Add/remove favorites with localStorage persistence
-- Auto-cleanup when products deleted
-- SSR-safe hydration (no flash of wrong state)
-
-### UI/UX
-
-- Dark/light theme toggle (next-themes)
-- Toast notifications for CRUD operations
-- Responsive grid (1/2/3 columns on mobile/tablet/desktop)
-- Loading skeletons with shimmer effect
-- Error boundaries & empty states
-- Confirmation modals for destructive actions
-
-### Developer Experience
-
-- Smart Widgets pattern (data fetching isolated in widgets)
-- View Hooks Aggregators (`useProductsView`, `useProductView`)
-- Factory selectors for memoization
-- Strict FSD layer rules (enforced via ESLint)
+- **Product Management:** Browse API products, create/edit local products, soft/hard delete
+- **Advanced Filtering:** Debounced search, multi-select categories, price range, rating, favorites
+- **Persistence:** localStorage with SSR-safe hydration, auto-cleanup on delete
+- **UI/UX:** Dark/light theme, toast notifications, responsive grid, loading skeletons, error boundaries
+- **Developer Experience:** Smart Widgets pattern, factory selectors, strict FSD layer rules
 
 ---
 
 ## 🏛️ Architecture
 
-This project follows **Feature-Sliced Design (FSD)** principles:
-
 ```
 src/
-├── app/        # Next.js routes, providers, global config
-├── widgets/    # Smart UI blocks (ProductsWidget, ProductDetailWidget)
-├── features/   # Business logic (filters, favorites, pagination, forms)
-├── entities/   # Business models (product entity, API, mappers)
-└── shared/     # Reusable infrastructure (UI, utils, API config)
+├── app/        # Routes, providers
+├── widgets/    # Smart UI (data fetching)
+├── features/   # Business logic
+├── entities/   # Data models & API
+└── shared/     # UI components & utils
 ```
 
-**Key Principles:**
+**FSD Rules:** Top → Bottom imports only (app → widgets → features → entities → shared)
 
-- Layered imports: Higher layers import from lower layers only
-- Widgets own data fetching, pages are thin routing layers
-- Custom middleware for selective localStorage persistence
-- RTK Query with `baseApi.injectEndpoints()` pattern
+**Smart Widgets:** Widgets own data fetching, pages are thin routing layers
 
-See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for detailed architecture overview.
+**Persistence:** Custom middleware for selective localStorage sync (`favorites`, `localProducts`)
+
+See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for details.
 
 ---
 
 ## 🛠️ Quick Start
 
-### Prerequisites
-
-- Node.js 18+
-- pnpm (recommended)
-
-### Installation & Development
-
 ```bash
-# Install dependencies
+# Install
 pnpm install
 
-# Start development server
+# Develop
 pnpm dev
-# Open http://localhost:3000
+# → http://localhost:3000
 ```
-
-### Testing
-
-```bash
-# Unit/component tests (watch mode)
-pnpm test
-
-# Unit tests (CI mode)
-pnpm test:run
-
-# E2E tests (Playwright)
-pnpm test:e2e
-
-# Test coverage report
-pnpm test:coverage
-```
-
-### Code Quality
-
-```bash
-# Lint & auto-fix
-pnpm lint
-
-# Format code (Prettier)
-pnpm format
-
-# Type check
-pnpm type-check
-```
-
----
-
-## 📚 Documentation
-
-- **[CLAUDE.md](CLAUDE.md)** - Development guidelines for Claude Code
-- **[Architecture](docs/ARCHITECTURE.md)** - FSD architecture, data flow, key decisions
-- **[TODO](docs/TODO.md)** - Portfolio improvements roadmap
 
 ---
 
 ## 🎯 Key Highlights
 
-### Architecture Excellence
+### Architecture
 
-- **FSD implementation** with strict layer rules (app → widgets → features → entities → shared)
-- **Smart Widgets pattern**: Data fetching isolated in widgets, pages stay thin
-- **Custom persistence middleware**: Selective localStorage sync for `favorites` + `localProducts`
+- FSD implementation with strict layer rules
+- RTK Query with `baseApi.injectEndpoints()` pattern
+- SSR-safe hydration via `createPreloadedState()`
 
-### State Management
+### Testing
 
-- **RTK Query** with automatic caching & request deduplication
-- **SSR-safe hydration**: `createPreloadedState()` prevents hydration mismatches
-- **Factory selectors**: Memoized selectors for `isRemoved`, `isFavorite` checks
-
-### Testing Culture
-
-- **174+ tests** across entities, features, widgets, shared utils
-- **Pre-commit hooks** run Prettier + ESLint + Vitest on staged files
-- **E2E tests** for critical user journeys
+- 174+ unit/component tests (Vitest)
+- E2E tests (Playwright)
+- Pre-commit hooks (Prettier + ESLint + tests)
 
 ### Production Patterns
 
-- Error boundaries (global + route-level)
-- Loading states (skeletons with shimmer)
-- Empty states with helpful CTAs
-- Toast notifications for CRUD feedback
+- Error boundaries, loading states, empty states
 - Confirmation modals for destructive actions
-- Theme persistence across reloads
+- Theme persistence, toast notifications
 
 ---
 
-## 📦 Project Status
+## 📚 Documentation
 
-**Stage:** MVP Complete + UI Polish ✅
-**Deployment:** Vercel (auto-deploy on push to main)
-**Tests:** 174 unit/component tests passing
-
-**Implemented:**
-
-- ✅ Products list & detail pages
-- ✅ Search (debounced), filters (category, price, rating), pagination
-- ✅ Favorites with localStorage persistence
-- ✅ Local products (create/edit/delete) with form validation
-- ✅ Dark/light theme toggle
-- ✅ Toast notifications
-- ✅ Error boundaries, 404 page, empty states
-- ✅ Responsive design (mobile/tablet/desktop)
-
-**Next Steps:** See [docs/TODO.md](docs/TODO.md) for portfolio improvements (screenshots, SEO, E2E tests, analytics).
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Architecture, data flow, decisions
+- **[docs/TODO.md](docs/TODO.md)** - Portfolio improvements
 
 ---
 
-## 🔗 External Resources
-
-- [FakeStore API](https://fakestoreapi.com) - Data source
-- [Feature-Sliced Design](https://feature-sliced.design) - Architecture methodology
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Redux Toolkit](https://redux-toolkit.js.org/)
-
----
-
-## 📄 License
-
-This is a portfolio/test assignment project.
-
----
-
-**Built with 💻 by [Your Name]**
 **Last Updated:** 2025-11-30
