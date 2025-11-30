@@ -10,12 +10,22 @@
 
 ---
 
-### 2. Add Dynamic SEO Metadata (2 hours)
+### 2. Add Dynamic SEO Metadata (2 hours) - DONE
 
-- [ ] Add `generateMetadata()` to `app/products/[id]/page.tsx`
-- [ ] Update page title: `"Browse Products | Product Showcase"`
-- [ ] Update root layout title: `"Product Showcase | Modern Next.js App"`
-- [ ] Add Open Graph tags for social sharing
+- [x] Add `generateMetadata()` to `app/products/[id]/page.tsx`
+- [x] Update page title: `"Browse Products | Product Showcase"`
+- [x] Update root layout title: `"Product Showcase | Modern Next.js App"`
+- [x] Add Open Graph tags for social sharing
+- [x] Create shared SEO config (`src/shared/config/seo.ts`)
+- [x] Add metadata to all pages (layout, products, product detail)
+
+**Implementation:**
+
+- ✅ Created `SEO_CONFIG` in `src/shared/config/seo.ts` with centralized defaults
+- ✅ Root layout: title template, OG tags, Twitter Card
+- ✅ Products page: static metadata with OG tags
+- ✅ Product detail: dynamic `generateMetadata()` with product-specific OG image
+- ✅ Server Components pattern with client wrapper components
 
 **Why:** SEO shows full-stack awareness. Open Graph makes portfolio shareable on LinkedIn/Twitter.
 

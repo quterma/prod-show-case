@@ -1,13 +1,7 @@
-"use client"
+import { productsMetadata } from "@/shared/config/seo"
+import { ProductsWidget } from "@/widgets/products/ui/ProductsWidget"
 
-import dynamic from "next/dynamic"
-
-// Disable SSR for ProductsWidget to prevent hydration mismatch
-// The widget depends on localStorage state which differs between server and client
-const ProductsWidget = dynamic(
-  () => import("@/widgets/products").then((mod) => mod.ProductsWidget),
-  { ssr: false }
-)
+export const metadata = productsMetadata
 
 export default function ProductsPage() {
   return (

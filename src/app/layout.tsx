@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
+import { rootMetadata } from "@/shared/config/seo"
 import { Header } from "@/widgets/header"
 
 import StoreProvider from "./StoreProvider"
@@ -19,11 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-export const metadata: Metadata = {
-  title: "prod-show-case",
-  description:
-    "Production showcase application with forms and state management",
-}
+export const metadata = rootMetadata
 
 export default function RootLayout({
   children,
