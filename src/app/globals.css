@@ -6,13 +6,13 @@
 
 :root {
   /* Brand Colors */
-  --primary: #3b82f6; /* blue-500 */
+  --primary: #339668; /* forest green */
   --primary-foreground: #ffffff;
 
   --secondary: #f3f4f6; /* gray-100 */
   --secondary-foreground: #1f2937; /* gray-800 */
 
-  --destructive: #ef4444; /* red-500 */
+  --destructive: #f74e28; /* red-500 */
   --destructive-foreground: #ffffff;
 
   --success: #10b981; /* green-500 */
@@ -36,7 +36,7 @@
 
   --border: #e4e4e7; /* zinc-200 */
   --input: #e4e4e7;
-  --ring: #3b82f6; /* blue-500 */
+  --ring: #339668; /* forest green */
 
   /* Radius */
   --radius-lg: 0.5rem;
@@ -46,13 +46,13 @@
 
 .dark {
   /* Brand Colors */
-  --primary: #3b82f6; /* blue-500 */
+  --primary: #339668; /* forest green */
   --primary-foreground: #ffffff;
 
   --secondary: #1f2937; /* gray-800 */
   --secondary-foreground: #f9fafb; /* gray-50 */
 
-  --destructive: #7f1d1d; /* red-900 */
+  --destructive: #f74e28; /* red-900 */
   --destructive-foreground: #fef2f2; /* red-50 */
 
   --success: #064e3b; /* green-900 */
@@ -76,7 +76,7 @@
 
   --border: #27272a; /* zinc-800 */
   --input: #27272a;
-  --ring: #1d4ed8; /* blue-700 */
+  --ring: #2d6823; /* dark forest green */
 }
 
 @theme inline {
@@ -133,4 +133,24 @@ input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance: none;
+}
+
+/* Create Product button gradient */
+.btn-create-product {
+  background: linear-gradient(
+    135deg,
+    #b3d0ff 0%,
+    #ffbffa 50%,
+    #fff4b3 100%
+  ) !important;
+  color: #000000;
+}
+
+.btn-create-product:hover {
+  background: linear-gradient(
+    135deg,
+    #a0bdff 0%,
+    #ffb0f5 50%,
+    #fff0a0 100%
+  ) !important;
 }

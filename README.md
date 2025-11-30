@@ -120,6 +120,28 @@ pnpm dev
 
 ---
 
+## ⚡ Lighthouse Scores
+
+> Scores measured on production build, Chrome Lighthouse
+> **Last measured:** 2025-11-30
+
+| Metric         | Desktop | Mobile |
+| -------------- | ------- | ------ |
+| Performance    | 98      | 78     |
+| Accessibility  | 96      | 96     |
+| Best Practices | 96      | 96     |
+| SEO            | 100     | 100    |
+
+**Key optimizations:**
+
+- Server-side rendering with Next.js App Router for instant content delivery
+- Dynamic metadata with Open Graph tags for optimal SEO
+- Responsive images with Next.js Image component
+- Code splitting and lazy loading for reduced bundle size
+- Tailwind CSS for optimized styling without runtime overhead
+
+---
+
 ## 📚 Documentation
 
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Architecture, data flow, decisions

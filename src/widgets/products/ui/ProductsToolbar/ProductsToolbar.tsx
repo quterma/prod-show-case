@@ -35,7 +35,11 @@ export function ProductsToolbar({
       {/* Actions Group */}
       <div className="flex flex-row gap-3 justify-between">
         {onCreateProduct && (
-          <Button onClick={onCreateProduct} variant="primary">
+          <Button
+            onClick={onCreateProduct}
+            variant="primary"
+            className="btn-create-product"
+          >
             Create Product
           </Button>
         )}
